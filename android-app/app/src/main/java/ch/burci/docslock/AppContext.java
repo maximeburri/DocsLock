@@ -22,6 +22,7 @@ public class AppContext extends Application {
         super.onCreate();
         instance = this;
         registerKioskModeScreenOffReceiver();
+        startKioskService();
     }
 
     private void registerKioskModeScreenOffReceiver() {
@@ -38,5 +39,9 @@ public class AppContext extends Application {
             wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "wakeup");
         }
         return wakeLock;
+    }
+
+    private void startKioskService(){
+        startService(new Intent(this, KioskService.class));
     }
 }
