@@ -1,5 +1,6 @@
 package ch.burci.docslock;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -18,5 +19,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // nothing to do here
+    }
+
+    // Disable long power button press
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(!hasFocus) {
+            // Close every kind of system dialog
+            Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            sendBroadcast(closeDialog);
+        }
     }
 }
