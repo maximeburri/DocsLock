@@ -1,9 +1,11 @@
-package ch.burci.docslock;
+package ch.burci.docslock.controllers;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
+
+import ch.burci.docslock.R;
 
 public class MainActivity extends AppCompatActivity {
 

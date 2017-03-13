@@ -1,4 +1,4 @@
-package ch.burci.docslock;
+package ch.burci.docslock.services;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -9,7 +9,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import ch.burci.docslock.controllers.MainActivity;
 
 public class KioskService extends Service {
 

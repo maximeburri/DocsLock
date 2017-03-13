@@ -1,4 +1,4 @@
-package ch.burci.docslock;
+package ch.burci.docslock.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import ch.burci.docslock.AppContext;
 
 /**
  * Created by maxime on 07.03.17.

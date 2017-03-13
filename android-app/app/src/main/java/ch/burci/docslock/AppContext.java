@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PowerManager;
 
+import ch.burci.docslock.receivers.OnScreenOffReceiver;
+import ch.burci.docslock.services.KioskService;
+
 /**
  * Created by maxime on 07.03.17.
  */
