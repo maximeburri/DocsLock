@@ -1,5 +1,7 @@
 package ch.burci.docslock.controllers;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,5 +34,14 @@ public class MainActivity extends AppCompatActivity {
             Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             sendBroadcast(closeDialog);
         }
+    }
+
+    protected void onPause() {
+        super.onPause();
+
+        // On pause (recent apps button) : move task to front
+        ActivityManager activityManager = (ActivityManager) getApplicationContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
     }
 }
