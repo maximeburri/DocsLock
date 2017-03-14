@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import ch.burci.docslock.AppContext;
+import ch.burci.docslock.models.PrefUtils;
 
 /**
  * Created by maxime on 07.03.17.
@@ -20,7 +21,7 @@ public class OnScreenOffReceiver extends BroadcastReceiver {
         if(Intent.ACTION_SCREEN_OFF.equals(intent.getAction())){
             AppContext ctx = (AppContext) context.getApplicationContext();
             // is Kiosk Mode active?
-            if(isKioskModeActive(ctx)) {
+            if(PrefUtils.isLocked(ctx)) {
                 wakeUpDevice(ctx);
             }
         }
@@ -41,7 +42,4 @@ public class OnScreenOffReceiver extends BroadcastReceiver {
         Log.d("BroadcastReceiver", "wakeUpDevice");
     }
 
-    private boolean isKioskModeActive(final Context context) {
-        return true;
-    }
 }
