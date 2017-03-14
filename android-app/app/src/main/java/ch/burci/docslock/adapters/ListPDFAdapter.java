@@ -1,6 +1,11 @@
 package ch.burci.docslock.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import java.util.ArrayList;
 
 import ch.burci.docslock.R;
 import ch.burci.docslock.controllers.ListPDFFragment;
+import ch.burci.docslock.controllers.ViewerFragment;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 
@@ -35,6 +41,7 @@ public class ListPDFAdapter extends BaseAdapter {
     private View view;
     private PDFbox pdfBox;
     private MainModel mainModel;
+    private Fragment fragmentViewer;
 
     @Override
     public int getCount() {
@@ -92,9 +99,30 @@ public class ListPDFAdapter extends BaseAdapter {
             this.pdfBox.txtPDFName.setText(pdf.getPdfName());
             this.pdfBox.imgPDF.setImageResource(pdf.getIconRes());
 
+            this.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //creat container and commit de fragment
+                    ListPDFAdapter.this.fragmentViewer = new ViewerFragment(); //first fragment open is listOfAlarm
+                    ListPDFAdapter.this.commitFragmentTransaction();
+                }
+            });
+
+
         }
 
         return this.view;
     }
 
+    /***
+     * @desc Method to commit a fragment transaction without animation
+     */
+    public void commitFragmentTransaction()
+    {
+        // Commit the fragment transaction
+        FragmentTransaction ft = ((FragmentActivity)this.context).getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container, this.fragmentViewer);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
 }
