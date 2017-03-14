@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.PowerManager;
 
 import ch.burci.docslock.receivers.OnScreenOffReceiver;
-import ch.burci.docslock.services.KioskService;
 
 /**
  * Created by maxime on 07.03.17.
@@ -25,7 +24,6 @@ public class AppContext extends Application {
         super.onCreate();
         instance = this;
         registerKioskModeScreenOffReceiver();
-        startKioskService();
     }
 
     private void registerKioskModeScreenOffReceiver() {
@@ -42,9 +40,5 @@ public class AppContext extends Application {
             wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "wakeup");
         }
         return wakeLock;
-    }
-
-    private void startKioskService(){
-        startService(new Intent(this, KioskService.class));
     }
 }
