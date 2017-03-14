@@ -16,3 +16,6 @@ Trial : pas de modification mot de passe (0000), configuration “longue”, per
 
 2. Pinning :
 Obliger de mettre pinner manuellement, aller dans la configuration,... lorsque ça quitte tu es dans l’écran de vérouillage
+
+3. PDFviewer:
+[lien](https://github.com/voghDev/PdfViewPager)
