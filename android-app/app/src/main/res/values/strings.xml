@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DocsLock</string>
+    <string name="action_lock">Lock</string>
+    <string name="action_unlock">Unlock</string>
 </resources>
