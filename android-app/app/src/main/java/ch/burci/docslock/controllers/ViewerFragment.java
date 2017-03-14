@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
@@ -18,7 +18,7 @@ import com.shockwave.pdfium.PdfDocument;
 import java.util.List;
 
 import ch.burci.docslock.R;
-import ch.burci.docslock.models.MainModel;
+
 
 import static android.content.ContentValues.TAG;
 
@@ -29,16 +29,16 @@ import static android.content.ContentValues.TAG;
 public class ViewerFragment extends Fragment implements OnPageChangeListener, OnLoadCompleteListener {
 
     private View rootView;
+    private String pdfName;
     PDFView pdfView;
-    String pdfFileName;
-    public static final String SAMPLE_FILE = "pdf/ITI_participation_assistants_PO_2017.pdf";
+    public static final String DIRECTORY_PDF = "pdf";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rootView = inflater.inflate(R.layout.pdf_viewer_fragment, container, false);
         this.pdfView = (PDFView) this.rootView.findViewById(R.id.pdfView);
-        displayFromAsset(SAMPLE_FILE);
+        displayFromAsset(DIRECTORY_PDF+"/"+this.pdfName);
 
         return rootView;
 
@@ -84,4 +84,11 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
     @Override
     public void onPageChanged(int page, int pageCount) {
     }
+
+
+    // ---------------------------------------------------------------
+    // Getter/Setter  ------------------------------------------------
+    // ---------------------------------------------------------------
+    public void setPDFName(String pdfName) { this.pdfName = pdfName; }
+
 }

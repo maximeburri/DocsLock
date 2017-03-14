@@ -11,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import ch.burci.docslock.R;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     // ---------------------------------------------------------------
     // Fields  -------------------------------------------------------
     // ---------------------------------------------------------------
+    private ArrayList<PDFModel> listPDFs;
     private Fragment fragment;
     private MainModel mainModel;
 
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         // Home Key Locker
         homeKeyLocker = new HomeKeyLocker();
         homeKeyLocker.lock(this);
+
+        this.mainModel = new MainModel();
     }
 
     @Override
@@ -54,31 +60,36 @@ public class MainActivity extends AppCompatActivity {
             timer = null;
         }
 
-        PDFModel pdf_1 = new PDFModel(R.mipmap.ic_pdf,"icon pdf");
-        PDFModel pdf_2 = new PDFModel(R.mipmap.ic_pdf,"icon_launch");
-        PDFModel pdf_3 = new PDFModel(R.mipmap.ic_pdf,"ergegeg pdf");
-        PDFModel pdf_4 = new PDFModel(R.mipmap.ic_pdf,"ifegtgrth_launch");
-        PDFModel pdf_5 = new PDFModel(R.mipmap.ic_pdf,"iconetherhe ger");
-        PDFModel pdf_6= new PDFModel(R.mipmap.ic_pdf,"iconeherherh_launch");
-        PDFModel pdf_7 = new PDFModel(R.mipmap.ic_pdf,"icoergheh  n pdf");
-        PDFModel pdf_8 = new PDFModel(R.mipmap.ic_pdf,"icon_lerghe erh er haunch");
-        this.mainModel = new MainModel();
-        ArrayList<PDFModel> listPDF = new ArrayList<PDFModel>();
-        listPDF.add(pdf_1);
-        listPDF.add(pdf_2);
-        listPDF.add(pdf_3);
-        listPDF.add(pdf_4);
-        listPDF.add(pdf_5);
-        listPDF.add(pdf_6);
-        listPDF.add(pdf_7);
-        listPDF.add(pdf_8);
-        this.mainModel.setPdfs(listPDF);
+        //read list pdf in assets and create ArrayList of PDF
+        this.listPDFs = readPDFs("pdf");
+        this.mainModel.setPdfs(this.listPDFs);
+
 
         //creat container and commit de fragment
         this.fragment = new ListPDFFragment(); //first fragment open is listOfAlarm
         this.commitFragmentTransaction();
     }
 
+    /***
+     * @desc Method to read all pdf and create List of pdf
+     */
+    public ArrayList<PDFModel> readPDFs(String path)
+    {
+        ArrayList<PDFModel> result = new ArrayList<PDFModel>();
+        String [] listAssets;
+        try {
+            listAssets = getAssets().list(path);
+            if (listAssets.length > 0) {
+                for (String fileName : listAssets) {
+                    PDFModel pdf = new PDFModel(R.mipmap.ic_pdf,fileName);
+                    result.add(pdf);
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "No pdf",Toast.LENGTH_LONG).show();
+        }
+        return result;
+    }
 
 
     /***

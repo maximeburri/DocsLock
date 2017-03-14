@@ -1,10 +1,8 @@
 package ch.burci.docslock.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,7 +101,8 @@ public class ListPDFAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     //creat container and commit de fragment
-                    ListPDFAdapter.this.fragmentViewer = new ViewerFragment(); //first fragment open is listOfAlarm
+                    fragmentViewer = new ViewerFragment(); //first fragment open is listOfAlarm
+                    ((ViewerFragment)fragmentViewer).setPDFName(pdf.getPdfName());
                     ListPDFAdapter.this.commitFragmentTransaction();
                 }
             });
