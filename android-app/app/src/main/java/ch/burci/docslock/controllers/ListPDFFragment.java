@@ -29,14 +29,8 @@ public class ListPDFFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rootView = inflater.inflate(R.layout.liste_pdf_fragment, container, false);
-
         this.listViewPDF = (ListView) this.rootView.findViewById(R.id.listPDF);
-
-
-
-
         return rootView;
-
     }
 
     @Override
@@ -51,7 +45,6 @@ public class ListPDFFragment extends Fragment {
     public void update()
     {
         try {
-
             //recup mainModel to arguments of bundle
             this.mainModel = ((MainActivity) getActivity()).getMainModel();
 
@@ -60,7 +53,6 @@ public class ListPDFFragment extends Fragment {
 
             //add adapter to list
             this.listViewPDF.setAdapter(this.listPdfAdapter);
-
 
         }catch(Exception e){}
     }

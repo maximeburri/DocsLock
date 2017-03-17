@@ -3,6 +3,7 @@ package ch.burci.docslock.models;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.WindowManager;
@@ -34,9 +35,10 @@ public class HomeKeyLocker {
     }
 
     private static class OverlayDialog extends AlertDialog {
-
+        Activity activity;
         public OverlayDialog(Activity activity) {
             super(activity, R.style.OverlayDialog);
+            this.activity = activity;
             WindowManager.LayoutParams params = getWindow().getAttributes();
             params.type = TYPE_SYSTEM_ERROR;
             params.dimAmount = 0.0F; // transparent
@@ -58,6 +60,13 @@ public class HomeKeyLocker {
             FrameLayout framelayout = new FrameLayout(getContext());
             framelayout.setBackgroundColor(0);
             setContentView(framelayout);
+        }
+
+        @Override
+        public void onBackPressed() {
+            Log.d("HomeKeyLocker", "onBackPressed");
+            activity.onBackPressed();
+            super.onBackPressed();
         }
     }
 }

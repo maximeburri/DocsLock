@@ -39,7 +39,6 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
         this.rootView = inflater.inflate(R.layout.pdf_viewer_fragment, container, false);
         this.pdfView = (PDFView) this.rootView.findViewById(R.id.pdfView);
         displayFromAsset(DIRECTORY_PDF+"/"+this.pdfName);
-
         return rootView;
 
     }
@@ -52,7 +51,6 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
                 .scrollHandle(new DefaultScrollHandle(this.getContext()))
                 .load();
     }
-
 
     @Override
     public void loadComplete(int nbPages) {
@@ -85,10 +83,8 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
     public void onPageChanged(int page, int pageCount) {
     }
 
-
     // ---------------------------------------------------------------
     // Getter/Setter  ------------------------------------------------
     // ---------------------------------------------------------------
     public void setPDFName(String pdfName) { this.pdfName = pdfName; }
-
 }

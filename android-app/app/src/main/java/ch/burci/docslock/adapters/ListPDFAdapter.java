@@ -2,8 +2,6 @@ package ch.burci.docslock.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ch.burci.docslock.R;
-import ch.burci.docslock.controllers.ListPDFFragment;
+import ch.burci.docslock.controllers.MainActivity;
 import ch.burci.docslock.controllers.ViewerFragment;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
@@ -35,11 +33,9 @@ public class ListPDFAdapter extends BaseAdapter {
     // ---------------------------------------------------------------
     private ArrayList<PDFModel> pdfs;
     private Context context;
-    private ListPDFFragment fragment;
     private View view;
     private PDFbox pdfBox;
-    private MainModel mainModel;
-    private Fragment fragmentViewer;
+    private MainActivity mainActivity;
 
     @Override
     public int getCount() {
@@ -62,8 +58,8 @@ public class ListPDFAdapter extends BaseAdapter {
      */
     public ListPDFAdapter(MainModel mainModel, Context context) {
         this.context = context;
-        this.mainModel = mainModel;
         this.pdfs = mainModel.getPdfs();
+        this.mainActivity = (MainActivity) context;
     }
 
     @Override
@@ -100,10 +96,7 @@ public class ListPDFAdapter extends BaseAdapter {
             this.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //creat container and commit de fragment
-                    fragmentViewer = new ViewerFragment(); //first fragment open is listOfAlarm
-                    ((ViewerFragment)fragmentViewer).setPDFName(pdf.getPdfName());
-                    ListPDFAdapter.this.commitFragmentTransaction();
+                mainActivity.goToPdf(pdf);
                 }
             });
 
@@ -113,15 +106,4 @@ public class ListPDFAdapter extends BaseAdapter {
         return this.view;
     }
 
-    /***
-     * @desc Method to commit a fragment transaction without animation
-     */
-    public void commitFragmentTransaction()
-    {
-        // Commit the fragment transaction
-        FragmentTransaction ft = ((FragmentActivity)this.context).getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, this.fragmentViewer);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
 }

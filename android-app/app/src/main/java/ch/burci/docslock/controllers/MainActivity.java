@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     // Fields  -------------------------------------------------------
     // ---------------------------------------------------------------
     private ArrayList<PDFModel> listPDFs;
-    private Fragment fragment;
+    private Fragment currentFragment;
+    private ListPDFFragment listFragment;
+    private ViewerFragment viewerFragment;
     private MainModel mainModel;
 
     private HomeKeyLocker homeKeyLocker;
@@ -59,14 +61,22 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         setContentView(R.layout.activity_main);
 
+        //read list pdf in assets and create ArrayList of PDF
+        this.mainModel = new MainModel();
+        this.listPDFs = readPDFs("pdf");
+        this.mainModel.setPdfs(this.listPDFs);
+
+        //creat container and commit de currentFragment
+        this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfAlarm
+        this.currentFragment = this.listFragment; //first currentFragment open is listOfAlarm
+        this.commitFragmentTransaction(false);
+
         // Home Key Locker
         homeKeyLocker = new HomeKeyLocker();
-
-        this.mainModel = new MainModel();
-
         isLocked = false;
-
         checkDrawOverlayPermission();
+
+        this.viewerFragment = new ViewerFragment();
     }
 
     protected void setLock(boolean locked){
@@ -93,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void goToPdf(PDFModel pdf){
+        this.viewerFragment.setPDFName(pdf.getPdfName());
+        this.currentFragment = this.viewerFragment;
+        this.commitFragmentTransaction();
+    }
 
     public boolean checkDrawOverlayPermission() {
         /** check if we already  have permission to draw over other apps */
@@ -119,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         this.setLock(!isLocked);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,15 +143,6 @@ public class MainActivity extends AppCompatActivity {
             timer.purge();
             timer = null;
         }
-
-        //read list pdf in assets and create ArrayList of PDF
-        this.listPDFs = readPDFs("pdf");
-        this.mainModel.setPdfs(this.listPDFs);
-
-
-        //creat container and commit de fragment
-        this.fragment = new ListPDFFragment(); //first fragment open is listOfAlarm
-        this.commitFragmentTransaction();
     }
 
     /***
@@ -176,22 +183,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /***
-     * @desc Method to commit a fragment transaction without animation
+     * @desc Method to commit a currentFragment transaction without animation
      */
-    public void commitFragmentTransaction()
-    {
-        // Commit the fragment transaction
+    public void commitFragmentTransaction(boolean addToBackStack){
+        // Commit the currentFragment transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, this.fragment);
+        ft.replace(R.id.container, this.currentFragment);
+        if(addToBackStack)
+            ft.addToBackStack(currentFragment.getClass().getName());
         ft.commit();
+    }
+
+    public void commitFragmentTransaction(){
+        commitFragmentTransaction(true);
     }
 
     @Override
     public void onBackPressed() {
         Log.d("MainActivity", "back pressed");
+        Log.d("MainActivity::c",""+ getSupportFragmentManager().getBackStackEntryCount());
 
-        // If not locked, restore onBackPressed
-        if(!this.isLocked)
+        // If not locked, or if not the last backlstackentry : go back
+        if(!this.isLocked || getSupportFragmentManager().getBackStackEntryCount() > 0)
             super.onBackPressed();
     }
 
@@ -258,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
     // ---------------------------------------------------------------
     // Getter/Setter  ------------------------------------------------
     // ---------------------------------------------------------------
-    public Fragment getFragment() { return this.fragment; }
-    public void setFragment(Fragment f) { this.fragment = f; }
+    public Fragment getCurrentFragment() { return this.currentFragment; }
+    public void setCurrentFragment(Fragment f) { this.currentFragment = f; }
     public MainModel getMainModel(){return this.mainModel; }
 }
