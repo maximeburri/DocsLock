@@ -6,6 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem menuItemLockUnlock;
     private Menu menu;
 
+    public final static int REQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         this.mainModel = new MainModel();
 
         isLocked = false;
+
+        checkDrawOverlayPermission();
     }
 
     protected void setLock(boolean locked){
@@ -83,6 +90,28 @@ public class MainActivity extends AppCompatActivity {
                 icon = ContextCompat.getDrawable(this, R.mipmap.ic_docs_unlocked);
 
             this.menuItemLockUnlock.setIcon(icon);
+        }
+    }
+
+
+    public boolean checkDrawOverlayPermission() {
+        /** check if we already  have permission to draw over other apps */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_CODE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        // Check overlay permission to fix #18
+        if (requestCode == REQUEST_CODE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+                Log.d("MainActivity", "permission was granted");
+            }
         }
     }
 
