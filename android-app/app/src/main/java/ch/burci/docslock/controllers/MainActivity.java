@@ -39,6 +39,7 @@ import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -184,8 +185,18 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+    private void hideKeyboard(EditText editText){
+        InputMethodManager imm = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if(item == menuItemLockUnlock) {
 
             LayoutInflater li = this.getLayoutInflater();
@@ -205,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog,int id) {
+                            // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                            hideKeyboard(editPassword);
                             dialog.cancel();
                         }
                     });
@@ -238,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
                         // Check if good password
                         if(PrefUtils.checkPassword(password, getApplicationContext())) {
                             switchLock();
+                            Toast.makeText(MainActivity.this,
+                                    "Application unlocked", Toast.LENGTH_LONG);
                             closeDialog = true;
                         }
                         // Bad password
@@ -251,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
                         // Save good password
                         PrefUtils.setPassword(password, getApplicationContext());
                         switchLock();
+                        Toast.makeText(MainActivity.this,
+                                "Application locked", Toast.LENGTH_LONG);
                         closeDialog = true;
                     }
 
