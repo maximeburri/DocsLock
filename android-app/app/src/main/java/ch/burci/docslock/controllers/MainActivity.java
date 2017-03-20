@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -12,13 +13,19 @@ import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -30,6 +37,8 @@ import java.util.ArrayList;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
+
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -177,8 +186,87 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item == menuItemLockUnlock)
-            this.switchLock();
+        if(item == menuItemLockUnlock) {
+
+            LayoutInflater li = this.getLayoutInflater();
+            View promptsView = li.inflate(R.layout.password_prompts, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    MainActivity.this);
+            alertDialogBuilder.setView(promptsView);
+            final EditText editPassword = (EditText) promptsView
+                    .findViewById(R.id.editPassword);
+            final TextView textBadPassword = (TextView) promptsView
+                    .findViewById(R.id.textBadPassword);
+            textBadPassword.setVisibility(View.INVISIBLE);
+
+            alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK", null /*set after*/)
+                .setNegativeButton("Cancel",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+            final AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    // Need to show keyboard because HomeKeyLocker.lock() hide
+                    InputMethodManager imm = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editPassword, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+
+            // Set type alert dialog because HomeKeyLocker.lock() hide keyboard
+            alertDialog.getWindow().setType(TYPE_SYSTEM_ERROR);
+
+            alertDialog.show();
+
+            // Ok Button
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String password = editPassword.getText().toString();
+                    boolean closeDialog = false;
+
+                    // Already locked
+                    if(isLocked){
+                        // Check if good password
+                        if(PrefUtils.checkPassword(password, getApplicationContext())) {
+                            switchLock();
+                            closeDialog = true;
+                        }
+                        // Bad password
+                        else{
+                            editPassword.setText("");
+                            textBadPassword.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    // Not locked
+                    else{
+                        // Save good password
+                        PrefUtils.setPassword(password, getApplicationContext());
+                        switchLock();
+                        closeDialog = true;
+                    }
+
+                    if(closeDialog) {
+                        // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                        InputMethodManager imm = (InputMethodManager)
+                                getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editPassword.getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+
+                        alertDialog.cancel();
+                    }
+                }
+            });
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
