@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Home Key Locker
         homeKeyLocker = new HomeKeyLocker();
-        isLocked = false;
+        isLocked = PrefUtils.isLocked(this);
         checkDrawOverlayPermission();
 
         this.viewerFragment = new ViewerFragment();
@@ -101,10 +101,14 @@ public class MainActivity extends AppCompatActivity {
         else
             homeKeyLocker.unlock();
 
+        updateLockIcon();
+    }
+
+    public void updateLockIcon(){
         // Set icon
         if(this.menuItemLockUnlock != null){
-            Drawable icon = null;
-            if(locked)
+            Drawable icon;
+            if(this.isLocked)
                 icon = ContextCompat.getDrawable(this, R.mipmap.ic_docs_locked);
             else
                 icon = ContextCompat.getDrawable(this, R.mipmap.ic_docs_unlocked);
@@ -178,10 +182,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        // Get menu and itemLock
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.lock_menu, menu);
         this.menu = menu;
         this.menuItemLockUnlock = menu.getItem(0);
+
+        // Update item lock icon
+        updateLockIcon();
         return true;
     }
 

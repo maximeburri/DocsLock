@@ -9,6 +9,11 @@ public class PrefUtils {
     private static final String PREF_KIOSK_MODE = "pref_is_locked";
     private static final String PREF_PASSWORD = "pref_password";
 
+    public static void resetSettings(final Context context) {
+        setLock(false, context);
+        setPassword("", context);
+    }
+
     public static boolean isLocked(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(PREF_KIOSK_MODE, false);
