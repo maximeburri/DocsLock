@@ -1,15 +1,19 @@
 package ch.burci.docslock.controllers;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -28,7 +32,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import ch.burci.docslock.R;
@@ -39,10 +43,10 @@ import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 
 
 public class MainActivity extends AppCompatActivity {
+
     // ---------------------------------------------------------------
     // Fields  -------------------------------------------------------
     // ---------------------------------------------------------------
@@ -61,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem menuItemLockUnlock;
     private Menu menu;
 
-    public final static int REQUEST_CODE = 1;
+    public final static int REQUEST_CODE_PERMISSION_OVERLAY = 1;
+    private static final int REQUEST_CODE_PERMISSION_READ = 2;
+    private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
         //read list pdf in assets and create ArrayList of PDF
         this.mainModel = new MainModel();
-        this.listPDFs = readPDFs("pdf");
-        this.mainModel.setPdfs(this.listPDFs);
+        updatePdfsList();
 
-        //creat container and commit de currentFragment
+        //create container and commit de currentFragment
         this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfAlarm
         this.currentFragment = this.listFragment; //first currentFragment open is listOfAlarm
         this.commitFragmentTransaction(false);
@@ -84,9 +89,17 @@ public class MainActivity extends AppCompatActivity {
         // Home Key Locker
         homeKeyLocker = new HomeKeyLocker();
         isLocked = PrefUtils.isLocked(this);
+
+        // Permission
         checkDrawOverlayPermission();
+        checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
+    }
+
+    private void updatePdfsList() {
+        this.listPDFs = readPDFs();
+        this.mainModel.setPdfs(this.listPDFs);
     }
 
     protected void setLock(boolean locked){
@@ -128,20 +141,45 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CODE_PERMISSION_OVERLAY);
             return false;
         }
         return true;
     }
 
+    public void checkReadWriteFilesPermission(){
+        // Check read
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_DENIED){
+            Log.d("MainActivity", "checkSelfPermission READ false");
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_CODE_PERMISSION_READ);
+        }
+
+        // Check write
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_DENIED){
+            Log.d("MainActivity", "checkSelfPermission WRITE false");
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_CODE_PERMISSION_WRITE);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
         // Check overlay permission to fix #18
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_PERMISSION_OVERLAY) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
                 Log.d("MainActivity", "permission was granted");
             }
         }
+        // Update PDF list if write/read permission is granted
+        if (requestCode == REQUEST_CODE_PERMISSION_WRITE ||
+                requestCode == REQUEST_CODE_PERMISSION_READ)
+            updatePdfsList();
+
     }
 
     protected void switchLock(){
@@ -162,19 +200,28 @@ public class MainActivity extends AppCompatActivity {
     /***
      * @desc Method to read all pdf and create List of pdf
      */
-    public ArrayList<PDFModel> readPDFs(String path) {
+    public ArrayList<PDFModel> readPDFs() {
         ArrayList<PDFModel> result = new ArrayList<PDFModel>();
-        String[] listAssets;
-        try {
-            listAssets = getAssets().list(path);
-            if (listAssets.length > 0) {
-                for (String fileName : listAssets) {
-                    PDFModel pdf = new PDFModel(R.mipmap.ic_pdf, fileName);
-                    result.add(pdf);
-                }
+        File[] listAssets;
+
+        // Folder to external storage DocsLock
+        File pdfsFolder = new File(
+                Environment.getExternalStorageDirectory().getAbsolutePath(),
+                "DocsLock"
+        );
+
+        // Create folder
+        if (!pdfsFolder.mkdirs()) {
+            Log.e("Pdfs", "Directory not created");
+        }
+
+        // List pdf files
+        listAssets = pdfsFolder.listFiles();
+        if (listAssets != null && listAssets.length > 0) {
+            for (File file : listAssets) {
+                PDFModel pdf = new PDFModel(R.mipmap.ic_pdf, file.getName());
+                result.add(pdf);
             }
-        } catch (IOException e) {
-            Toast.makeText(this, "No pdf", Toast.LENGTH_LONG).show();
         }
         return result;
     }
