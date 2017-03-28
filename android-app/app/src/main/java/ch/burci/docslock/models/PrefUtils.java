@@ -37,4 +37,8 @@ public class PrefUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(PREF_PASSWORD, null);
     }
+
+    public static String getFilesFolderName() {
+        return "DocsLock";
+    }
 }

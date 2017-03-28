@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         // Folder to external storage DocsLock
         File pdfsFolder = new File(
                 Environment.getExternalStorageDirectory().getAbsolutePath(),
-                "DocsLock"
+                PrefUtils.getFilesFolderName()
         );
 
         // Create folder

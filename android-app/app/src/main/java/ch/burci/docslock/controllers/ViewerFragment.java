@@ -1,6 +1,7 @@
 package ch.burci.docslock.controllers;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,9 +16,11 @@ import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.shockwave.pdfium.PdfDocument;
 
+import java.io.File;
 import java.util.List;
 
 import ch.burci.docslock.R;
+import ch.burci.docslock.models.PrefUtils;
 
 
 import static android.content.ContentValues.TAG;
@@ -31,20 +34,23 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
     private View rootView;
     private String pdfName;
     PDFView pdfView;
-    public static final String DIRECTORY_PDF = "pdf";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rootView = inflater.inflate(R.layout.pdf_viewer_fragment, container, false);
         this.pdfView = (PDFView) this.rootView.findViewById(R.id.pdfView);
-        displayFromAsset(DIRECTORY_PDF+"/"+this.pdfName);
+        displayFromFile(
+                new File(
+                    Environment.getExternalStorageDirectory().getAbsolutePath(),
+                    PrefUtils.getFilesFolderName() + "/" + this.pdfName
+                )
+        );
         return rootView;
-
     }
 
-    private void displayFromAsset(String assetFileName) {
-        pdfView.fromAsset(assetFileName)
+    private void displayFromFile(File file) {
+        pdfView.fromFile(file)
                 .onPageChange(this)
                 .enableAnnotationRendering(true)
                 .onLoad(this)
