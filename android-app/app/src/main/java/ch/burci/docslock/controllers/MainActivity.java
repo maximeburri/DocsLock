@@ -1,6 +1,8 @@
 package ch.burci.docslock.controllers;
 
 import android.Manifest;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,11 +24,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -33,6 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 import ch.burci.docslock.R;
@@ -73,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Disable simple press on shutdown button
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         //read list pdf in assets and create ArrayList of PDF
@@ -95,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
+
+        // Disable status bar expansion
+        preventStatusBarExpansion(this);
     }
 
     private void updatePdfsList() {
@@ -113,6 +126,17 @@ public class MainActivity extends AppCompatActivity {
             homeKeyLocker.lock(this);
         else
             homeKeyLocker.unlock();
+
+        // Disable simple press on shutdown button
+        if(locked) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
 
         updateLockIcon();
     }
@@ -195,6 +219,14 @@ public class MainActivity extends AppCompatActivity {
             timer.purge();
             timer = null;
         }
+
+        // Hide status bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        if(actionBar != null)
+            actionBar.hide();
     }
 
     /***
@@ -373,11 +405,15 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        // Disable long power button press if locked
         if(!hasFocus && this.isLocked) {
+            // Disable long power button press if locked
             // Close every kind of system dialog
             Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             sendBroadcast(closeDialog);
+
+            // Close status bar
+            Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            this.getApplicationContext().sendBroadcast(it);
         }
     }
 
@@ -426,6 +462,49 @@ public class MainActivity extends AppCompatActivity {
                     .getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.moveTaskToFront(getTaskId(), 0);
         }
+    }
+
+    public static void preventStatusBarExpansion(Context context) {
+        WindowManager manager = ((WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE));
+
+        Activity activity = (Activity)context;
+        WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
+        localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        localLayoutParams.gravity = Gravity.TOP;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
+
+                // this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+
+                // Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+
+        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //http://stackoverflow.com/questions/1016896/get-screen-dimensions-in-pixels
+        int resId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int result = 0;
+        if (resId > 0) {
+            result = activity.getResources().getDimensionPixelSize(resId);
+        }
+
+        localLayoutParams.height = result;
+
+        localLayoutParams.format = PixelFormat.TRANSPARENT;
+
+        ViewGroup view = new ViewGroup(context) {
+            @Override
+            protected void onLayout(boolean changed, int l, int t, int r, int b) {
+            }
+
+            @Override
+            public boolean onInterceptTouchEvent(MotionEvent ev) {
+                Log.v("customViewGroup", "**********Intercepted");
+                return true;
+            }
+        };
+
+        manager.addView(view, localLayoutParams);
     }
 
     // ---------------------------------------------------------------
