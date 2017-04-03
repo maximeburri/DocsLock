@@ -8,14 +8,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@mipmap/ic_pdf"
+        android:layout_alignParentLeft="true"
         android:id="@+id/imgPDF"
-        android:layout_weight="0.18" />
+        android:padding="5dp"
+       />
 
     <TextView
         android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="left|center_vertical"
         android:id="@+id/txtPDFName"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingBottom="3dp"
+        android:paddingTop="10dp"/>
 </LinearLayout>
