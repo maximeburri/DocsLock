@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSION_READ = 2;
     private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
 
+    // For statusBarExpension
+    private WindowManager.LayoutParams localLayoutParams;
+    private View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
         checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
-
-        // Disable status bar expansion
-        preventStatusBarExpansion(this);
     }
 
     private void updatePdfsList() {
@@ -137,7 +138,10 @@ public class MainActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        // Disable status bar expansion
+        lockStatusBarExpension(locked, this);
 
+        // Update icon list
         updateLockIcon();
     }
 
@@ -464,15 +468,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void preventStatusBarExpansion(Context context) {
-        WindowManager manager = ((WindowManager) context.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE));
-
+    public void initStatusBarExansion(Context context){
         Activity activity = (Activity)context;
-        WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
-        localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        localLayoutParams.gravity = Gravity.TOP;
-        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
+        this.localLayoutParams = new WindowManager.LayoutParams();
+        this.localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        this.localLayoutParams.gravity = Gravity.TOP;
+        this.localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
 
                 // this is to enable the notification to recieve touch events
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
@@ -480,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
                 // Draws over status bar
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
-        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        this.localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         //http://stackoverflow.com/questions/1016896/get-screen-dimensions-in-pixels
         int resId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int result = 0;
@@ -488,11 +489,11 @@ public class MainActivity extends AppCompatActivity {
             result = activity.getResources().getDimensionPixelSize(resId);
         }
 
-        localLayoutParams.height = result;
+        this.localLayoutParams.height = result;
 
-        localLayoutParams.format = PixelFormat.TRANSPARENT;
+        this.localLayoutParams.format = PixelFormat.TRANSPARENT;
 
-        ViewGroup view = new ViewGroup(context) {
+        this.view = new ViewGroup(context) {
             @Override
             protected void onLayout(boolean changed, int l, int t, int r, int b) {
             }
@@ -500,11 +501,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onInterceptTouchEvent(MotionEvent ev) {
                 Log.v("customViewGroup", "**********Intercepted");
-                return true;
+                return false;
             }
         };
+    }
 
-        manager.addView(view, localLayoutParams);
+    public void lockStatusBarExpension(boolean lock, Context context){
+        if(this.localLayoutParams == null || view == null) {
+            initStatusBarExansion(this);
+        }
+
+        WindowManager manager = ((WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE));
+
+        if(lock)
+            manager.addView(this.view, this.localLayoutParams);
+        else
+            manager.removeView(this.view);
     }
 
     // ---------------------------------------------------------------
