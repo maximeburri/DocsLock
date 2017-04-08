@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void goToPdf(PDFModel pdf){
-        this.viewerFragment.setPDFName(pdf.getPdfName());
+    public void goToPdf(String pdfName){
+        this.viewerFragment.setPDFName(pdfName);
         this.currentFragment = this.viewerFragment;
         this.commitFragmentTransaction();
     }

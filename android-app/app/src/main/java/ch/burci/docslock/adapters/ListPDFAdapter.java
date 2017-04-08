@@ -22,11 +22,10 @@ import ch.burci.docslock.models.PDFModel;
 
 public class ListPDFAdapter extends BaseAdapter {
 
-    static class PDFbox {
-        ImageView imgPDF;
-        TextView txtPDFName;
-
-        Integer positionBox;
+    public static class PDFbox {
+        public ImageView imgPDF;
+        public TextView txtPDFName;
+        public Integer positionBox;
     }
 
     // Fields  -------------------------------------------------------
@@ -92,15 +91,6 @@ public class ListPDFAdapter extends BaseAdapter {
             //set values in component
             this.pdfBox.txtPDFName.setText(pdf.getPdfName());
             this.pdfBox.imgPDF.setImageResource(pdf.getIconRes());
-
-            this.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                mainActivity.goToPdf(pdf);
-                }
-            });
-
-
         }
 
         return this.view;

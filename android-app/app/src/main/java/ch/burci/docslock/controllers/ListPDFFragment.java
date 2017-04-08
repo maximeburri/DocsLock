@@ -6,11 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import ch.burci.docslock.R;
 import ch.burci.docslock.adapters.ListPDFAdapter;
 import ch.burci.docslock.models.MainModel;
+import ch.burci.docslock.models.PDFModel;
 
 import android.support.v4.app.Fragment;
 
@@ -24,12 +26,14 @@ public class ListPDFFragment extends Fragment {
     private MainModel mainModel;
     private ListPDFAdapter listPdfAdapter;
     private ListView listViewPDF;
+    private MainActivity mainActivity;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rootView = inflater.inflate(R.layout.liste_pdf_fragment, container, false);
         this.listViewPDF = (ListView) this.rootView.findViewById(R.id.listPDF);
+        this.mainActivity = (MainActivity) inflater.getContext();
         return rootView;
     }
 
@@ -53,6 +57,14 @@ public class ListPDFFragment extends Fragment {
 
             //add adapter to list
             this.listViewPDF.setAdapter(this.listPdfAdapter);
+
+            this.listViewPDF.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                    ListPDFAdapter.PDFbox pdf = (ListPDFAdapter.PDFbox) view.getTag();
+                    mainActivity.goToPdf((String) pdf.txtPDFName.getText());
+                }
+            });
 
         }catch(Exception e){}
     }
