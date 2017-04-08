@@ -1,6 +1,7 @@
 package ch.burci.docslock.controllers;
 
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,9 +13,6 @@ import android.widget.ListView;
 import ch.burci.docslock.R;
 import ch.burci.docslock.adapters.ListPDFAdapter;
 import ch.burci.docslock.models.MainModel;
-import ch.burci.docslock.models.PDFModel;
-
-import android.support.v4.app.Fragment;
 
 /**
  * Created by ciccius on 13/03/17.

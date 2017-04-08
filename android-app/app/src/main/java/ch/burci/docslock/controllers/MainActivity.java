@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,13 +19,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -133,12 +133,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Disable status bar expension
-        if(locked) {
+        if(locked)
             StatusBarExpansionLocker.lock(this);
-        }
-        else {
+        else
             StatusBarExpansionLocker.unlock(this);
-        }
 
         // Update icon list
         updateLockIcon();
@@ -382,7 +380,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void commitFragmentTransaction(boolean addToBackStack){
         // Commit the currentFragment transaction
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if(addToBackStack)
+            ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                    R.anim.fragment_slide_left_exit,
+                    R.anim.fragment_slide_right_enter,
+                    R.anim.fragment_slide_right_exit);
         ft.replace(R.id.container, this.currentFragment);
         if(addToBackStack)
             ft.addToBackStack(currentFragment.getClass().getName());
@@ -396,10 +399,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d("MainActivity", "back pressed");
-        Log.d("MainActivity::c",""+ getSupportFragmentManager().getBackStackEntryCount());
+        Log.d("MainActivity::c",""+ getFragmentManager().getBackStackEntryCount());
 
         // If not locked, or if not the last backlstackentry : go back
-        if(!this.isLocked || getSupportFragmentManager().getBackStackEntryCount() > 0)
+        if(!this.isLocked || getFragmentManager().getBackStackEntryCount() > 0)
             super.onBackPressed();
     }
 
