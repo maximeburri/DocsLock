@@ -18,16 +18,16 @@ import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
  * Created by shaobin on 2014/3/22.
  */
 public class HomeKeyLocker {
-    private OverlayDialog mOverlayDialog;
+    private static OverlayDialog mOverlayDialog;
 
-    public void lock(Activity activity) {
+    public static void lock(Activity activity) {
         if (mOverlayDialog == null) {
             mOverlayDialog = new OverlayDialog(activity);
             mOverlayDialog.show();
         }
     }
 
-    public void unlock() {
+    public static void unlock() {
         if (mOverlayDialog != null) {
             mOverlayDialog.dismiss();
             mOverlayDialog = null;

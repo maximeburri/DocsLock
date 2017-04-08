@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
+import ch.burci.docslock.models.StatusBarExpansionLocker;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
@@ -65,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewerFragment viewerFragment;
     private MainModel mainModel;
 
-    private HomeKeyLocker homeKeyLocker;
-
     Timer timer;
     TaskCheckApplicationInFront myTimerTask;
 
@@ -77,10 +76,6 @@ public class MainActivity extends AppCompatActivity {
     public final static int REQUEST_CODE_PERMISSION_OVERLAY = 1;
     private static final int REQUEST_CODE_PERMISSION_READ = 2;
     private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
-
-    // For statusBarExpension
-    private WindowManager.LayoutParams localLayoutParams;
-    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +95,7 @@ public class MainActivity extends AppCompatActivity {
         this.currentFragment = this.listFragment; //first currentFragment open is listOfAlarm
         this.commitFragmentTransaction(false);
 
-        // Home Key Locker
-        homeKeyLocker = new HomeKeyLocker();
+        // Check if is locked
         isLocked = PrefUtils.isLocked(this);
 
         // Permission
@@ -124,9 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Lock/unlock home key screen
         if(locked)
-            homeKeyLocker.lock(this);
+            HomeKeyLocker.lock(this);
         else
-            homeKeyLocker.unlock();
+            HomeKeyLocker.unlock();
 
         // Disable simple press on shutdown button
         if(locked) {
@@ -138,8 +132,13 @@ public class MainActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-        // Disable status bar expansion
-        lockStatusBarExpension(locked, this);
+        // Disable status bar expension
+        if(locked) {
+            StatusBarExpansionLocker.lock(this);
+        }
+        else {
+            StatusBarExpansionLocker.unlock(this);
+        }
 
         // Update icon list
         updateLockIcon();
@@ -466,58 +465,6 @@ public class MainActivity extends AppCompatActivity {
                     .getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.moveTaskToFront(getTaskId(), 0);
         }
-    }
-
-    public void initStatusBarExansion(Context context){
-        Activity activity = (Activity)context;
-        this.localLayoutParams = new WindowManager.LayoutParams();
-        this.localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        this.localLayoutParams.gravity = Gravity.TOP;
-        this.localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|
-
-                // this is to enable the notification to recieve touch events
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
-
-                // Draws over status bar
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-
-        this.localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        //http://stackoverflow.com/questions/1016896/get-screen-dimensions-in-pixels
-        int resId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int result = 0;
-        if (resId > 0) {
-            result = activity.getResources().getDimensionPixelSize(resId);
-        }
-
-        this.localLayoutParams.height = result;
-
-        this.localLayoutParams.format = PixelFormat.TRANSPARENT;
-
-        this.view = new ViewGroup(context) {
-            @Override
-            protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            }
-
-            @Override
-            public boolean onInterceptTouchEvent(MotionEvent ev) {
-                Log.v("customViewGroup", "**********Intercepted");
-                return false;
-            }
-        };
-    }
-
-    public void lockStatusBarExpension(boolean lock, Context context){
-        if(this.localLayoutParams == null || view == null) {
-            initStatusBarExansion(this);
-        }
-
-        WindowManager manager = ((WindowManager) context.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE));
-
-        if(lock)
-            manager.addView(this.view, this.localLayoutParams);
-        else
-            manager.removeView(this.view);
     }
 
     // ---------------------------------------------------------------
