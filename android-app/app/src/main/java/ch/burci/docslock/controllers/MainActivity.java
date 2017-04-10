@@ -382,10 +382,10 @@ public class MainActivity extends AppCompatActivity {
         // Commit the currentFragment transaction
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         if(addToBackStack)
-            ft.setCustomAnimations(R.anim.fragment_slide_left_enter,
-                    R.anim.fragment_slide_left_exit,
-                    R.anim.fragment_slide_right_enter,
-                    R.anim.fragment_slide_right_exit);
+            ft.setCustomAnimations(R.animator.fragment_slide_left_enter,
+                    R.animator.fragment_slide_left_exit,
+                    R.animator.fragment_slide_right_enter,
+                    R.animator.fragment_slide_right_exit);
         ft.replace(R.id.container, this.currentFragment);
         if(addToBackStack)
             ft.addToBackStack(currentFragment.getClass().getName());
