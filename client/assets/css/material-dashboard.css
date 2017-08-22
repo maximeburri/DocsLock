@@ -495,7 +495,7 @@ h2.title {
 }
 .sidebar .logo-img img,
 .off-canvas-sidebar .logo-img img {
-  width: 35px;
+  width: 170px;
   top: 16px;
   position: absolute;
 }
@@ -573,7 +573,7 @@ h2.title {
 .sidebar .logo,
 .off-canvas-sidebar .logo {
   position: relative;
-  padding: 15px 15px;
+  padding: 20px 15px;
   z-index: 4;
 }
 .sidebar .logo:after,
