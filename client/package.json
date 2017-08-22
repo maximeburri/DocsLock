@@ -5,7 +5,8 @@
     "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
     "lite": "lite-server",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "build-css" : "node-sass --include-path assets/sass assets/sass/material-dashboard.scss assets/css/material-dashboard.css"
   },
   "license":"MIT",
   "repository": {
