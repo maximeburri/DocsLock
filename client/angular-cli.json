@@ -28,7 +28,8 @@
           "../node_modules/arrive/src/arrive.js",
           "../node_modules/moment/moment.js",
           "../node_modules/bootstrap-notify/bootstrap-notify.js",
-          "../node_modules/chartist/dist/chartist.js"
+          "../node_modules/chartist/dist/chartist.js",
+          "../node_modules/sails.io.js/dist/sails.io.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

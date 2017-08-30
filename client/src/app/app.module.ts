@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { DevicesComponent } from './devices/devices.component';
 import { FilesComponent } from './files/files.component';
+import {SailsModule} from "angular2-sails";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { FilesComponent } from './files/files.component';
     HttpModule,
     ComponentsModule,
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SailsModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
