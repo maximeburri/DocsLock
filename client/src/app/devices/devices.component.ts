@@ -20,13 +20,7 @@ export class DevicesComponent implements OnInit {
                 t => console.log("Connected"),
                 e => console.error(e)
             );
-
-        io.socket.get('/device', function(data, jwr) {
-            io.socket.on('new_entry', function(entry) {
-            });
-        });
-
-
+        
         /* device : 
         {
                 "id" : 1,
@@ -37,8 +31,22 @@ export class DevicesComponent implements OnInit {
         */
         this._sailsService.get("/device").subscribe(
             devices => this.devices = devices.data,
-            error => console.error(error),
-            () => console.warn("complete")
+            error => console.error(error)
+        );
+
+        this._sailsService.on("device").subscribe(
+            deviceChange => {
+                console.log(deviceChange)
+                if(deviceChange.verb){
+                    switch(deviceChange.verb) {
+                        case "created" :
+                            this.devices.push(deviceChange.data)
+                        break;
+                    }
+                }
+                
+            },
+            error => console.error(error)
         );
     }
 }
