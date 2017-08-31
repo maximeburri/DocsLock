@@ -46,7 +46,7 @@
                                     </tr>
                                 </thead>    
                                 <tbody>
-                                    <tr *ngFor="let device of devices">
+                                    <tr *ngFor="let device of devices" [@rowState]="device.rowState">
                                         <td>
                                             <div class="checkbox">
                                                 <label>

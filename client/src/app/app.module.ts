@@ -12,7 +12,8 @@ import { AppComponent } from './app.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { DevicesComponent } from './devices/devices.component';
 import { FilesComponent } from './files/files.component';
-import {SailsModule} from "angular2-sails";
+import { SailsModule } from "angular2-sails";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {SailsModule} from "angular2-sails";
     ComponentsModule,
     RouterModule,
     AppRoutingModule,
-    SailsModule.forRoot()
+    SailsModule.forRoot(),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

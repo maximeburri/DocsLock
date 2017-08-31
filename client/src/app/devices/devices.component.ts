@@ -1,11 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { SailsService } from "angular2-sails";
-declare var io;
+import {
+    trigger,
+    state,
+    style,
+    animate,
+    transition
+} from '@angular/animations';
 
 @Component({
     selector: 'devices-cmp',
     templateUrl: './devices.component.html',
-    styleUrls: ['./devices.component.css']
+    styleUrls: ['./devices.component.css'],
+    animations: [
+        trigger('rowState', [
+            state('new',
+                style({})
+            ),
+            transition('void => new', 
+                animate('100ms ease-in', style({
+                    backgroundColor: '#eee',
+                    transform: 'scale(1.3)'
+              }))
+            )
+        ])
+    ]
 })
 
 export class DevicesComponent implements OnInit {
@@ -20,7 +39,7 @@ export class DevicesComponent implements OnInit {
                 t => console.log("Connected"),
                 e => console.error(e)
             );
-        
+
         /* device : 
         {
                 "id" : 1,
@@ -37,14 +56,15 @@ export class DevicesComponent implements OnInit {
         this._sailsService.on("device").subscribe(
             deviceChange => {
                 console.log(deviceChange)
-                if(deviceChange.verb){
-                    switch(deviceChange.verb) {
-                        case "created" :
+                if (deviceChange.verb) {
+                    switch (deviceChange.verb) {
+                        case "created":
+                            deviceChange.data.rowState = "new";
                             this.devices.push(deviceChange.data)
-                        break;
+                            break;
                     }
                 }
-                
+
             },
             error => console.error(error)
         );
