@@ -5,9 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-module.exports = {
-    create: function (req, res) {
-
+     /*create: function (req, res) {
         let mac = req.param('mac');
 
         if (!mac) {
@@ -21,6 +19,9 @@ module.exports = {
 
             return res.ok(_device);
         }).catch(err => res.serverError(err.message));
-    }
+    }*/
+    
+module.exports = {
+
 };
 

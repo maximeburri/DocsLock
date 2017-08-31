@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
 
-    mac : { type: 'string' }
+    mac : { type: 'string', required : true }
   }
 };
 
