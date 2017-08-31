@@ -48,7 +48,7 @@ export class DevicesComponent implements OnInit {
                 "mac" : "AA::BB::CC::DD::EE"
         }
         */
-        this._sailsService.get("/device").subscribe(
+        this._sailsService.get("/device?limit=0").subscribe(
             devices => this.devices = devices.data,
             error => console.error(error)
         );
