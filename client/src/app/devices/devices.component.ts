@@ -17,11 +17,11 @@ import {
             state('new',
                 style({})
             ),
-            transition('void => new', 
+            transition('void => new',
                 animate('100ms ease-in', style({
                     backgroundColor: '#eee',
                     transform: 'scale(1.3)'
-              }))
+                }))
             )
         ])
     ]
@@ -36,8 +36,8 @@ export class DevicesComponent implements OnInit {
         this._sailsService
             .connect("http://127.0.0.1:1337")
             .subscribe(
-                t => console.log("Connected"),
-                e => console.error(e)
+            t => console.log("Connected"),
+            e => console.error(e)
             );
 
         /* device : 
@@ -57,6 +57,7 @@ export class DevicesComponent implements OnInit {
             deviceChange => {
                 console.log(deviceChange)
                 if (deviceChange.verb) {
+                    // Switch for device change action
                     switch (deviceChange.verb) {
                         case "created":
                             deviceChange.data.rowState = "new";
@@ -64,16 +65,27 @@ export class DevicesComponent implements OnInit {
                             break;
                         case "updated":
                             deviceChange.data.rowState = "new";
-                            Object.assign(this.devices.find((device) => device.id == deviceChange.id), deviceChange.data);
-                        break;
+                            Object.assign(
+                                this.getDeviceById(deviceChange.id),
+                                deviceChange.data
+                            );
+                            break;
                         case "destroyed":
-                            // Destroy
-                        break;
+                            this.devices = this.devices.filter(
+                                (device) => device.id != deviceChange.id
+                            );
+                            break;
                     }
                 }
 
             },
             error => console.error(error)
         );
+    }
+
+    private getDeviceById(id: number) {
+        return this.devices.find(
+            (device) => device.id == id
+        )
     }
 }
