@@ -60,8 +60,15 @@ export class DevicesComponent implements OnInit {
                     switch (deviceChange.verb) {
                         case "created":
                             deviceChange.data.rowState = "new";
-                            this.devices.push(deviceChange.data)
+                            this.devices.push(deviceChange.data);
                             break;
+                        case "updated":
+                            deviceChange.data.rowState = "new";
+                            Object.assign(this.devices.find((device) => device.id == deviceChange.id), deviceChange.data);
+                        break;
+                        case "destroyed":
+                            // Destroy
+                        break;
                     }
                 }
 
