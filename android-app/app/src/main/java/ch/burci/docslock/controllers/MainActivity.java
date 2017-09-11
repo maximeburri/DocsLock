@@ -9,6 +9,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,10 +41,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import ch.burci.docslock.DocsLockClient;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
 import java.util.ArrayList;
@@ -51,7 +56,13 @@ import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 import ch.burci.docslock.models.StatusBarExpansionLocker;
-
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import ch.burci.docslock.Device;
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
 
@@ -79,6 +90,39 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /** TEST retrofit */
+        String API_BASE_URL = "http://192.168.1.102:1337/";
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        Retrofit.Builder builder =
+                new Retrofit.Builder()
+                        .baseUrl(API_BASE_URL)
+                        .addConverterFactory(
+                                GsonConverterFactory.create()
+                        );
+
+        Retrofit retrofit =
+                builder
+                        .client(
+                                httpClient.build()
+                        )
+                        .build();
+
+        DocsLockClient client =  retrofit.create(DocsLockClient.class);
+        client.getDevices().enqueue(new Callback<List<Device>>() {
+            @Override
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                return; // Breakpoint here to prove that's okay
+            }
+
+            @Override
+            public void onFailure(Call<List<Device>> call, Throwable t) {
+
+            }
+        });
+        /* End of test*/
+
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
