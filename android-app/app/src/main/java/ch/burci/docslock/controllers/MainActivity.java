@@ -48,7 +48,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.burci.docslock.Config;
 import ch.burci.docslock.DocsLockClient;
+import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
 import java.util.ArrayList;
@@ -90,40 +92,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        /** TEST retrofit */
-        String API_BASE_URL = "http://192.168.1.102:1337/";
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        Retrofit.Builder builder =
-                new Retrofit.Builder()
-                        .baseUrl(API_BASE_URL)
-                        .addConverterFactory(
-                                GsonConverterFactory.create()
-                        );
-
-        Retrofit retrofit =
-                builder
-                        .client(
-                                httpClient.build()
-                        )
-                        .build();
-
-        DocsLockClient client =  retrofit.create(DocsLockClient.class);
-        client.getDevices().enqueue(new Callback<List<Device>>() {
-            @Override
-            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                return; // Breakpoint here to prove that's okay
-            }
-
-            @Override
-            public void onFailure(Call<List<Device>> call, Throwable t) {
-
-            }
-        });
-        /* End of test*/
-
         super.onCreate(savedInstanceState);
+
+        DocsLockService.init(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

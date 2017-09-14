@@ -8,6 +8,7 @@ import android.util.Log;
 public class PrefUtils {
     private static final String PREF_KIOSK_MODE = "pref_is_locked";
     private static final String PREF_PASSWORD = "pref_password";
+    private static final String PREF_DEVICE_ID = "device_id";
 
     public static void resetSettings(final Context context) {
         setLock(false, context);
@@ -40,5 +41,19 @@ public class PrefUtils {
 
     public static String getFilesFolderName() {
         return "DocsLock";
+    }
+
+    public static boolean isDeviceIdExists(final Context context) {
+        return getDeviceId(context) == null;
+    }
+
+    public static String getDeviceId(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(PREF_DEVICE_ID, null);
+    }
+
+    public static void setDeviceId(String id, final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(PREF_DEVICE_ID, id).commit();
     }
 }
