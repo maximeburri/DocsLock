@@ -3,7 +3,10 @@ package ch.burci.docslock;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
@@ -13,4 +16,8 @@ import retrofit2.http.Path;
 public interface DocsLockClient {
     @GET("/device")
     Call<List<Device>> getDevices();
+
+    @FormUrlEncoded
+    @POST("/device")
+    Call<Device> createDevice(@Field("mac") String mac);
 }
