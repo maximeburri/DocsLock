@@ -42,6 +42,7 @@
                                         <th>Type</th>
                                         <th>ID</th>
                                         <th>Mac</th>
+                                        <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>    
@@ -59,6 +60,10 @@
                                         </td>
                                         <td>{{ device.id }}</td>
                                         <td>{{ device.mac }}</td>
+                                        <td>
+                                            <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
+                                            <i class="material-icons" *ngIf="!device.isActive">pause</i>
+                                        </td>
                                         <td class="td-actions text-right">
                                             <button type="button" rel="tooltip" title="Edit Task" class="btn btn-simple btn-xs">
                                                 <i class="material-icons">edit</i>

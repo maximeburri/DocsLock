@@ -58,7 +58,7 @@ public class DocsLockService {
 
     // Create device on server
     private static void createDevice(final Context context){
-        client.createDevice(getWifiMacAddress()).enqueue(new Callback<Device>() {
+        client.createDevice(getWifiMacAddress(), true).enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
                setDeviceId(context, response.body().getId());
@@ -73,7 +73,18 @@ public class DocsLockService {
 
     // Set state oh device on server (isActive)
     public static void setStateDevice( Boolean state){
-        client.setStateDevice(state);
+        if(deviceId == null) return;
+        client.setStateDevice(deviceId, state).enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                Log.d("DocsLockService", "status changed");
+            }
+
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
+                Log.e("DocsLockService", t.getMessage());
+            }
+        });
     }
 
 

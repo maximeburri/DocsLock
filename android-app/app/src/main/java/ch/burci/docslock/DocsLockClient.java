@@ -7,6 +7,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -19,9 +20,9 @@ public interface DocsLockClient {
 
     @FormUrlEncoded
     @POST("/device")
-    Call<Device> createDevice(@Field("mac") String mac);
+    Call<Device> createDevice(@Field("mac") String mac, @Field("isActive") Boolean isActive);
 
     @FormUrlEncoded
-    @POST("/device")
-    Call<Device> setStateDevice(@Field("isActive") Boolean isActive);
+    @PUT("/device/{id}")
+    Call<Device> setStateDevice(@Path("id") String deviceId, @Field("isActive") Boolean isActive);
 }

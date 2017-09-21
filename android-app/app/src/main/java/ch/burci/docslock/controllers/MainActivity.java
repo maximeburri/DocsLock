@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         DocsLockService.init(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -245,14 +245,12 @@ public class MainActivity extends AppCompatActivity {
             actionBar.hide();
 
         //disable state on device
-        DocsLockService.setStateDevice(false);
+        DocsLockService.setStateDevice(true);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //disable state on device
-        DocsLockService.setStateDevice(true);
     }
 
     /***
@@ -478,6 +476,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onPause() {
+        DocsLockService.setStateDevice(false);
+
         if (timer == null && this.isLocked) {
             myTimerTask = new TaskCheckApplicationInFront();
             timer = new Timer();

@@ -11,8 +11,8 @@ public class PrefUtils {
     private static final String PREF_DEVICE_ID = "device_id";
 
     public static void resetSettings(final Context context) {
-        setLock(false, context);
-        setPassword("", context);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().clear().apply();
     }
 
     public static boolean isLocked(final Context context) {
