@@ -71,6 +71,11 @@ public class DocsLockService {
         });
     }
 
+    // Set state oh device on server (isActive)
+    public static void setStateDevice( Boolean state){
+        client.setStateDevice(state);
+    }
+
 
     private static void setDeviceId(Context context, String id){
         deviceId = id;
