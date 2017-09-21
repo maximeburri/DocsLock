@@ -243,6 +243,16 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getActionBar();
         if(actionBar != null)
             actionBar.hide();
+
+        //disable state on device
+        DocsLockService.setStateDevice(false);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //disable state on device
+        DocsLockService.setStateDevice(true);
     }
 
     /***

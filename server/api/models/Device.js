@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
 
-    mac : { type: 'string', required : true }
+    mac : { type: 'string', required : true },
+    isActive : {type:'boolean', required:true, defaultsTo:false}
   }
 };
 

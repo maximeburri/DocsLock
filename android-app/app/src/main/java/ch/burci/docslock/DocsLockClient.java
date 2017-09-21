@@ -20,4 +20,8 @@ public interface DocsLockClient {
     @FormUrlEncoded
     @POST("/device")
     Call<Device> createDevice(@Field("mac") String mac);
+
+    @FormUrlEncoded
+    @POST("/device")
+    Call<Device> setStateDevice(@Field("isActive") Boolean isActive);
 }
