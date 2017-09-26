@@ -1,13 +1,213 @@
-<div class="wrapper">
-    <div class="sidebar" data-color='green' data-image="">
-        <app-sidebar></app-sidebar>
-        <div class="sidebar-background" style="background-image: url(../assets/img/sidebar-4.jpg)"></div>
+<!--<md-sidenav-layout fullscreen>
+    <!--<md-sidenav #sidenav>
+      <md-nav-list>
+        <a md-list-item *ngFor="let view of views">
+          <md-icon md-list-icon>{{view.icon}}</md-icon>
+          <span md-line>{{view.name}}</span>
+          <span md-line class="secondary">{{view.description}}</span>
+        </a>
+      </md-nav-list>
+    </md-sidenav>
+    <md-toolbar color="primary">
+      <button md-icon-button (click)="sidenav.open()">
+        <md-icon>menu</md-icon>
+      </button>
+      Puppy Love
+      <button md-fab (click)="formShowing=!formShowing">
+        <md-icon>add</md-icon>
+      </button>
+    </md-toolbar>
+  
+    <div class="form" *ngIf="formShowing">
+      <md-card>
+        <md-card-title>Create your dog's profile</md-card-title>
+        <md-card-content>
+          <form>
+            <md-input placeholder="Name"></md-input>
+            <md-input placeholder="Favorite toy"></md-input>
+            <md-input placeholder="Description"></md-input>
+            <md-radio-group>
+              <md-radio-button value="Looking for love">Looking for love</md-radio-button>
+              <md-radio-button value="Just browsing">Just browsing</md-radio-button>
+            </md-radio-group>
+            <div>
+              <md-checkbox indeterminate="true">Is a good dog</md-checkbox>
+            </div>
+          </form>
+        </md-card-content>
+        <md-card-actions align="end">
+          <button md-raised-button color="accent">POST</button>
+        </md-card-actions>
+      </md-card>
     </div>
-    <div class="main-panel">
-        <app-navbar></app-navbar>
-        <router-outlet></router-outlet>
-        <div *ngIf="isMaps('maps')">
-            <app-footer></app-footer>
-        </div>
+  
+    <div class="card-container">
+      <md-card *ngFor="let dog of dogs">
+        <img md-card-image [alt]="dog.name" src="https://material.angularjs.org/material2_assets/ngconf/{{dog.name}}.png">
+        <md-card-title>{{dog.name}}</md-card-title>
+        <md-card-content class="secondary">
+          Very ipsum such dolor amet wow very divs very content concern, very much develop much spans
+          much layer so so scare such spans such padding many beta very layer much excuse.
+        </md-card-content>
+        <md-card-actions align="end">
+          <button md-button color="primary">SNIFF</button>
+          <button md-button color="primary">WOOF</button>
+        </md-card-actions>
+      </md-card>
     </div>
+  
+  </md-sidenav-layout>-->
+<md-toolbar>
+        <button md-icon-button [mdMenuTriggerFor]="menu">
+                <md-icon>more_vert</md-icon>
+              </button>
+              <md-menu #menu="mdMenu">
+                <button md-menu-item>
+                  <md-icon>dialpad</md-icon>
+                  <span>Redial</span>
+                </button>
+                <button md-menu-item disabled>
+                  <md-icon>voicemail</md-icon>
+                  <span>Check voicemail</span>
+                </button>
+                <button md-menu-item>
+                  <md-icon>notifications_off</md-icon>
+                  <span>Disable alerts</span>
+                </button>
+              </md-menu>
+              
+    <img height="50px" src="/assets/img/logo.png"/>
+</md-toolbar>
+
+<button md-button [mdMenuTriggerFor]="animals">Animal index</button>
+
+<md-menu #animals="mdMenu">
+  <button md-menu-item [mdMenuTriggerFor]="vertebrates">Vertebrates</button>
+  <button md-menu-item [mdMenuTriggerFor]="invertebrates">Invertebrates</button>
+</md-menu>
+
+<md-menu #vertebrates="mdMenu">
+  <button md-menu-item [mdMenuTriggerFor]="fish">Fishes</button>
+  <button md-menu-item [mdMenuTriggerFor]="amphibians">Amphibians</button>
+  <button md-menu-item [mdMenuTriggerFor]="reptiles">Reptiles</button>
+  <button md-menu-item>Birds</button>
+  <button md-menu-item>Mammals</button>
+</md-menu>
+
+<md-menu #invertebrates="mdMenu">
+  <button md-menu-item>Insects</button>
+  <button md-menu-item>Molluscs</button>
+  <button md-menu-item>Crustaceans</button>
+  <button md-menu-item>Corals</button>
+  <button md-menu-item>Arachnids</button>
+  <button md-menu-item>Velvet worms</button>
+  <button md-menu-item>Horseshoe crabs</button>
+</md-menu>
+
+<md-menu #fish="mdMenu">
+  <button md-menu-item>Baikal oilfish</button>
+  <button md-menu-item>Bala shark</button>
+  <button md-menu-item>Ballan wrasse</button>
+  <button md-menu-item>Bamboo shark</button>
+  <button md-menu-item>Banded killifish</button>
+</md-menu>
+
+<md-menu #amphibians="mdMenu">
+  <button md-menu-item>Sonoran desert toad</button>
+  <button md-menu-item>Western toad</button>
+  <button md-menu-item>Arroyo toad</button>
+  <button md-menu-item>Yosemite toad</button>
+</md-menu>
+
+<md-menu #reptiles="mdMenu">
+  <button md-menu-item>Banded Day Gecko</button>
+  <button md-menu-item>Banded Gila Monster</button>
+  <button md-menu-item>Black Tree Monitor</button>
+  <button md-menu-item>Blue Spiny Lizard</button>
+  <button md-menu-item disabled>Velociraptor</button>
+</md-menu>
+
+
+<div class="card-container">
+    <md-card class="example-card">
+
+        <md-card-header>
+            <div md-card-avatar>
+                <md-icon>home</md-icon>
+            </div>
+            <md-card-title>Shiba Inu</md-card-title>
+            <md-card-subtitle>Dog Breed</md-card-subtitle>
+        </md-card-header>
+        <md-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </md-card-content>
+        <md-card-actions>
+            <button md-button [mdMenuTriggerFor]="menu">Menu</button>
+            <md-menu #menu="mdMenu">
+                <button md-menu-item>Item 1</button>
+                <button md-menu-item>Item 2</button>
+            </md-menu>
+            <button md-button>SHARE</button>
+        </md-card-actions>
+    </md-card>
 </div>
+<div class="card-container">
+        <md-card class="example-card">
+    
+            <md-card-header>
+                <div md-card-avatar>
+                    <md-icon>home</md-icon>
+                </div>
+                <md-card-title>Shiba Inu</md-card-title>
+                <md-card-subtitle>Dog Breed</md-card-subtitle>
+            </md-card-header>
+            <md-card-content>
+                <p>
+                    The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                    very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+                </p>
+            </md-card-content>
+            <md-card-actions>
+                <button md-button>LIKE</button>
+                <button md-button>SHARE</button>
+            </md-card-actions>
+        </md-card>
+    </div>
+    <div class="card-container">
+            <md-card class="example-card">
+        
+                <md-card-header>
+                    <div md-card-avatar>
+                        <md-icon>home</md-icon>
+                    </div>
+                    <md-card-title>Shiba Inu</md-card-title>
+                    <md-card-subtitle>Dog Breed</md-card-subtitle>
+                </md-card-header>
+                <md-card-content>
+                    <p>
+                        The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                        very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+                    </p>
+                </md-card-content>
+                <md-card-actions>
+                    <button md-button>LIKE</button>
+                    <button md-button>SHARE</button>
+                </md-card-actions>
+            </md-card>
+        </div>
+<!--
+  <md-sidenav-container class="example-container">
+    <md-sidenav #sidenav class="example-sidenav">
+      Jolly good!
+    </md-sidenav>
+  
+    <div class="example-sidenav-content">
+      <button type="button" md-button (click)="sidenav.open()">
+        Open sidenav
+      </button>
+    </div>
+  
+  </md-sidenav-container>-->

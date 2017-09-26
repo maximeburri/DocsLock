@@ -13,8 +13,7 @@ export class AppComponent implements OnInit {
   constructor(public location: Location) { }
 
   ngOnInit() {
-    $.material.options.autofill = true;
-    $.material.init();
+
   }
 
   isMaps(path){

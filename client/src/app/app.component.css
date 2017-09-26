@@ -1,0 +1,55 @@
+md-sidenav-layout {
+    background: rgba(0,0,0,0.03);
+}
+
+md-input {
+    margin: 8px 0;
+    width: 100%;
+}
+
+md-radio-button, md-checkbox {
+    margin: 16px 8px;
+}
+
+.form {
+    display: flex;
+}
+
+.form md-card {
+    flex-grow: 1;
+}
+
+md-card {
+    box-sizing: border-box;
+    margin: 16px;
+   
+}
+  
+.card-container {
+    display: flex;
+    flex-flow: row wrap;
+    width: 500px;
+    float: left;
+}
+
+/* Table */
+/* Structure */
+.example-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+  
+.example-header {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    font-size: 20px;
+}
+  
+.mat-table {
+    overflow: auto;
+    max-height: 500px;
+}
+  

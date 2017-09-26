@@ -19,16 +19,9 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "./assets/sass/material-dashboard.scss"
+        "./styles.css"
       ],
       "scripts": [
-          "../node_modules/jquery/dist/jquery.js",
-          "../node_modules/bootstrap/dist/js/bootstrap.js",
-          "../node_modules/bootstrap-material-design/dist/js/material.min.js",
-          "../node_modules/arrive/src/arrive.js",
-          "../node_modules/moment/moment.js",
-          "../node_modules/bootstrap-notify/bootstrap-notify.js",
-          "../node_modules/chartist/dist/chartist.js",
           "../node_modules/sails.io.js/dist/sails.io.js",
           "./scripts/disable.js"
       ],
