@@ -1,3 +1,8 @@
+.button-menu {
+    min-width: auto;
+    margin-right: 3px;
+}
+
 md-sidenav-layout {
     background: rgba(0,0,0,0.03);
 }

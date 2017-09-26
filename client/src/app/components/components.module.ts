@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { FooterComponent } from './footer/footer.component';
+/*import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';*/
 
 @NgModule({
   imports: [
@@ -12,14 +12,14 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     RouterModule,
   ],
   declarations: [
-    FooterComponent,
+    /*FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent*/
   ],
   exports: [
-    FooterComponent,
+    /*FooterComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent*/
   ]
 })
 export class ComponentsModule { }
