@@ -25,7 +25,6 @@
                         <th>ID</th>
                         <th>Mac</th>
                         <th>Status</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,123 +41,9 @@
                             <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
                             <i class="material-icons" *ngIf="!device.isActive">pause</i>
                         </td>
-                        <td>
-                            <button md-button class="md-icon-square"><i class="material-icons">edit</i></button>
-                        </td>
                     </tr>
                 </tbody>
             </table>
         </md-card-content>
     </md-card>
-</div>
-<!--
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-6 col-md-12">
-            <div class="card card-nav-tabs" >
-                <div class="card-header" data-background-color="blue">
-                    <h4 class="title"> Devices</h4>
-                    <div class="nav-tabs-navigation">
-                        <div class="nav-tabs-wrapper">
-                            <!--<span class="nav-tabs-title">Tasks:</span>-->
-<!--<ul class="nav nav-tabs" data-tabs="tabs">
-                                <li class="active">
-                                    <a href="#notAssigned" data-toggle="tab">
-                                        Not assigned
-                                    <div class="ripple-container"></div></a>
-                                </li>
-                                <li class="">
-                                    <a href="#assigned" data-toggle="tab">
-                                        Assigned
-                                    <div class="ripple-container"></div></a>
-                                </li>
-                                <li class="">
-                                    <a href="#all" data-toggle="tab">
-                                        All
-                                    <div class="ripple-container"></div></a>
-                                </li>
-                            </ul>
-                            <div class="collapse navbar-collapse" id="example-navbar">
-	                            	<ul class="nav navbar-nav">
-	                        			<li class="active"><a href="#">Link</a></li>
-	                            		<li><a href="#">Link</a></li>
-	                                	<li class="dropdown">
-	                                		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown
-												<b class="caret"></b>
-											</a>
-	                                    	<ul class="dropdown-menu dropdown-menu-right">
-	                                        	<li class="dropdown-header">Dropdown header</li>
-	                                        	<li><a href="#">Action</a></li>
-		                                        <li><a href="#">Another action</a></li>
-		                                        <li><a href="#">Something else here</a></li>
-		                                        <li class="divider"></li>
-		                                        <li><a href="#">Separated link</a></li>
-		                                        <li class="divider"></li>
-		                                        <li><a href="#">One more separated link</a></li>
-		                                    </ul>
-	                                	</li>
-	                            	</ul>
-	                            </div>
-                                    
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-content">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="notAssigned">
-                            <table class="table">
-                                <thead class="text-info">
-                                    <tr>
-                                        <th></th>
-                                        <th>Type</th>
-                                        <th>ID</th>
-                                        <th>Mac</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>    
-                                <tbody>
-                                    <tr *ngFor="let device of devices" [@rowState]="device.rowState">
-                                        <td>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" name="optionsCheckboxes">
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <i class="material-icons">tablet_android</i>
-                                        </td>
-                                        <td>{{ device.id }}</td>
-                                        <td>{{ device.mac }}</td>
-                                        <td>
-                                            <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
-                                            <i class="material-icons" *ngIf="!device.isActive">pause</i>
-                                        </td>
-                                        <td class="td-actions text-right">
-                                            <button type="button" rel="tooltip" title="Edit Task" class="btn btn-simple btn-xs">
-                                                <i class="material-icons">edit</i>
-                                            </button>
-                                            <button type="button" rel="tooltip" title="Remove" class="btn btn-danger btn-simple btn-xs">
-                                                <i class="material-icons">close</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="tab-pane" id="assigned">
-                            <h3>Assigned</h3>
-                            <p>Not implemented</p>
-                        </div>
-                        <div class="tab-pane" id="all">
-                            <h3>All</h3>
-                            <p>Not implemented</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
+</div
