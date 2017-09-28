@@ -29,7 +29,7 @@ import {
 
 export class DevicesComponent implements OnInit {
     public devices = [];
-
+    public groups = [];
     constructor(private _sailsService: SailsService) { }
 
     ngOnInit() {
@@ -50,6 +50,11 @@ export class DevicesComponent implements OnInit {
         */
         this._sailsService.get("/device?limit=0").subscribe(
             devices => this.devices = devices.data,
+            error => console.error(error)
+        );
+
+        this._sailsService.get("/group?limit=0").subscribe(
+            groups => this.groups = groups.data,
             error => console.error(error)
         );
 
@@ -81,9 +86,44 @@ export class DevicesComponent implements OnInit {
             },
             error => console.error(error)
         );
+
+        this._sailsService.on("group").subscribe(
+            groupChange => {
+                console.log(groupChange)
+                if (groupChange.verb) {
+                    // Switch for groups change action
+                    switch (groupChange.verb) {
+                        case "created":
+                            groupChange.data.rowState = "new";
+                            this.groups.push(groupChange.data);
+                            break;
+                        case "updated":
+                            groupChange.data.rowState = "new";
+                            Object.assign(
+                                this.getGroupById(groupChange.id),
+                                groupChange.data
+                            );
+                            break;
+                        case "destroyed":
+                            this.groups = this.groups.filter(
+                                (group) => group.id != groupChange.id
+                            );
+                            break;
+                    }
+                }
+
+            },
+            error => console.error(error)
+        );
     }
 
     private getDeviceById(id: number) {
+        return this.devices.find(
+            (device) => device.id == id
+        )
+    }
+
+    private getGroupById(id: number) {
         return this.devices.find(
             (device) => device.id == id
         )
