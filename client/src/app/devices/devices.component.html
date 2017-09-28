@@ -1,4 +1,57 @@
-<div class="main-content">
+<div class="card-container">
+    <md-card class="example-card">
+        <md-card-header>
+            <!--<div md-card-avatar>
+                <md-icon>tablet_android</md-icon>
+            </div>-->
+            <md-card-title>
+                <h3>Devices</h3>
+            </md-card-title>
+        </md-card-header>
+        <md-card-actions>
+            <button md-raised-button color="primary" [mdMenuTriggerFor]="menu">Menu</button>
+            <md-menu #menu="mdMenu">
+                <button md-menu-item>Item 1</button>
+                <button md-menu-item>Item 2</button>
+            </md-menu>
+            <button md-raised-button color="primary">SHARE</button>
+        </md-card-actions>
+        <md-card-content>
+            <table class="table mat-elevation-z2">
+                <thead class="text-info">
+                    <tr>
+                        <th></th>
+                        <th>Type</th>
+                        <th>ID</th>
+                        <th>Mac</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let device of devices" [@rowState]="device.rowState">
+                        <td>
+                            <md-checkbox></md-checkbox>
+                        </td>
+                        <td>
+                            <i class="material-icons">tablet_android</i>
+                        </td>
+                        <td>{{ device.id }}</td>
+                        <td>{{ device.mac }}</td>
+                        <td>
+                            <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
+                            <i class="material-icons" *ngIf="!device.isActive">pause</i>
+                        </td>
+                        <td>
+                            <button md-button class="md-icon-square"><i class="material-icons">edit</i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </md-card-content>
+    </md-card>
+</div>
+<!--
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6 col-md-12">
@@ -8,7 +61,7 @@
                     <div class="nav-tabs-navigation">
                         <div class="nav-tabs-wrapper">
                             <!--<span class="nav-tabs-title">Tasks:</span>-->
-                            <!--<ul class="nav nav-tabs" data-tabs="tabs">
+<!--<ul class="nav nav-tabs" data-tabs="tabs">
                                 <li class="active">
                                     <a href="#notAssigned" data-toggle="tab">
                                         Not assigned
@@ -24,7 +77,7 @@
                                         All
                                     <div class="ripple-container"></div></a>
                                 </li>
-                            </ul>-->
+                            </ul>
                             <div class="collapse navbar-collapse" id="example-navbar">
 	                            	<ul class="nav navbar-nav">
 	                        			<li class="active"><a href="#">Link</a></li>
@@ -108,5 +161,4 @@
             </div>
         </div>
     </div>
-</div>
-</div>
+</div>-->
