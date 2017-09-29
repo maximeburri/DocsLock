@@ -48,13 +48,17 @@ import {
   MdStepperModule,
   MatIconModule, MatMenuModule
 } from '@angular/material';
+import { TableDevicesComponent } from './devices/table-devices/table-devices.component';
+import { DeviceGroupPipePipe } from './devices/devices-group-pipe/devices-group-pipe.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     DevicesComponent,
     FilesComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    TableDevicesComponent,
+    DeviceGroupPipePipe
   ],
   imports: [
     BrowserModule,

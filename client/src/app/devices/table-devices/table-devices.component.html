@@ -1,0 +1,28 @@
+<table class="table mat-elevation-z2" *ngIf="devices && devices.length > 0">
+  <thead class="text-info">
+    <tr>
+      <th></th>
+      <th>Type</th>
+      <th>ID</th>
+      <th>Mac</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let device of devices" [@rowState]="device.rowState">
+      <td>
+        <md-checkbox></md-checkbox>
+      </td>
+      <td>
+        <i class="material-icons">tablet_android</i>
+      </td>
+      <td>{{ device.id }}</td>
+      <td>{{ device.mac }}</td>
+      <td>
+        <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
+        <i class="material-icons" *ngIf="!device.isActive">pause</i>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<i *ngIf="!devices || devices.length == 0">No devices</i>

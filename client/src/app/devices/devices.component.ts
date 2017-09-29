@@ -70,6 +70,16 @@ export class DevicesComponent implements OnInit {
                             break;
                         case "updated":
                             deviceChange.data.rowState = "new";
+
+                            // Warning 
+                            // With api rest : group.id
+                            // With websocket update event : group is the id 
+                            // Copy with 'Object.assign' the entire group
+                            if(deviceChange.data.group)
+                                deviceChange.data.group = Object.assign({}, 
+                                    this.getGroupById(deviceChange.data.group));
+
+                            // Copy the change
                             Object.assign(
                                 this.getDeviceById(deviceChange.id),
                                 deviceChange.data
@@ -124,8 +134,8 @@ export class DevicesComponent implements OnInit {
     }
 
     private getGroupById(id: number) {
-        return this.devices.find(
-            (device) => device.id == id
+        return this.groups.find(
+            (group) => group.id == id
         )
     }
 }
