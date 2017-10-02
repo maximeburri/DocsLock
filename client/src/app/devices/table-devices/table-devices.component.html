@@ -11,7 +11,7 @@
   <tbody>
     <tr *ngFor="let device of devices" [@rowState]="device.rowState">
       <td>
-        <md-checkbox></md-checkbox>
+        <md-checkbox [(ngModel)]="device.isSelected"></md-checkbox>
       </td>
       <td>
         <i class="material-icons">tablet_android</i>

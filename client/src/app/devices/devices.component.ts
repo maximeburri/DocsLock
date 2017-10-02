@@ -49,12 +49,12 @@ export class DevicesComponent implements OnInit {
         }
         */
         this._sailsService.get("/device?limit=0").subscribe(
-            devices => this.devices = devices.data,
+            devices => Object.assign(this.devices, devices.data),
             error => console.error(error)
         );
 
         this._sailsService.get("/group?limit=0").subscribe(
-            groups => this.groups = groups.data,
+            groups => Object.assign(this.groups, groups.data),
             error => console.error(error)
         );
 

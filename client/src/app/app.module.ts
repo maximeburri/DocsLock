@@ -49,7 +49,9 @@ import {
   MatIconModule, MatMenuModule
 } from '@angular/material';
 import { TableDevicesComponent } from './devices/table-devices/table-devices.component';
-import { DeviceGroupPipePipe } from './devices/devices-group-pipe/devices-group-pipe.pipe';
+import { DeviceGroupPipe } from './devices/devices-group/devices-group.pipe';
+import { DevicesActionsComponent } from './devices/devices-actions/devices-actions.component';
+import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected.pipe';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { DeviceGroupPipePipe } from './devices/devices-group-pipe/devices-group-
     FilesComponent,
     UserProfileComponent,
     TableDevicesComponent,
-    DeviceGroupPipePipe
+    DeviceGroupPipe,
+    DevicesActionsComponent,
+    DevicesSelectedPipe
   ],
   imports: [
     BrowserModule,

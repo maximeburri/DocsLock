@@ -6,15 +6,10 @@
             </md-card-title>
         </md-card-header>
         <md-card-actions>
-            <button md-raised-button color="primary" [mdMenuTriggerFor]="menu">Menu</button>
-            <md-menu #menu="mdMenu">
-                <button md-menu-item>Item 1</button>
-                <button md-menu-item>Item 2</button>
-            </md-menu>
-            <button md-raised-button color="primary">SHARE</button>
+            <devices-actions [devices]="devices | devicesGroup:undefined | devicesSelected"></devices-actions>
         </md-card-actions>
         <md-card-content>
-            <table-devices [devices]="devices | devicesGroupPipe:undefined"></table-devices>
+            <table-devices [devices]="devices | devicesGroup:undefined"></table-devices>
         </md-card-content>
     </md-card>
 </div>
@@ -27,15 +22,10 @@
             </md-card-title>
         </md-card-header>
         <md-card-actions>
-            <button md-raised-button color="primary" [mdMenuTriggerFor]="menu">Menu</button>
-            <md-menu #menu="mdMenu">
-                <button md-menu-item>Item 1</button>
-                <button md-menu-item>Item 2</button>
-            </md-menu>
-            <button md-raised-button color="primary">SHARE</button>
+            <devices-actions [devices]="devices | devicesGroup:group | devicesSelected"></devices-actions>
         </md-card-actions>
         <md-card-content>
-            <table-devices [devices]="devices | devicesGroupPipe:group"></table-devices>
+            <table-devices [devices]="devices | devicesGroup:group"></table-devices>
         </md-card-content>
     </md-card>
 </div>
