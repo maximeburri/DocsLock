@@ -20,7 +20,21 @@ export class DevicesActionsComponent implements OnInit {
 
   public groupTo(group : any) {
     this.devices.forEach(device => {
-      this.server.setDeviceGroup(device, group);
+      if(device.isSelected)
+        this.server.setDeviceGroup(device, group);
+    });
+  }
+
+  public selectAll() {
+    this.devices.forEach(device => {
+      device.isSelected = true;
+      console.log(device);
+    });
+  }
+
+  public selectNone() {
+    this.devices.forEach(device => {
+      device.isSelected = false;
     });
   }
 }

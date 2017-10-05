@@ -7,7 +7,7 @@
         </md-card-header>
         <md-card-actions>
             <devices-actions 
-                [devices]="devices | devicesGroup:undefined | devicesSelected"
+                [devices]="devices | devicesGroup:undefined"
                 [groups]="groups"  
                 [currentGroup]="undefined"
             ></devices-actions>
@@ -27,7 +27,7 @@
         </md-card-header>
         <md-card-actions>
             <devices-actions 
-                [devices]="devices | devicesGroup:group | devicesSelected"
+                [devices]="devices | devicesGroup:group"
                 [groups]="groups"  
                 [currentGroup]="group"
             ></devices-actions>
