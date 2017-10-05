@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SailsService } from "angular2-sails";
 import {
     trigger,
     state,
@@ -7,6 +6,7 @@ import {
     animate,
     transition
 } from '@angular/animations';
+import { ServerService } from '../common/server.service';
 
 @Component({
     selector: 'devices-cmp',
@@ -30,15 +30,11 @@ import {
 export class DevicesComponent implements OnInit {
     public devices = [];
     public groups = [];
-    constructor(private _sailsService: SailsService) { }
+    constructor(private _server : ServerService) { 
+        this._server = _server;
+    }
 
     ngOnInit() {
-        this._sailsService
-            .connect("http://127.0.0.1:1337")
-            .subscribe(
-            t => console.log("Connected"),
-            e => console.error(e)
-            );
 
         /* device : 
         {
@@ -48,94 +44,8 @@ export class DevicesComponent implements OnInit {
                 "mac" : "AA::BB::CC::DD::EE"
         }
         */
-        this._sailsService.get("/device?limit=0").subscribe(
-            devices => Object.assign(this.devices, devices.data),
-            error => console.error(error)
-        );
-
-        this._sailsService.get("/group?limit=0").subscribe(
-            groups => Object.assign(this.groups, groups.data),
-            error => console.error(error)
-        );
-
-        this._sailsService.on("device").subscribe(
-            deviceChange => {
-                console.log(deviceChange)
-                if (deviceChange.verb) {
-                    // Switch for device change action
-                    switch (deviceChange.verb) {
-                        case "created":
-                            deviceChange.data.rowState = "new";
-                            this.devices.push(deviceChange.data);
-                            break;
-                        case "updated":
-                            deviceChange.data.rowState = "new";
-
-                            // Warning 
-                            // With api rest : group.id
-                            // With websocket update event : group is the id 
-                            // Copy with 'Object.assign' the entire group
-                            if(deviceChange.data.group)
-                                deviceChange.data.group = Object.assign({}, 
-                                    this.getGroupById(deviceChange.data.group));
-
-                            // Copy the change
-                            Object.assign(
-                                this.getDeviceById(deviceChange.id),
-                                deviceChange.data
-                            );
-                            break;
-                        case "destroyed":
-                            this.devices = this.devices.filter(
-                                (device) => device.id != deviceChange.id
-                            );
-                            break;
-                    }
-                }
-
-            },
-            error => console.error(error)
-        );
-
-        this._sailsService.on("group").subscribe(
-            groupChange => {
-                console.log(groupChange)
-                if (groupChange.verb) {
-                    // Switch for groups change action
-                    switch (groupChange.verb) {
-                        case "created":
-                            groupChange.data.rowState = "new";
-                            this.groups.push(groupChange.data);
-                            break;
-                        case "updated":
-                            groupChange.data.rowState = "new";
-                            Object.assign(
-                                this.getGroupById(groupChange.id),
-                                groupChange.data
-                            );
-                            break;
-                        case "destroyed":
-                            this.groups = this.groups.filter(
-                                (group) => group.id != groupChange.id
-                            );
-                            break;
-                    }
-                }
-
-            },
-            error => console.error(error)
-        );
+        this._server.getDevices().then(devices => this.devices = devices);
+        this._server.getGroups().then(groups => this.groups = groups);
     }
 
-    private getDeviceById(id: number) {
-        return this.devices.find(
-            (device) => device.id == id
-        )
-    }
-
-    private getGroupById(id: number) {
-        return this.groups.find(
-            (group) => group.id == id
-        )
-    }
 }

@@ -6,7 +6,11 @@
             </md-card-title>
         </md-card-header>
         <md-card-actions>
-            <devices-actions [devices]="devices | devicesGroup:undefined | devicesSelected"></devices-actions>
+            <devices-actions 
+                [devices]="devices | devicesGroup:undefined | devicesSelected"
+                [groups]="groups"  
+                [currentGroup]="undefined"
+            ></devices-actions>
         </md-card-actions>
         <md-card-content>
             <table-devices [devices]="devices | devicesGroup:undefined"></table-devices>
@@ -22,7 +26,11 @@
             </md-card-title>
         </md-card-header>
         <md-card-actions>
-            <devices-actions [devices]="devices | devicesGroup:group | devicesSelected"></devices-actions>
+            <devices-actions 
+                [devices]="devices | devicesGroup:group | devicesSelected"
+                [groups]="groups"  
+                [currentGroup]="group"
+            ></devices-actions>
         </md-card-actions>
         <md-card-content>
             <table-devices [devices]="devices | devicesGroup:group"></table-devices>

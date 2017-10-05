@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DevicesSelectedPipe } from '../devices-selected/devices-selected.pipe';
+import { ServerService } from '../../common/server.service';
 
 @Component({
   selector: 'devices-actions',
@@ -8,12 +9,18 @@ import { DevicesSelectedPipe } from '../devices-selected/devices-selected.pipe';
 })
 export class DevicesActionsComponent implements OnInit {
   @Input() devices: any[] = [];
+  @Input() groups: any[] = [];
+  @Input() currentGroup: any;
 
-  constructor() { 
-    let f = new DevicesSelectedPipe();
-    f.transform(this.devices);
+  constructor(private server : ServerService) {
   }
 
   ngOnInit() {
+  }
+
+  public groupTo(group : any) {
+    this.devices.forEach(device => {
+      this.server.setDeviceGroup(device, group);
+    });
   }
 }
