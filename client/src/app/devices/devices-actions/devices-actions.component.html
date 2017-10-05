@@ -13,5 +13,5 @@
         {{group.name}}
     </button>
     <md-divider></md-divider>
-    <button md-menu-item [disabled]="!currentGroup">None</button>
+    <button md-menu-item [disabled]="!currentGroup" (click)="groupTo(group)">None</button>
 </md-menu>

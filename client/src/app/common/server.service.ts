@@ -19,13 +19,13 @@ export class ServerService {
   }
 
   public getDevices(): Promise<any> {
-    if(!this.promiseDevices)
+    if (!this.promiseDevices)
       this.promiseDevices = this.getArrayDataModelAndUpdate("device", this.devices);
     return this.promiseDevices;
   }
 
-  public getGroups(): Promise<any>  {
-    if(!this.promiseGroups)
+  public getGroups(): Promise<any> {
+    if (!this.promiseGroups)
       this.promiseGroups = this.getArrayDataModelAndUpdate("group", this.groups);
     return this.promiseGroups;
   }
@@ -77,15 +77,21 @@ export class ServerService {
       );
   }
 
-  public setDeviceGroup(device, group): Observable<any> {
-    this.sailsService.put(`/device/${device.id}`, { group: group.id }).subscribe(
-      response => {
-        // Update the group of device
-        device.group = group;
-        device.isSelected = false;
-      },
-      error => console.log(error)
-    );
-    return undefined;
+  public setDeviceGroup(device, group?) {
+    let reponseFunction = response => {
+      // Update the group of device
+      device.group = group;
+      device.isSelected = false;
+    };
+    // Add to the goud group
+    if (group)
+      return this.sailsService.post(`/group/${group.id}/devices/${device.id}`).toPromise()
+        .then(reponseFunction)
+        .catch(error => console.log(error));
+    // No group, remove
+    else if(device.group.id)
+      return this.sailsService.delete(`/group/${device.group.id}/devices/${device.id}`).toPromise()
+        .then(reponseFunction)
+        .catch(error => console.log(error));
   }
 }
