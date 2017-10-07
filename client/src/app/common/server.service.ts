@@ -61,7 +61,7 @@ export class ServerService {
               break;
             case "destroyed":
               let index = arrayResult.findIndex((d) => d.id == change.id);
-              arrayResult.splice(index);
+              arrayResult.splice(index, 1);
               break;
           }
         }
