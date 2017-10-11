@@ -82,6 +82,7 @@ export class ServerService {
       // Update the group of device
       device.group = group;
       device.isSelected = false;
+      device.rowState = "new"+group.id;
     };
     // Add to the goud group
     if (group)

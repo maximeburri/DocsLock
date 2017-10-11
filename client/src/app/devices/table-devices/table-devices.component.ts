@@ -16,12 +16,22 @@ import {
       state('new',
         style({})
       ),
-      transition('void => new',
+      transition('void => *',
         animate('100ms ease-in', style({
           backgroundColor: '#eee',
           transform: 'scale(1.3)'
         }))
       )
+    ]),
+    trigger('tableInOut', [
+      state('in', style({transform: 'scale(0)'})),
+      transition('void => *', [
+        style({transform: 'scale(0.0)'}),
+        animate('100ms ease-out')
+      ]),
+      transition('* => void', [
+        animate('100ms ease-out', style({transform: 'scale(1.0)'}))
+      ])
     ])
   ]
 })
