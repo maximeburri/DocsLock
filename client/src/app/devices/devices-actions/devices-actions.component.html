@@ -3,7 +3,7 @@
     <button md-menu-item (click)="selectAll()">All</button>
     <button md-menu-item (click)="selectNone()">None</button>
 </md-menu>
-<button md-raised-button color="primary" [mdMenuTriggerFor]="menu" [disabled]="devices.length == 0">
+<button md-raised-button color="primary" [mdMenuTriggerFor]="menu" [disabled]="(devices|devicesSelected).length == 0">
     Group to
 </button>
 <md-menu #menu="mdMenu">
