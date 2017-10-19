@@ -7,7 +7,10 @@ module.exports = {
     devices: {
       collection : 'device',
       via : 'group'
+    },
+    isLocked: {
+      type : 'boolean',
+      defaultTo : false
     }
   }
 };
-

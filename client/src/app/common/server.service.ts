@@ -82,7 +82,7 @@ export class ServerService {
       // Update the group of device
       device.group = group;
       device.isSelected = false;
-      device.rowState = "new"+group.id;
+      device.rowState = "new" + group.id;
     };
     // Add to the goud group
     if (group)
@@ -90,9 +90,38 @@ export class ServerService {
         .then(reponseFunction)
         .catch(error => console.log(error));
     // No group, remove
-    else if(device.group.id)
+    else if (device.group.id)
       return this.sailsService.delete(`/group/${device.group.id}/devices/${device.id}`).toPromise()
         .then(reponseFunction)
         .catch(error => console.log(error));
+  }
+
+  public post(url: any, data?: any): Observable<any> {
+    return this.sailsService.post(url, data);
+  }
+
+  public get(url: any, data?: any): Observable<any> {
+    return this.sailsService.get(url, data);
+  }
+
+  public put(url: any, data?: any): Observable<any> {
+    return this.sailsService.put(url, data);
+  }
+
+  public delete(url: any, data?: any): Observable<any> {
+    return this.sailsService.delete(url, data);
+  }
+
+  public setGroupLocked(group: any, isLocked: boolean) {
+    return this.put(`/group/${group.id}/`, { isLocked: isLocked }).toPromise()
+      .then((result) => {
+        this.groups.forEach((g) => {
+          if (g.id === group.id) {
+            g.isLocked = result.data.isLocked;
+          }
+        }
+        );
+      })
+      .catch(error => console.error(error));
   }
 }

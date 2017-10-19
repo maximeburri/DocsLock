@@ -48,4 +48,7 @@ export class DevicesComponent implements OnInit {
         this._server.getGroups().then(groups => this.groups = groups);
     }
 
+    setGroupLocked(group: any, isLocked: boolean) {
+        this._server.setGroupLocked(group, isLocked);
+    }
 }

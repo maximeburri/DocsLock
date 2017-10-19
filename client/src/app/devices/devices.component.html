@@ -26,6 +26,12 @@
             </md-card-title>
         </md-card-header>
         <md-card-actions>
+            <div style="width:100%; margin-bottom:8px;" *ngIf="!group.isLocked" (click)="setGroupLocked(group, true)">
+                <button md-raised-button><i class="material-icons">lock_open</i> Lock </button>
+            </div>
+            <div style="width:100%; margin-bottom:8px;" *ngIf="group.isLocked" (click)="setGroupLocked(group, false)">
+                <button md-raised-button><i class="material-icons">lock</i> Unlock </button>
+            </div>
             <devices-actions 
                 [devices]="devices | devicesGroup:group"
                 [groups]="groups"  
