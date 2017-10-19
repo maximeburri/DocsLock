@@ -5,12 +5,15 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
 import ch.burci.docslock.models.PrefUtils;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,10 +61,19 @@ public class DocsLockService {
 
     // Create device on server
     private static void createDevice(final Context context){
-        client.createDevice(getWifiMacAddress(), true).enqueue(new Callback<Device>() {
+        client.createDevice(getWifiMacAddress(), true, NotificationService.getFirebaseToken())
+                .enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
-               setDeviceId(context, response.body().getId());
+                Device device = response.body();
+                if(device != null) {
+                    setDeviceId(context, device.getId());
+                    Log.d("DocsLockService", "Device registered");
+                }
+                else {
+                    Log.e("DocsLockService", "Cannot get device");
+                    Log.e("DocsLockService", response.toString());
+                }
             }
 
             @Override
@@ -120,6 +132,21 @@ public class DocsLockService {
             }
         } catch (Exception ex) { } // for now eat exceptions
         return "";
+    }
+
+    public static void setFirebaseToken(String firebaseToken) {
+        if(client != null && DocsLockService.deviceId != null)
+            client.setFirebaseToken(DocsLockService.deviceId, firebaseToken).enqueue(new Callback<Device>(){
+                @Override
+                public void onResponse(Call<Device> call, Response<Device> response) {
+                    Log.d("DocsLockService", "firebaseToken changed");
+                }
+
+                @Override
+                public void onFailure(Call<Device> call, Throwable t) {
+                    Log.e("DocsLockService", "firebaseToken not changed");
+                }
+            });
     }
 
     /* Example :

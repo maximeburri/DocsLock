@@ -2,6 +2,7 @@ package ch.burci.docslock;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -20,9 +21,17 @@ public interface DocsLockClient {
 
     @FormUrlEncoded
     @POST("/device")
-    Call<Device> createDevice(@Field("mac") String mac, @Field("isActive") Boolean isActive);
+    Call<Device> createDevice(@Field("mac") String mac,
+                              @Field("isActive") Boolean isActive,
+                              @Field("firebaseToken")  String firebaseToken);
 
     @FormUrlEncoded
     @PUT("/device/{id}")
-    Call<Device> setStateDevice(@Path("id") String deviceId, @Field("isActive") Boolean isActive);
+    Call<Device> setStateDevice(@Path("id") String deviceId,
+                                @Field("isActive") Boolean isActive);
+
+    @FormUrlEncoded
+    @PUT("/device/{id}")
+    Call<Device> setFirebaseToken(@Path("id") String deviceId,
+                                        @Field("firebaseToken") String firebaseToken);
 }

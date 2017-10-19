@@ -46,6 +46,6 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'POST /device': 'DeviceController.create',
+  'POST /device/:id/push': 'DeviceController.push',
   
 };

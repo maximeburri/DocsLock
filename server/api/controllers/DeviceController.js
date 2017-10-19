@@ -4,24 +4,48 @@
  * @description :: Server-side logic for managing Devices
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+var Notification = require('../services/NotificationService');
 
-     /*create: function (req, res) {
-        let mac = req.param('mac');
+var SHOW_NOTIFICATION = false;
 
-        if (!mac) {
-            return res.badRequest({ err: 'Invalid mac' });
-        }
-
-        Device.create({
-            mac: mac,
-        }).then(_device => {
-            if (!_device) return res.serverError({ err: 'Unable to create device' });
-
-            return res.ok(_device);
-        }).catch(err => res.serverError(err.message));
-    }*/
-    
 module.exports = {
+    push: function (req, res) {
+        let id = req.param('id');
 
+        Device
+        .findOne({id: id})
+        .populate("group")
+        .exec(function (err, device) {
+            if (err) {
+                return res.serverError(err);
+            }
+            if (!device) {
+                return res.notFound('Not found');
+            }
+            console.log(device);
+            var message = {
+                data : {
+                    device : device
+                }
+            };
+
+            if(SHOW_NOTIFICATION)
+                message.notification = {
+                    title: 'Push device',
+                    body: 'Push device'
+                };
+
+            Notification.sendTo(device.firebaseToken, message,
+                function (err, response) {
+                    // Error
+                    if (err) {
+                        return res.serverError(err);
+                    }
+                    // Ok
+                    res.ok("Pushed");
+                }
+            );
+        });
+    }
 };
 
