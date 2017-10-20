@@ -6,7 +6,7 @@
  */
 var Notification = require('../services/NotificationService');
 
-var SHOW_NOTIFICATION = false;
+var SHOW_NOTIFICATION = true;
 
 module.exports = {
     push: function (req, res) {

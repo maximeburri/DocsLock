@@ -121,7 +121,22 @@ export class ServerService {
           }
         }
         );
+        this.pushDevices(group);
       })
       .catch(error => console.error(error));
+  }
+
+  public pushDevice(device: any) {
+    return this.post(`/device/${device.id}/push`).toPromise()
+    .then((result) => {})
+    .catch(error => console.error(error));
+  }
+
+  public pushDevices(group : any){
+    this.devices.forEach((device) => {
+      if(device.group && device.group.id === group.id){
+        this.pushDevice(device);
+      }
+    });
   }
 }
