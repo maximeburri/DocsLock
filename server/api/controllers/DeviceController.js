@@ -6,8 +6,6 @@
  */
 var Notification = require('../services/NotificationService');
 
-var SHOW_NOTIFICATION = true;
-
 module.exports = {
     push: function (req, res) {
         let id = req.param('id');
@@ -22,18 +20,12 @@ module.exports = {
             if (!device) {
                 return res.notFound('Not found');
             }
-            console.log(device);
+            
             var message = {
                 data : {
                     device : device
                 }
             };
-
-            if(SHOW_NOTIFICATION)
-                message.notification = {
-                    title: 'Push device',
-                    body: 'Push device'
-                };
 
             Notification.sendTo(device.firebaseToken, message,
                 function (err, response) {

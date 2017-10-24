@@ -30,15 +30,21 @@ public class StatusBarExpansionLocker {
         if(localLayoutParams == null || view == null) {
             initStatusBarExansion(activity);
         }
-        WindowManager manager = ((WindowManager) activity.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE));
-        manager.addView(view, localLayoutParams);
+        try {
+            WindowManager manager = ((WindowManager) activity.getApplicationContext()
+                    .getSystemService(Context.WINDOW_SERVICE));
+            manager.addView(view, localLayoutParams);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }
     }
 
     public static void unlock(Activity activity) {
-        WindowManager manager = ((WindowManager) activity.getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE));
-        manager.removeView(view);
+        if(view != null) {
+            WindowManager manager = ((WindowManager) activity.getApplicationContext()
+                    .getSystemService(Context.WINDOW_SERVICE));
+            manager.removeView(view);
+        }
     }
 
     public static void initStatusBarExansion(Context context){

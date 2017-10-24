@@ -5,10 +5,16 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import ch.burci.docslock.DeviceWithGroup;
+
 public class PrefUtils {
     private static final String PREF_KIOSK_MODE = "pref_is_locked";
     private static final String PREF_PASSWORD = "pref_password";
     private static final String PREF_DEVICE_ID = "device_id";
+    private static final String PREF_LAST_DEVICE = "last_device";
 
     public static void resetSettings(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -55,5 +61,18 @@ public class PrefUtils {
     public static void setDeviceId(String id, final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(PREF_DEVICE_ID, id).commit();
+    }
+
+    public static DeviceWithGroup getLastDevice(final Context context){
+        Gson gson = new GsonBuilder().create();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String jsonDevices = sp.getString(PREF_LAST_DEVICE, null);
+        DeviceWithGroup device = gson.fromJson(jsonDevices, DeviceWithGroup.class);
+        return device;
+    }
+
+    public static void setLastDevice(String deviceJson, final Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(PREF_LAST_DEVICE, deviceJson).commit();
     }
 }
