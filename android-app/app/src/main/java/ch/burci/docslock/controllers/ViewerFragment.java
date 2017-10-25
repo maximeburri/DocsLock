@@ -2,13 +2,11 @@ package ch.burci.docslock.controllers;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
@@ -20,8 +18,6 @@ import java.io.File;
 import java.util.List;
 
 import ch.burci.docslock.R;
-import ch.burci.docslock.models.PrefUtils;
-
 
 import static android.content.ContentValues.TAG;
 
@@ -32,7 +28,7 @@ import static android.content.ContentValues.TAG;
 public class ViewerFragment extends Fragment implements OnPageChangeListener, OnLoadCompleteListener {
 
     private View rootView;
-    private String pdfName;
+    private String pdfPath;
     PDFView pdfView;
 
     @Nullable
@@ -40,12 +36,8 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.rootView = inflater.inflate(R.layout.pdf_viewer_fragment, container, false);
         this.pdfView = (PDFView) this.rootView.findViewById(R.id.pdfView);
-        displayFromFile(
-                new File(
-                    Environment.getExternalStorageDirectory().getAbsolutePath(),
-                    PrefUtils.getFilesFolderName() + "/" + this.pdfName
-                )
-        );
+        File pdfFile = new File (this.pdfPath);
+        displayFromFile(pdfFile);
         return rootView;
     }
 
@@ -54,7 +46,7 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
                 .onPageChange(this)
                 .enableAnnotationRendering(true)
                 .onLoad(this)
-                .scrollHandle(new DefaultScrollHandle(this.getContext()))
+                .scrollHandle(new DefaultScrollHandle(this.getActivity()))
                 .load();
     }
 
@@ -92,5 +84,5 @@ public class ViewerFragment extends Fragment implements OnPageChangeListener, On
     // ---------------------------------------------------------------
     // Getter/Setter  ------------------------------------------------
     // ---------------------------------------------------------------
-    public void setPDFName(String pdfName) { this.pdfName = pdfName; }
+    public void setPDFPath(String pdfPath) { this.pdfPath = pdfPath; }
 }

@@ -60,7 +60,7 @@ public class ListPDFFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                     ListPDFAdapter.PDFbox pdf = (ListPDFAdapter.PDFbox) view.getTag();
-                    mainActivity.goToPdf((String) pdf.txtPDFName.getText());
+                    mainActivity.goToPdf((String) pdf.path);
                 }
             });
 

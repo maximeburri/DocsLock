@@ -1,7 +1,6 @@
 package ch.burci.docslock.adapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +8,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by ciccius on 13/03/17.
- */
 import java.util.ArrayList;
 
 import ch.burci.docslock.R;
 import ch.burci.docslock.controllers.MainActivity;
-import ch.burci.docslock.controllers.ViewerFragment;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
+
+/**
+ * Created by ciccius on 13/03/17.
+ */
 
 public class ListPDFAdapter extends BaseAdapter {
 
@@ -26,6 +25,7 @@ public class ListPDFAdapter extends BaseAdapter {
         public ImageView imgPDF;
         public TextView txtPDFName;
         public Integer positionBox;
+        public String path;
     }
 
     // Fields  -------------------------------------------------------
@@ -91,6 +91,7 @@ public class ListPDFAdapter extends BaseAdapter {
             //set values in component
             this.pdfBox.txtPDFName.setText(pdf.getPdfName());
             this.pdfBox.imgPDF.setImageResource(pdf.getIconRes());
+            this.pdfBox.path = pdf.getPdfPath();
         }
 
         return this.view;

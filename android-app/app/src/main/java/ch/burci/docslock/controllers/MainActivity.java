@@ -2,37 +2,33 @@ package ch.burci.docslock.controllers;
 
 import android.Manifest;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothClass;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.Settings;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -41,30 +37,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ch.burci.docslock.Config;
-import ch.burci.docslock.DocsLockClient;
 import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
-import java.util.ArrayList;
 import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 import ch.burci.docslock.models.StatusBarExpansionLocker;
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import ch.burci.docslock.Device;
+
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
 
@@ -103,6 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         //read list pdf in assets and create ArrayList of PDF
         this.mainModel = new MainModel();
+
+        String[] pdfsToDownload ={"https://www.w3.org/Amaya/Distribution/manuel.pdf",
+                "http://cdn-10.nikon-cdn.com/pdf/manuals/dslr/D60_fr.pdf",
+                "http://www.who.int/hrh/resources/WISN_FR_Software-manual.pdf?ua=1"};
+        //downloadPDFs(pdfsToDownload);
+        //deletePdfs();
+
         updatePdfsList();
 
         //create container and commit de currentFragment
@@ -170,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void goToPdf(String pdfName){
-        this.viewerFragment.setPDFName(pdfName);
+    public void goToPdf(String pdfPath){
+        this.viewerFragment.setPDFPath(pdfPath);
         this.currentFragment = this.viewerFragment;
         this.commitFragmentTransaction();
     }
@@ -260,27 +251,61 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<PDFModel> result = new ArrayList<PDFModel>();
         File[] listAssets;
 
-        // Folder to external storage DocsLock
-        File pdfsFolder = new File(
-                Environment.getExternalStorageDirectory().getAbsolutePath(),
-                PrefUtils.getFilesFolderName()
-        );
-
-        // Create folder
-        if (!pdfsFolder.mkdirs()) {
-            Log.e("Pdfs", "Directory not created");
-        }
+        // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
+        File pdfsFolder = getExternalFilesDir("pdf");
 
         // List pdf files
         listAssets = pdfsFolder.listFiles();
         if (listAssets != null && listAssets.length > 0) {
             for (File file : listAssets) {
-                PDFModel pdf = new PDFModel(R.mipmap.ic_pdf, file.getName());
+                PDFModel pdf = new PDFModel(R.mipmap.ic_pdf, file.getName(), file.toString());
                 result.add(pdf);
             }
         }
         return result;
     }
+
+    public void deletePdfs(){
+        // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
+        File pdfsFolder = getExternalFilesDir("pdf");
+        pdfsFolder.delete();
+    }
+
+    /***
+     * @desc Method to download List of pdf
+     * @param pdfsUrl list of strin who contain pdf url
+     */
+    public void downloadPDFs(String[] pdfsUrl) {
+        for(String pdfUrl:pdfsUrl) {
+            try {
+                String[] pdfSplit = pdfUrl.split("/");
+                String name = pdfSplit[pdfSplit.length-1];
+
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl)); /*init a request*/
+                request.setDescription("My description"); //this description apears inthe android notification
+                request.setTitle("My Title");//this description apears in the android notification
+
+                // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
+                request.setDestinationInExternalFilesDir(getApplicationContext(),
+                        "/pdf",
+                        name); //set destination
+                DownloadManager manager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                //start the download and return the id of the download. this id can be use to get info of download
+                final long downloadId = manager.enqueue(request);
+                registerReceiver(receiverDowloadsCompleted, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    BroadcastReceiver receiverDowloadsCompleted=new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            MainActivity.this.updatePdfsList();// Do Something
+            //lorsque un pdf a finis de telecharger
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

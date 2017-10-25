@@ -1,7 +1,5 @@
 package ch.burci.docslock.models;
 
-import android.widget.ImageView;
-
 /**
  * Created by ciccius on 13/03/17.
  */
@@ -12,11 +10,13 @@ public class PDFModel {
     // ---------------------------------------------------------------
     Integer iconRes;
     String pdfName;
+    String pdfPath;
 
 
-    public PDFModel(Integer iconRes, String pdfName){
+    public PDFModel(Integer iconRes, String pdfName, String pdfPath){
         this.iconRes = iconRes;
         this.pdfName = pdfName;
+        this.pdfPath = pdfPath;
     }
 
     public Integer getIconRes() {
@@ -34,4 +34,8 @@ public class PDFModel {
     public void setPdfName(String pdfName) {
         this.pdfName = pdfName;
     }
+
+    public String getPdfPath() { return pdfPath;}
+
+    public void setPdfPath(String pdfPath) { this.pdfPath = pdfPath;}
 }
