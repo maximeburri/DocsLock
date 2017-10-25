@@ -125,8 +125,10 @@ public class MainActivity extends AppCompatActivity {
         // Read status
         DeviceWithGroup device = PrefUtils.getLastDevice(this);
 
-        boolean lock = device.getGroup() != null && device.getGroup().isLocked();
-        setLock(lock);
+        if(device != null) {
+            boolean lock = device.getGroup() != null && device.getGroup().isLocked();
+            setLock(lock);
+        }
     }
 
     private void updatePdfsList() {
