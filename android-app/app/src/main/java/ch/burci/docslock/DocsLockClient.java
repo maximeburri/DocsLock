@@ -34,4 +34,9 @@ public interface DocsLockClient {
     @PUT("/device/{id}")
     Call<Device> setFirebaseToken(@Path("id") String deviceId,
                                         @Field("firebaseToken") String firebaseToken);
+
+    @FormUrlEncoded
+    @PUT("/device/{id}")
+    Call<Device> setIsLockedDevice(@Path("id") String deviceId,
+                                  @Field("isLocked") boolean isLocked);
 }

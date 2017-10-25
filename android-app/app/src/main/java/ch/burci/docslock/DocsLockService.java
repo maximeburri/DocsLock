@@ -99,6 +99,20 @@ public class DocsLockService {
         });
     }
 
+    public static void setIsLockedDevice(Boolean isLocked){
+        if(deviceId == null) return;
+        client.setIsLockedDevice(deviceId, isLocked).enqueue(new Callback<Device>() {
+            @Override
+            public void onResponse(Call<Device> call, Response<Device> response) {
+                Log.d("DocsLockService", "isLocked changed");
+            }
+
+            @Override
+            public void onFailure(Call<Device> call, Throwable t) {
+                Log.e("DocsLockService", t.getMessage());
+            }
+        });
+    }
 
     private static void setDeviceId(Context context, String id){
         deviceId = id;

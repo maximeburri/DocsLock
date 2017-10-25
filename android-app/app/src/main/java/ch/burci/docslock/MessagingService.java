@@ -7,6 +7,13 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.Map;
+
+import ch.burci.docslock.controllers.MainActivity;
+import ch.burci.docslock.models.PrefUtils;
 
 public class MessagingService extends FirebaseMessagingService {
     public MessagingService() {
@@ -19,6 +26,17 @@ public class MessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d("MessagingService", "Message data payload: " + remoteMessage.getData());
+
+            // Save to last device
+            Map<String, String> data = remoteMessage.getData();
+            PrefUtils.setLastDevice(data.get("device"), this);
+            DeviceWithGroup newDevice = PrefUtils.getLastDevice(this);
+
+            // Re-open app or restart with "UPDATE" message intent
+            Intent startIntent = new Intent(this, MainActivity.class);
+            startIntent.putExtra("UPDATE", true);
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(startIntent);
         }
 
         // Check if message contains a notification payload.

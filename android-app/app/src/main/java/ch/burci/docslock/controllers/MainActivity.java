@@ -40,7 +40,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import ch.burci.docslock.Config;
+import ch.burci.docslock.DeviceWithGroup;
+import ch.burci.docslock.DocsLockClient;
 import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
@@ -83,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Auto unlock device when run activity
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
         //read list pdf in assets and create ArrayList of PDF
@@ -109,6 +117,16 @@ public class MainActivity extends AppCompatActivity {
         checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
+
+        updateDeviceStatus();
+    }
+
+    private void updateDeviceStatus() {
+        // Read status
+        DeviceWithGroup device = PrefUtils.getLastDevice(this);
+
+        boolean lock = device.getGroup() != null && device.getGroup().isLocked();
+        setLock(lock);
     }
 
     private void updatePdfsList() {
@@ -146,6 +164,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Update icon list
         updateLockIcon();
+
+        if(locked)
+            Toast.makeText(this, "Locked", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Unlocked", Toast.LENGTH_SHORT).show();
+
+        // Send the isLocked status to server
+        DocsLockService.setIsLockedDevice(locked);
     }
 
     public void updateLockIcon(){
@@ -242,6 +268,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("MainActivity-Intent", intent.toString());
+
+        // If it's a "update" intent
+        if(intent.getBooleanExtra("UPDATE", false))
+            updateDeviceStatus();
+
+        super.onNewIntent(intent);
     }
 
     /***

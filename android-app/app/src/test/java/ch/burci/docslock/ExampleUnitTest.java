@@ -1,5 +1,11 @@
 package ch.burci.docslock;
 
+import android.provider.Settings;
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,7 +17,63 @@ import static org.junit.Assert.*;
  */
 public class ExampleUnitTest {
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void parsing_device() throws Exception {
+        /*
+        {
+                "group": {
+                  "name": "Group 3",
+                  "createdAt": "2017-10-13T08:58:38.808Z",
+                  "updatedAt": "2017-10-20T11:03:23.457Z",
+                  "id": 4,
+                  "isLocked": false
+                },
+                "mac": "Maxime Natel",
+                "isActive": false,
+                "firebaseToken": "fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr",
+                "createdAt": "2017-10-17T08:47:59.795Z",
+                "updatedAt": "2017-10-20T11:03:23.460Z",
+                "id": 36,
+                "isLocked": "false"
+              }
+         */
+        String sb = "{" +
+                "    \"group\": {" +
+                "      \"name\": \"Group 3\"," +
+                "      \"createdAt\": \"2017-10-13T08:58:38.808Z\"," +
+                "      \"updatedAt\": \"2017-10-20T11:03:23.457Z\"," +
+                "      \"id\": 4," +
+                "      \"isLocked\": false" +
+                "    }," +
+                "    \"mac\": \"Maxime Natel\"," +
+                "    \"isActive\": false," +
+                "    \"firebaseToken\": \"fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr\"," +
+                "    \"createdAt\": \"2017-10-17T08:47:59.795Z\"," +
+                "    \"updatedAt\": \"2017-10-20T11:03:23.460Z\"," +
+                "    \"id\": 36," +
+                "    \"isLocked\": \"false\"" +
+                "  }";
+
+        Gson gson = new GsonBuilder().create();
+        DeviceWithGroup device = gson.fromJson(sb, DeviceWithGroup.class);
+        assertEquals(device.getGroup().getName(), "Group 3");
+        assertEquals(device.getGroup().isLocked(), false);
+    }
+
+    @Test
+    public void parsing_deviceNoGroup() throws Exception {
+        String sb2 = "{" +
+                "    \"group\": null," +
+                "    \"mac\": \"Maxime Natel\"," +
+                "    \"isActive\": false," +
+                "    \"firebaseToken\": \"fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr\"," +
+                "    \"createdAt\": \"2017-10-17T08:47:59.795Z\"," +
+                "    \"updatedAt\": \"2017-10-20T11:03:23.460Z\"," +
+                "    \"id\": 36," +
+                "    \"isLocked\": \"false\"" +
+                "  }";
+
+        Gson gson2 = new GsonBuilder().create();
+        DeviceWithGroup device2 = gson2.fromJson(sb2, DeviceWithGroup.class);
+        assertEquals(device2.getGroup(), null);
     }
 }
