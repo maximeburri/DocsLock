@@ -19,8 +19,14 @@
       <td>{{ device.id }}</td>
       <td>{{ device.mac }}</td>
       <td>
-        <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
-        <i class="material-icons" *ngIf="!device.isActive">pause</i>
+        <span id="status-play">
+          <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
+          <i class="material-icons" *ngIf="!device.isActive">pause</i>
+        </span>
+        <span id="status-lock">
+          <i class="material-icons" *ngIf="device.isLocked">lock</i>
+          <i class="material-icons" *ngIf="!device.isLocked">lock_open</i>
+        </span>
       </td>
     </tr>
   </tbody>

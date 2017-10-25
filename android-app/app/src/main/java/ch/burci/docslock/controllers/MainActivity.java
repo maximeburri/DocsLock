@@ -177,6 +177,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Locked", Toast.LENGTH_SHORT).show();
         else
             Toast.makeText(this, "Unlocked", Toast.LENGTH_SHORT).show();
+
+        // Send the isLocked status to server
+        DocsLockService.setIsLockedDevice(locked);
     }
 
     public void updateLockIcon(){

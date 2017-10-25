@@ -9,6 +9,11 @@ module.exports = {
       required : true, 
       defaultsTo : false
     },
+    isLocked : {
+      type : 'boolean', 
+      required : true, 
+      defaultsTo : false
+    },
     firebaseToken : {
       type : 'string',
       defaultsTo : null
