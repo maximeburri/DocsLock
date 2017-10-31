@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -99,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 "http://cdn-10.nikon-cdn.com/pdf/manuals/dslr/D60_fr.pdf",
                 "http://www.who.int/hrh/resources/WISN_FR_Software-manual.pdf?ua=1"};
         //downloadPDFs(pdfsToDownload);
-        //deletePdfs();
+        deletePdfs();
 
         updatePdfsList();
 
@@ -306,7 +307,16 @@ public class MainActivity extends AppCompatActivity {
     public void deletePdfs(){
         // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
         File pdfsFolder = getExternalFilesDir("pdf");
-        pdfsFolder.delete();
+
+        if (pdfsFolder.isDirectory()) {
+            for (File c : pdfsFolder.listFiles()) {
+                c.delete();
+            }
+        } else if (pdfsFolder.getAbsolutePath().endsWith("pdf")) {
+            if (!pdfsFolder.delete()) {
+                new FileNotFoundException("Failed to delete file: " + pdfsFolder);
+            }
+        }
     }
 
     /***
