@@ -40,9 +40,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import ch.burci.docslock.Config;
+
 import ch.burci.docslock.DeviceWithGroup;
-import ch.burci.docslock.DocsLockClient;
 import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
@@ -105,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         updatePdfsList();
 
         //create container and commit de currentFragment
-        this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfAlarm
-        this.currentFragment = this.listFragment; //first currentFragment open is listOfAlarm
+        this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfPDF
+        this.currentFragment = this.listFragment; //first currentFragment open is listOfPDF
         this.commitFragmentTransaction(false);
 
         // Check if is locked
@@ -342,6 +341,10 @@ public class MainActivity extends AppCompatActivity {
     BroadcastReceiver receiverDowloadsCompleted=new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             MainActivity.this.updatePdfsList();// Do Something
+            //create container and commit de currentFragment
+            MainActivity.this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfPDF
+            MainActivity.this.currentFragment = MainActivity.this.listFragment; //first currentFragment open is listOfPDF
+            MainActivity.this.commitFragmentTransaction(false);
             //lorsque un pdf a finis de telecharger
         }
     };
