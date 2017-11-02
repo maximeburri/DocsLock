@@ -1,17 +1,17 @@
-<button md-raised-button color="primary" [mdMenuTriggerFor]="menuSelection">{{(devices|devicesSelected).length}} selected </button>
-<md-menu #menuSelection="mdMenu">
-    <button md-menu-item (click)="selectAll()">All</button>
-    <button md-menu-item (click)="selectNone()">None</button>
-</md-menu>
-<button md-raised-button color="primary" [mdMenuTriggerFor]="menu" [disabled]="(devices|devicesSelected).length == 0">
+<button mat-raised-button color="primary" [matMenuTriggerFor]="menuSelection">{{(devices|devicesSelected).length}} selected </button>
+<mat-menu #menuSelection="matMenu">
+    <button mat-menu-item (click)="selectAll()">All</button>
+    <button mat-menu-item (click)="selectNone()">None</button>
+</mat-menu>
+<button mat-raised-button color="primary" [matMenuTriggerFor]="menu" [disabled]="(devices|devicesSelected).length == 0">
     Group to
 </button>
-<md-menu #menu="mdMenu">
-    <button md-menu-item>New...</button>
-    <md-divider></md-divider>
-    <button *ngFor="let group of groups" (click)="groupTo(group)" md-menu-item [disabled]="currentGroup && group.id == currentGroup.id">
+<mat-menu #menu="matMenu">
+    <button mat-menu-item>New...</button>
+    <mat-divider></mat-divider>
+    <button *ngFor="let group of groups" (click)="groupTo(group)" mat-menu-item [disabled]="currentGroup && group.id == currentGroup.id">
         {{group.name}}
     </button>
-    <md-divider></md-divider>
-    <button md-menu-item [disabled]="!currentGroup" (click)="groupTo(group)">None</button>
-</md-menu>
+    <mat-divider></mat-divider>
+    <button mat-menu-item [disabled]="!currentGroup" (click)="groupTo(group)">None</button>
+</mat-menu>

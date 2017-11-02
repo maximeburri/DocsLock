@@ -1,28 +1,28 @@
-<md-sidenav-container class="example-container">
-  <md-sidenav #sidenav class="example-sidenav">
-    <md-nav-list>
-      <a md-list-item>
-        <md-icon md-list-icon>tablet_android</md-icon>
-        <span md-line>Devices</span>
-        <span md-line class="secondary">Manage devices and groups</span>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav class="example-sidenav">
+    <mat-nav-list>
+      <a mat-list-item>
+        <mat-icon mat-list-icon>tablet_android</mat-icon>
+        <span matLine>Devices</span>
+        <span matLine class="secondary">Manage devices and groups</span>
       </a>
-      <a md-list-item>
-        <md-icon md-list-icon>insert_drive_files</md-icon>
-        <span md-line>Files</span>
-        <span md-line class="secondary">Manage files and storage</span>
+      <a mat-list-item>
+        <mat-icon mat-list-icon>insert_drive_files</mat-icon>
+        <span matLine>Files</span>
+        <span matLine class="secondary">Manage files and storage</span>
       </a>
-    </md-nav-list>
-  </md-sidenav>
+    </mat-nav-list>
+  </mat-sidenav>
 
   <div class="example-sidenav-content">
-    <md-toolbar>
-      <button md-button class="button-menu">
-            <md-icon class="md-24" (click)="sidenav.open()">menu</md-icon>
+    <mat-toolbar>
+      <button mat-button class="button-menu">
+            <mat-icon class="md-24" (click)="sidenav.open()">menu</mat-icon>
           </button>
       <img height="50px" src="/assets/img/logo.png" />
-    </md-toolbar>
+    </mat-toolbar>
     
     <router-outlet></router-outlet>
   </div>
 
-</md-sidenav-container>
+</mat-sidenav-container>

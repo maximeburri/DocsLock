@@ -1,45 +1,45 @@
 <div class="card-container">
-    <md-card class="example-card">
-        <md-card-header>
-            <md-card-title>
+    <mat-card class="example-card">
+        <mat-card-header>
+            <mat-card-title>
                 <h3>Devices</h3>
-            </md-card-title>
-        </md-card-header>
-        <md-card-actions>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
             <devices-actions 
                 [devices]="devices | devicesGroup:undefined"
                 [groups]="groups"  
                 [currentGroup]="undefined"
             ></devices-actions>
-        </md-card-actions>
-        <md-card-content>
+        </mat-card-actions>
+        <mat-card-content>
             <table-devices [devices]="devices | devicesGroup:undefined"></table-devices>
-        </md-card-content>
-    </md-card>
+        </mat-card-content>
+    </mat-card>
 </div>
 
 <div class="card-container" *ngFor="let group of groups">
-    <md-card class="example-card">
-        <md-card-header>
-            <md-card-title>
+    <mat-card class="example-card">
+        <mat-card-header>
+            <mat-card-title>
                 <h3>{{ group.name }}</h3>
-            </md-card-title>
-        </md-card-header>
-        <md-card-actions>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
             <div style="width:100%; margin-bottom:8px;" *ngIf="!group.isLocked" (click)="setGroupLocked(group, true)">
-                <button md-raised-button><i class="material-icons">lock_open</i> Lock </button>
+                <button mat-raised-button><i class="material-icons">lock_open</i> Lock </button>
             </div>
             <div style="width:100%; margin-bottom:8px;" *ngIf="group.isLocked" (click)="setGroupLocked(group, false)">
-                <button md-raised-button><i class="material-icons">lock</i> Unlock </button>
+                <button mat-raised-button><i class="material-icons">lock</i> Unlock </button>
             </div>
             <devices-actions 
                 [devices]="devices | devicesGroup:group"
                 [groups]="groups"  
                 [currentGroup]="group"
             ></devices-actions>
-        </md-card-actions>
-        <md-card-content>
+        </mat-card-actions>
+        <mat-card-content>
             <table-devices [devices]="devices | devicesGroup:group"></table-devices>
-        </md-card-content>
-    </md-card>
+        </mat-card-content>
+    </mat-card>
 </div>
