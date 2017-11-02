@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
         this.viewerFragment = new ViewerFragment();
 
         updateDeviceStatus();
+
+        DocsLockService.setStateDevice(true);
     }
 
     private void updateDeviceStatus() {
@@ -270,14 +272,24 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getActionBar();
         if(actionBar != null)
             actionBar.hide();
-
-        //disable state on device
-        DocsLockService.setStateDevice(true);
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+        //disable state on device
+        if(!isLocked){
+            DocsLockService.setStateDevice(true);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(!isLocked){
+            DocsLockService.setStateDevice(false);
+        }
     }
 
     @Override
@@ -577,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onPause() {
-        DocsLockService.setStateDevice(false);
+
 
         if (timer == null && this.isLocked) {
             myTimerTask = new TaskCheckApplicationInFront();
