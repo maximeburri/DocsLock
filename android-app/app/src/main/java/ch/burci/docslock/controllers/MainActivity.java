@@ -96,11 +96,20 @@ public class MainActivity extends AppCompatActivity {
         //read list pdf in assets and create ArrayList of PDF
         this.mainModel = new MainModel();
 
-        String[] pdfsToDownload ={"https://www.w3.org/Amaya/Distribution/manuel.pdf",
-                "http://cdn-10.nikon-cdn.com/pdf/manuals/dslr/D60_fr.pdf",
-                "http://www.who.int/hrh/resources/WISN_FR_Software-manual.pdf?ua=1"};
+
+
+        ArrayList<String> pdfsToDownload = new ArrayList<String>();
+        pdfsToDownload.add("https://www.w3.org/Amaya/Distribution/manuel.pdf");
+        pdfsToDownload.add("http://cdn-10.nikon-cdn.com/pdf/manuals/dslr/D60_fr.pdf");
+        pdfsToDownload.add("http://www.who.int/hrh/resources/WISN_FR_Software-manual.pdf?ua=1");
+
+        ArrayList<String> pdfsToDelete = new ArrayList<String>();
+        pdfsToDelete.add("manuel.pdf");
+        pdfsToDelete.add("D60_fr.pdf");
+
         //downloadPDFs(pdfsToDownload);
-        deletePdfs();
+        //deletePdfs(null);
+        //deletePdfs(pdfsToDelete);
 
         updatePdfsList();
 
@@ -304,13 +313,17 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
-    public void deletePdfs(){
+    public void deletePdfs(ArrayList<String> pdfList){
         // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
         File pdfsFolder = getExternalFilesDir("pdf");
 
         if (pdfsFolder.isDirectory()) {
             for (File c : pdfsFolder.listFiles()) {
-                c.delete();
+                if(pdfList!=null && pdfList.contains (c.getName())){
+                    c.delete();
+                }else if(pdfList == null){
+                    c.delete();
+                }
             }
         } else if (pdfsFolder.getAbsolutePath().endsWith("pdf")) {
             if (!pdfsFolder.delete()) {
@@ -323,27 +336,45 @@ public class MainActivity extends AppCompatActivity {
      * @desc Method to download List of pdf
      * @param pdfsUrl list of strin who contain pdf url
      */
-    public void downloadPDFs(String[] pdfsUrl) {
+    public void downloadPDFs(ArrayList<String> pdfsUrl) {
+        // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
+        File pdfsFolder = getExternalFilesDir("pdf");
+
         for(String pdfUrl:pdfsUrl) {
-            try {
-                String[] pdfSplit = pdfUrl.split("/");
-                String name = pdfSplit[pdfSplit.length-1];
+            boolean download = true;
+            String[] pdfSplit = pdfUrl.split("/");
+            String name = pdfSplit[pdfSplit.length-1];
+            int endString = name.indexOf(".pdf")+4; //get end of name .pdf
+            name = name.subSequence(0,endString).toString();
 
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl)); /*init a request*/
-                request.setDescription("My description"); //this description apears inthe android notification
-                request.setTitle("My Title");//this description apears in the android notification
+            //create check if pdf exist
+            for (File c : pdfsFolder.listFiles()) {
+                //check if pdf doesn't exist
+                if(name.equals(c.getName())){
+                    download = false;
+                }
+            }
 
-                // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
-                request.setDestinationInExternalFilesDir(getApplicationContext(),
-                        "/pdf",
-                        name); //set destination
-                DownloadManager manager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
-                //start the download and return the id of the download. this id can be use to get info of download
-                final long downloadId = manager.enqueue(request);
-                registerReceiver(receiverDowloadsCompleted, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            //if pdf doesn't exist
+            if(download){
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl)); /*init a request*/
+                    request.setDescription("My description"); //this description apears inthe android notification
+                    request.setTitle("My Title");//this description apears in the android notification
+
+                    // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
+                    request.setDestinationInExternalFilesDir(getApplicationContext(),
+                            "/pdf",
+                            name); //set destination
+                    DownloadManager manager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                    //start the download and return the id of the download. this id can be use to get info of download
+                    final long downloadId = manager.enqueue(request);
+                    registerReceiver(receiverDowloadsCompleted, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
