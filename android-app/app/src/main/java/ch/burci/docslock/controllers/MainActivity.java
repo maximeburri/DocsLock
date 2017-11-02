@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -319,15 +318,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (pdfsFolder.isDirectory()) {
             for (File c : pdfsFolder.listFiles()) {
-                if(pdfList!=null && pdfList.contains (c.getName())){
-                    c.delete();
-                }else if(pdfList == null){
+                if(pdfList==null || pdfList.contains (c.getName())){
                     c.delete();
                 }
-            }
-        } else if (pdfsFolder.getAbsolutePath().endsWith("pdf")) {
-            if (!pdfsFolder.delete()) {
-                new FileNotFoundException("Failed to delete file: " + pdfsFolder);
             }
         }
     }
