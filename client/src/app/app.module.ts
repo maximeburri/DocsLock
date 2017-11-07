@@ -31,6 +31,7 @@ import { TableDevicesComponent } from './devices/table-devices/table-devices.com
 import { DeviceGroupPipe } from './devices/devices-group/devices-group.pipe';
 import { DevicesActionsComponent } from './devices/devices-actions/devices-actions.component';
 import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected.pipe';
+import { DocumentsDialogComponent } from './devices/documents-dialog/documents-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected
     TableDevicesComponent,
     DeviceGroupPipe,
     DevicesActionsComponent,
-    DevicesSelectedPipe
+    DevicesSelectedPipe,
+    DocumentsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -86,6 +88,9 @@ import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected
     MatTableModule,
 
     MatIconModule, MatMenuModule
+  ],
+  entryComponents: [
+    DocumentsDialogComponent
   ],
   providers: [
     {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},

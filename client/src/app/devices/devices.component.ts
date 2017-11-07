@@ -8,6 +8,9 @@ import {
 } from '@angular/animations';
 import { ServerService } from '../common/server.service';
 
+import { MatDialog } from '@angular/material';
+import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.component';
+
 @Component({
     selector: 'devices-cmp',
     templateUrl: './devices.component.html',
@@ -24,13 +27,16 @@ import { ServerService } from '../common/server.service';
                 }))
             )
         ])
+    ],
+    entryComponents:[
+        DocumentsDialogComponent
     ]
 })
 
 export class DevicesComponent implements OnInit {
     public devices = [];
     public groups = [];
-    constructor(private _server : ServerService) { 
+    constructor(private _server : ServerService, public dialog: MatDialog) {
         this._server = _server;
     }
 
@@ -50,5 +56,16 @@ export class DevicesComponent implements OnInit {
 
     setGroupLocked(group: any, isLocked: boolean) {
         this._server.setGroupLocked(group, isLocked);
+    }
+
+    openDocumentsDialog(group: any): void {
+        const dialogRef = this.dialog.open(DocumentsDialogComponent, {
+            data: { group: group }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            console.log(result);
+        });
     }
 }

@@ -37,7 +37,7 @@
                 </span>
                 <span>
                     <span>
-                        <button mat-raised-button><mat-icon>insert_drive_files</mat-icon>
+                        <button mat-raised-button (click)="openDocumentsDialog(group)"><mat-icon>insert_drive_files</mat-icon>
                             <span [ngPlural]="group.documents.length">
                                 <ng-template ngPluralCase="0">Documents</ng-template>
                                 <ng-template ngPluralCase="one">{{group.documents.length}} document</ng-template>
