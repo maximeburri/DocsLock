@@ -1,5 +1,6 @@
 .mat-card-actions{
     color:black;
+    width:100%;
 }
 
 .mat-card-title{
@@ -9,4 +10,14 @@
 .mat-card{
     margin-left: 24px;
     margin-top: 24px;
+}
+
+.group-actions {
+    width:100%;
+    margin-bottom:8px;
+}
+
+.mat-raised-button{
+    margin-right:4px !important;
+    margin-bottom:4px !important;
 }

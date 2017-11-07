@@ -26,11 +26,26 @@
             </mat-card-title>
         </mat-card-header>
         <mat-card-actions>
-            <div style="width:100%; margin-bottom:8px;" *ngIf="!group.isLocked" (click)="setGroupLocked(group, true)">
-                <button mat-raised-button><i class="material-icons">lock_open</i> Lock </button>
-            </div>
-            <div style="width:100%; margin-bottom:8px;" *ngIf="group.isLocked" (click)="setGroupLocked(group, false)">
-                <button mat-raised-button><i class="material-icons">lock</i> Unlock </button>
+            <div class="group-actions">
+                <span>
+                    <span *ngIf="!group.isLocked" (click)="setGroupLocked(group, true)">
+                        <button mat-raised-button><mat-icon>lock_open</mat-icon> Lock </button>
+                    </span>
+                    <span *ngIf="group.isLocked" (click)="setGroupLocked(group, false)">
+                        <button mat-raised-button><mat-icon>lock</mat-icon> Unlock </button>
+                    </span>
+                </span>
+                <span>
+                    <span>
+                        <button mat-raised-button><mat-icon>insert_drive_files</mat-icon>
+                            <span [ngPlural]="group.documents.length">
+                                <ng-template ngPluralCase="0">Documents</ng-template>
+                                <ng-template ngPluralCase="one">{{group.documents.length}} document</ng-template>
+                                <ng-template ngPluralCase="other">{{group.documents.length}} documents</ng-template>
+                            </span>
+                        </button>
+                    </span>
+                </span>
             </div>
             <devices-actions 
                 [devices]="devices | devicesGroup:group"
