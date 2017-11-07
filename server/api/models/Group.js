@@ -4,13 +4,17 @@ module.exports = {
       type : 'string',
       required : true
     },
+    isLocked: {
+      type : 'boolean',
+      defaultTo : false
+    },
     devices: {
       collection : 'device',
       via : 'group'
     },
-    isLocked: {
-      type : 'boolean',
-      defaultTo : false
+    documents: {
+      collection : 'document',
+      via : 'groups'
     }
   }
 };
