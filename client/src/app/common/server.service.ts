@@ -6,8 +6,11 @@ import { Observable, Subject } from 'rxjs';
 export class ServerService {
   private devices = [];
   private groups = [];
+  private documents = [];
+
   private promiseDevices: Promise<any>;
   private promiseGroups: Promise<any>;
+  private promiseDocuments: Promise<any>;
 
   constructor(private sailsService: SailsService) {
     this.sailsService
@@ -29,6 +32,13 @@ export class ServerService {
       this.promiseGroups = this.getArrayDataModelAndUpdate("group", this.groups);
     return this.promiseGroups;
   }
+
+  public getDocuments(): Promise<any> {
+    if (!this.promiseDocuments)
+      this.promiseDocuments = this.getArrayDataModelAndUpdate('document', this.documents);
+    return this.promiseDocuments;
+  }
+
 
   private getArrayDataModelAndUpdate(model: string, arrayResult: Array<any>): Promise<any> {
     this.sailsService.on(model).subscribe(
