@@ -150,4 +150,13 @@ export class ServerService {
       }
     });
   }
+
+  public setGroupDocumentsId(group: any, documentsId: any[]) {
+    return this.post(`/group/${group.id}/`, {documents: documentsId}).toPromise()
+    .then((result) => {
+      // Copy without change reference (to change everything)
+      Object.assign(group, result.data);
+    })
+    .catch(error => console.error(error));
+  }
 }

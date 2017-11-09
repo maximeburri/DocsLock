@@ -9,7 +9,7 @@ import {ServerService} from '../../common/server.service';
 })
 export class DocumentsDialogComponent {
   private documents = [];
-  private documentsIdIn: number[] = [];
+  private documentsIdInGroup: number[] = [];
   public documentsInGroup: any[] = [];
   public documentsNotInGroup: any[] = [];
 
@@ -18,7 +18,7 @@ export class DocumentsDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private server: ServerService
   ) {
-    this.documentsIdIn = this.data.group.documents.map(d => d.id);
+    this.documentsIdInGroup = this.data.group.documents.map(d => d.id);
     server.getDocuments().then(documents => {
       this.documents = documents;
       this.updateDocuments();
@@ -31,25 +31,30 @@ export class DocumentsDialogComponent {
   }
 
   private getDocumentsInGroup(): any[] {
-    return this.documents.filter(g => g && this.documentsIdIn.includes(g.id));
+    return this.documents.filter(g => g && this.documentsIdInGroup.includes(g.id));
   }
 
   private getDocumentsNotInGroup(): any[] {
-    return this.documents.filter(g => g && !this.documentsIdIn.includes(g.id));
+    return this.documents.filter(g => g && !this.documentsIdInGroup.includes(g.id));
   }
 
-  public removeDocument(document):void {
-    this.documentsIdIn = this.documentsIdIn.filter(d => d !== document.id);
+  public removeDocument(document): void {
+    this.documentsIdInGroup = this.documentsIdInGroup.filter(d => d !== document.id);
     this.updateDocuments();
   }
 
-  public addDocument(document):void {
-    this.documentsIdIn.push(document.id);
+  public addDocument(document): void {
+    this.documentsIdInGroup.push(document.id);
     this.updateDocuments();
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
+  public cancel(): void {
+    this.dialogRef.close(false);
+  }
+
+  public validDocumentsInGroup(): void {
+    this.server.setGroupDocumentsId(this.data.group, this.documentsIdInGroup);
+    this.dialogRef.close(true);
   }
 
 }

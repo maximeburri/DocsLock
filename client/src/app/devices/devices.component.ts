@@ -56,13 +56,8 @@ export class DevicesComponent implements OnInit {
     }
 
     openDocumentsDialog(group: any): void {
-        const dialogRef = this.dialog.open(DocumentsDialogComponent, {
+        this.dialog.open(DocumentsDialogComponent, {
             data: { group: group }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            console.log(result);
         });
     }
 }
