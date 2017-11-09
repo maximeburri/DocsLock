@@ -1,5 +1,10 @@
 <div class="main-content">
 <div class="container-fluid">
-   Files
+    <mat-list>
+        <mat-list-item *ngFor="let document of documents">
+            <i class="material-icons red">picture_as_pdf</i> 
+            &nbsp;{{document.filename}}
+        </mat-list-item>
+    </mat-list>
 </div>
 </div>

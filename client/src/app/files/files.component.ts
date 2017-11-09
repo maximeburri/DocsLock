@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ServerService } from '../common/server.service';
+
 @Component({
     selector: 'files-cmp',
     templateUrl: './files.component.html',
@@ -7,8 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class FilesComponent implements OnInit{
-    ngOnInit(){
+    public documents = [];
+    constructor(private _server : ServerService) {
+        this._server = _server;
+    }
 
+    ngOnInit(){
+        this._server.getDocuments().then(documents => this.documents = documents);
     }
 }
 
