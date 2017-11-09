@@ -27,9 +27,6 @@ import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.co
                 }))
             )
         ])
-    ],
-    entryComponents:[
-        DocumentsDialogComponent
     ]
 })
 

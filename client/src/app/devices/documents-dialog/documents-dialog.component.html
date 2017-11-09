@@ -1,9 +1,41 @@
-<h1 mat-dialog-title>Documents </h1>
+<h1 mat-dialog-title>Documents of {{data.group.name}} </h1>
 <div mat-dialog-content>
-  <p>What's your favorite animal? </p>
-  <mat-form-field>
-    <input matInput tabindex="1" [(ngModel)]="data.animal">
-  </mat-form-field>
+  <div class="documents-part">
+    <h2>In this group</h2>
+    <table class="table mat-elevation-z2" *ngIf="documentsInGroup.length > 0">
+      <thead class="text-info">
+      </thead>
+      <tbody>
+        <tr *ngFor="let document of documentsInGroup">
+          <td>
+            {{document.filename}}
+          </td>
+          <td>
+            <button mat-raised-button color="primary" class="action-button" (click)="removeDocument(document)">-</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="documentsInGroup.length == 0" class="info">No documents</p>
+  </div>
+  <div class="documents-part">
+    <h2>All documents</h2>
+    <table class="table mat-elevation-z2" *ngIf="documentsNotInGroup.length > 0">
+      <thead class="text-info">
+      </thead>
+      <tbody>
+        <tr *ngFor="let document of documentsNotInGroup">
+          <td>
+            {{document.filename}}
+          </td>
+          <td>
+            <button mat-raised-button color="primary" class="action-button" (click)="addDocument(document)">+</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="documentsNotInGroup.length == 0" class="info">No more documents</p>
+  </div>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="data.animal" tabindex="2">Ok</button>

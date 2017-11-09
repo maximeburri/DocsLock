@@ -33,6 +33,8 @@ import { DevicesActionsComponent } from './devices/devices-actions/devices-actio
 import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected.pipe';
 import { DocumentsDialogComponent } from './devices/documents-dialog/documents-dialog.component';
 
+import { ServerService } from './common/server.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,6 +96,7 @@ import { DocumentsDialogComponent } from './devices/documents-dialog/documents-d
   ],
   providers: [
     {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
+    ServerService
   ],
   bootstrap: [AppComponent]
 })
