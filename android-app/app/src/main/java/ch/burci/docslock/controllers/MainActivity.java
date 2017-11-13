@@ -135,9 +135,14 @@ public class MainActivity extends AppCompatActivity {
         // Read status
         DeviceWithGroup device = PrefUtils.getLastDevice(this);
 
+
+        Log.d(MainActivity.class.toString(),"Update device");
         if(device != null) {
             boolean lock = device.getGroup() != null && device.getGroup().isLocked();
-            setLock(lock);
+
+            // Change lock ?
+            if(lock != isLocked)
+                setLock(lock);
         }
     }
 
