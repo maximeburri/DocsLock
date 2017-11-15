@@ -1,10 +1,39 @@
-<div class="main-content">
-<div class="container-fluid">
-    <mat-list>
-        <mat-list-item *ngFor="let document of documents">
-            <i class="material-icons red">picture_as_pdf</i> 
-            &nbsp;{{document.filename}}
-        </mat-list-item>
-    </mat-list>
+
+<div class="card-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                <h3>Documents</h3>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-actions>
+            <button mat-raised-button color="primary">Import</button>
+        </mat-card-actions>
+        <mat-card-content>
+            <table class="table mat-elevation-z2" *ngIf="documents && documents.length > 0">
+                <thead class="text-info">
+                  <!--<tr>
+                    <th></th>
+                    <th>Type</th>
+                    <th>ID</th>
+                    <th>Mac</th>
+                    <th>Status</th>
+                  </tr>-->
+                </thead>
+                <tbody>
+                  <tr *ngFor="let document of documents">
+                    <td>
+                        <i class="material-icons red">picture_as_pdf</i> 
+                    </td>
+                    <td>
+                        {{document.filename}}
+                    </td>
+                  </tr>
+                </tbody>
+                </table>
+                <i *ngIf="!documents || documents.length == 0">No documents</i>
+        </mat-card-content>
+    </mat-card>
 </div>
-</div>
+
+
