@@ -34,6 +34,9 @@ import { DevicesSelectedPipe } from './devices/devices-selected/devices-selected
 import { DocumentsDialogComponent } from './devices/documents-dialog/documents-dialog.component';
 
 import { ServerService } from './common/server.service';
+import { FileUploadComponent } from './files/file-upload/file-upload.component';
+
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,8 @@ import { ServerService } from './common/server.service';
     DeviceGroupPipe,
     DevicesActionsComponent,
     DevicesSelectedPipe,
-    DocumentsDialogComponent
+    DocumentsDialogComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +60,7 @@ import { ServerService } from './common/server.service';
     AppRoutingModule,
     SailsModule.forRoot(),
     BrowserAnimationsModule,
+    HttpClientModule,
     
     CdkTableModule,
     MatAutocompleteModule,

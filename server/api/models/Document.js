@@ -15,6 +15,9 @@ module.exports = {
       collection : 'group',
       via : 'documents',
       dominant: true
+    },
+    filepath : {
+      type:'string'
     }
   }
 };

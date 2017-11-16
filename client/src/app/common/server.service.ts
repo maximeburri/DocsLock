@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SailsService } from 'angular2-sails';
 import { Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+const API_URL = 'http://127.0.0.1:1337';
 
 @Injectable()
 export class ServerService {
@@ -12,9 +15,10 @@ export class ServerService {
   private promiseGroups: Promise<any>;
   private promiseDocuments: Promise<any>;
 
-  constructor(private sailsService: SailsService) {
+  
+  constructor(private sailsService: SailsService, public http: HttpClient) {
     this.sailsService
-      .connect("http://127.0.0.1:1337")
+      .connect(API_URL)
       .subscribe(
       t => console.log("Connected"),
       e => console.error(e)
@@ -156,6 +160,17 @@ export class ServerService {
     .then((result) => {
       // Copy without change reference (to change everything)
       Object.assign(group, result.data);
+    })
+    .catch(error => console.error(error));
+  }
+
+  public uploadDocument(document: any) {
+    // We need to post over HTTP instead of this.http
+    return this.http.post(`${API_URL}/document/`,
+      document
+    ).toPromise()
+    .then((result) => {
+      // Update view...
     })
     .catch(error => console.error(error));
   }
