@@ -28,6 +28,9 @@
                     <td>
                         {{document.filename}}
                     </td>
+                    <td>
+                        <button mat-raised-button color="primary" (click)="download(document)"><mat-icon mat-list-icon>file_download</mat-icon></button>
+                    </td>
                   </tr>
                 </tbody>
                 </table>

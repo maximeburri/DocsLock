@@ -22,7 +22,6 @@ export class FileUploadComponent implements OnInit {
             const formData = new FormData();
             const file  = inputEl.files.item(i);
             formData.append('file', file);
-            formData.append('filename', 'test2');
             this._server.uploadDocument(formData);
         }
     }

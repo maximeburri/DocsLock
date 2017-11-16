@@ -171,7 +171,12 @@ export class ServerService {
     ).toPromise()
     .then((result) => {
       // Update view...
+      console.log(result);
     })
     .catch(error => console.error(error));
+  }
+
+  public downloadDocument(document : any){
+    window.location.href = 'http://127.0.0.1:1337/document/download/' + document.id;
   }
 }

@@ -47,5 +47,5 @@ module.exports.routes = {
   ***************************************************************************/
 
   'POST /device/:id/push': 'DeviceController.push',
-  
+  'GET /document/download/:id' : 'DocumentController.download'
 };

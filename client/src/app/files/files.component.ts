@@ -17,5 +17,9 @@ export class FilesComponent implements OnInit{
     ngOnInit(){
         this._server.getDocuments().then(documents => this.documents = documents);
     }
+
+    public download(document:any){
+        window.location.href = 'http://127.0.0.1:1337/document/download/' + document.id;
+      }
 }
 
