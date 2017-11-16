@@ -19,7 +19,7 @@ export class FilesComponent implements OnInit{
     }
 
     public download(document:any){
-        window.location.href = 'http://127.0.0.1:1337/document/download/' + document.id;
-      }
+        this._server.downloadDocument(document);
+    }
 }
 
