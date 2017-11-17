@@ -7,6 +7,7 @@
 
 module.exports = {
     create: function (req, res) {
+
         let file = req.file('file');
         if (!file && file._files[0])
             return res.badRequest("No file");
@@ -22,6 +23,8 @@ module.exports = {
         Document.create({ filename: filename })
             .exec(function (err, document) {
                 if (err) return res.negotiate(err);
+                
+                //Document.subscribe(req, [document]);
 
                 req.file('file').upload({
                     // don't allow the total upload size to exceed ~10MB
@@ -48,7 +51,7 @@ module.exports = {
                         .exec(function (err,document) {
                             console.log(document);
                             if (err) return res.negotiate(err);
-                            return res.json({ result: "OK" });
+                            return res.json(document);
                         });
                 });
             });
@@ -72,7 +75,7 @@ module.exports = {
         
             // set the filename to the same file as the user uploaded
             res.set("Content-disposition", "attachment; filename='" + encodeURIComponent(document.filename) + "'");
-        
+            
             // Stream the file down
             fileAdapter.read(document.filepath)
             .on('error', function (err){

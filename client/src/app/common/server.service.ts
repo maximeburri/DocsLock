@@ -170,8 +170,10 @@ export class ServerService {
       document
     ).toPromise()
     .then((result) => {
-      // Update view...
-      console.log(result);
+      // Update documents array
+      if(result && result[0]) {
+        this.documents.push(result[0]);
+      }
     })
     .catch(error => console.error(error));
   }
