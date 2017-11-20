@@ -181,4 +181,16 @@ export class ServerService {
   public downloadDocument(document : any){
     window.location.href = 'http://127.0.0.1:1337/document/download/' + document.id;
   }
+
+  public removeDocument(document : any){
+    return this.http.delete(`${API_URL}/document/${document.id}`).toPromise()
+    .then((result) => {
+      // Update documents array
+      if(result) {
+        const index = this.documents.findIndex((d) => d.id === document.id);
+        this.documents.splice(index, 1);
+      }
+    })
+    .catch(error => console.error(error));
+  }
 }

@@ -5,6 +5,9 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var SkipperDisk = require('skipper-disk');
+var fs = require('fs');
+
 module.exports = {
     create: function (req, res) {
 
@@ -70,7 +73,6 @@ module.exports = {
               return res.notFound();
             }
         
-            var SkipperDisk = require('skipper-disk');
             var fileAdapter = SkipperDisk();
         
             // set the filename to the same file as the user uploaded
@@ -83,7 +85,24 @@ module.exports = {
             })
             .pipe(res);
           });
-        }
-        
+        },
+
+    destroy: function (req, res){
+        req.validate({
+            id: 'string'
+        });
+        Document.destroy({id: req.param('id')}).exec(function (err, document){
+            document = document[0];
+            console.log(document);
+            if (err) {
+              return res.negotiate(err);
+            }
+            fs.unlink(document.filepath, function(err) {
+                if (err) return res.negotiate(err); 
+                //document.destroy();
+                return res.ok({result:"Destroyed"});
+              });
+          });
+    }
 };
 

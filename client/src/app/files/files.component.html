@@ -29,7 +29,8 @@
                         {{document.filename}}
                     </td>
                     <td>
-                        <button mat-raised-button color="primary" (click)="download(document)"><mat-icon mat-list-icon>file_download</mat-icon></button>
+                        <button mat-icon-button color="primary" (click)="download(document)"><mat-icon mat-list-icon>file_download</mat-icon></button>
+                        <button mat-icon-button color="warn" (click)="remove(document)"><mat-icon mat-list-icon>delete_forever</mat-icon></button>
                     </td>
                   </tr>
                 </tbody>

@@ -21,5 +21,9 @@ export class FilesComponent implements OnInit{
     public download(document:any){
         this._server.downloadDocument(document);
     }
+
+    public remove(document:any){
+        this._server.removeDocument(document);
+    }
 }
 
