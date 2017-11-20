@@ -14,15 +14,23 @@ module.exports = {
         .findOne({id: id})
         .populateAll()
         .then(function (device) {
-            var documents = Document.find({"group":device.group.id}).then(
-                function (documemts){
-                    return documemts;
-                }
-            )
+
+            var documents = [];
+            if(device.group){
+                documents = Document.find({"group":device.group.id}).then(
+                    function (documents){
+                        return documents;
+                    }
+                )
+            }
+            
             return [device, documents]; 
-        }).spread(function(device, documemts){
+        }).spread(function(device, documents){
             device = device.toObject();
-            device.group.documemts = documemts;
+
+            if(device.group){
+                device.group.documents = documents;
+            }
             
             var message = {
                 data : {
