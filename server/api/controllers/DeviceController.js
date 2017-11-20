@@ -12,14 +12,17 @@ module.exports = {
 
         Device
         .findOne({id: id})
-        .populate("group")
-        .exec(function (err, device) {
-            if (err) {
-                return res.serverError(err);
-            }
-            if (!device) {
-                return res.notFound('Not found');
-            }
+        .populateAll()
+        .then(function (device) {
+            var documents = Document.find({"group":device.group.id}).then(
+                function (documemts){
+                    return documemts;
+                }
+            )
+            return [device, documents]; 
+        }).spread(function(device, documemts){
+            device = device.toObject();
+            device.group.documemts = documemts;
             
             var message = {
                 data : {
@@ -34,9 +37,11 @@ module.exports = {
                         return res.serverError(err);
                     }
                     // Ok
-                    res.ok("Pushed");
+                    res.json(device);
                 }
             );
+        }).catch(function(err){
+          if(err) return res.serverError(err);  
         });
     }
 };
