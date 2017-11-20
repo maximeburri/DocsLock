@@ -160,6 +160,8 @@ export class ServerService {
     .then((result) => {
       // Copy without change reference (to change everything)
       Object.assign(group, result.data);
+
+      this.pushDevices(group);
     })
     .catch(error => console.error(error));
   }
