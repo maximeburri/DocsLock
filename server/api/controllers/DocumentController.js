@@ -30,15 +30,17 @@ module.exports = {
                 //Document.subscribe(req, [document]);
 
                 req.file('file').upload({
-                    // don't allow the total upload size to exceed ~10MB
-                    maxBytes: 10000000
+                    // don't allow the total upload size to exceed ~500MB
+                    maxBytes: 500000000
                 }, function whenDone(err, uploadedFiles) {
                     if (err) {
+                        document.destroy();
                         return res.negotiate(err);
                     }
 
                     // If no files were uploaded, respond with an error.
                     if (uploadedFiles.length === 0) {
+                        document.destroy();
                         return res.badRequest('No file was uploaded');
                     }
 
@@ -56,7 +58,8 @@ module.exports = {
                             if (err) return res.negotiate(err);
                             return res.json(document);
                         });
-                });
+                }
+                );
             });
     },
 
@@ -97,11 +100,14 @@ module.exports = {
             if (err) {
               return res.negotiate(err);
             }
-            fs.unlink(document.filepath, function(err) {
-                if (err) return res.negotiate(err); 
-                //document.destroy();
-                return res.ok({result:"Destroyed"});
-              });
+            if(document.filepath)
+                fs.unlink(document.filepath, function(err) {
+                    if (err) return res.negotiate(err); 
+                    //document.destroy();
+                    return res.ok({result:"Destroyed"});
+                });
+            else
+                return res.ok({result:"Removed from database but not from disk"});
           });
     }
 };
