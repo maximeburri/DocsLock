@@ -43,6 +43,7 @@ import java.util.TimerTask;
 
 import ch.burci.docslock.DeviceWithGroup;
 import ch.burci.docslock.DocsLockService;
+import ch.burci.docslock.Document;
 import ch.burci.docslock.R;
 import ch.burci.docslock.models.HomeKeyLocker;
 import ch.burci.docslock.models.MainModel;
@@ -126,24 +127,70 @@ public class MainActivity extends AppCompatActivity {
 
         this.viewerFragment = new ViewerFragment();
 
-        updateDeviceStatus();
+        updateDeviceStatus(null);
 
         DocsLockService.setStateDevice(true);
     }
 
-    private void updateDeviceStatus() {
+    private void updateDeviceStatus(DeviceWithGroup newDevice) {
         // Read status
-        DeviceWithGroup device = PrefUtils.getLastDevice(this);
+        DeviceWithGroup oldDevice = PrefUtils.getLastDevice(this);
+        boolean deviceNull = false;
 
+        if(newDevice == null) {
+            newDevice = oldDevice;
+            deviceNull = true;
+        }
 
         Log.d(MainActivity.class.toString(),"Update device");
-        if(device != null) {
-            boolean lock = device.getGroup() != null && device.getGroup().isLocked();
+        if(newDevice != null) {
+            boolean lock = newDevice.getGroup() != null && newDevice.getGroup().isLocked();
 
             // Change lock ?
             if(lock != isLocked)
                 setLock(lock);
         }
+
+
+        // !! Check :
+        // - oldDocuments are not null (if new installation)
+        // - old group can be null -> add all documents
+        // - new group can be null -> remove all documents
+
+
+        ArrayList<Document> oldDocuments = new ArrayList<>();
+        ArrayList<Document> newDocuments = new ArrayList<>();
+        ArrayList<String> documentsToDeleteStr = new ArrayList<>();
+        ArrayList<String> documentsToAddStr = new ArrayList<>();
+        ArrayList<String> documentsToAddNamesStr = new ArrayList<>();
+
+        // Check newGroup = null
+        if(newDevice != null && newDevice.getGroup() != null)
+            newDocuments = newDevice.getGroup().getDocuments();
+        else
+            deletePdfs(null);  // Remove all
+
+        // Check oldGroup = null
+        if(oldDevice != null && oldDevice.getGroup() != null)
+            oldDocuments = oldDevice.getGroup().getDocuments();
+
+        // Get document to delete (oldDocuments notIn newDocuments)
+        for(Document document: oldDocuments )
+            if(!newDocuments.contains(document)) // TODO: Or newDocument.update > document.update
+                documentsToDeleteStr.add(document.getFilename());
+
+        // Get document to add (newDocuments notIn oldDocuments
+        for(Document document: newDocuments )
+            if(!oldDocuments.contains(document)) { // TODO: Or oldDocument.update < document.update
+                documentsToAddStr.add(document.getDownloadLink());
+                documentsToAddNamesStr.add(document.getFilename());
+            }
+
+        deletePdfs(documentsToDeleteStr);
+        downloadPDFs(documentsToAddStr, documentsToAddNamesStr);
+
+        if(newDevice != null)
+            PrefUtils.setLastDevice(newDevice, this);
     }
 
     private void updatePdfsList() {
@@ -302,8 +349,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity-Intent", intent.toString());
 
         // If it's a "update" intent
-        if(intent.getBooleanExtra("UPDATE", false))
-            updateDeviceStatus();
+        if(intent.getBooleanExtra("UPDATE", false)) {
+            String json = intent.getStringExtra("device");
+            DeviceWithGroup newDevice = DeviceWithGroup.fromJSON(json);
+            updateDeviceStatus(newDevice);
+        }
 
         super.onNewIntent(intent);
     }
@@ -340,22 +390,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        updateListFragment();
     }
 
     /***
      * @desc Method to download List of pdf
      * @param pdfsUrl list of strin who contain pdf url
      */
-    public void downloadPDFs(ArrayList<String> pdfsUrl) {
+    public void downloadPDFs(ArrayList<String> pdfsUrl, ArrayList<String> filesNames) {
         // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
         File pdfsFolder = getExternalFilesDir("pdf");
+        int i = 0;
 
-        for(String pdfUrl:pdfsUrl) {
+        for(String pdfUrl:pdfsUrl){
             boolean download = true;
-            String[] pdfSplit = pdfUrl.split("/");
-            String name = pdfSplit[pdfSplit.length-1];
+            String name = filesNames.get(i);
             int endString = name.indexOf(".pdf")+4; //get end of name .pdf
-            name = name.subSequence(0,endString).toString();
 
             //create check if pdf exist
             for (File c : pdfsFolder.listFiles()) {
@@ -370,9 +421,8 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(pdfUrl)); /*init a request*/
-                    request.setDescription("My description"); //this description apears inthe android notification
-                    request.setTitle("My Title");//this description apears in the android notification
-
+                    request.setDescription("Document DocksLock downloading"); //this description apears inthe android notification
+                    request.setTitle("Document");//this description apears in the android notification
                     // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
                     request.setDestinationInExternalFilesDir(getApplicationContext(),
                             "/pdf",
@@ -386,19 +436,23 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            i+=1;
         }
     }
 
     BroadcastReceiver receiverDowloadsCompleted=new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            MainActivity.this.updatePdfsList();// Do Something
-            //create container and commit de currentFragment
-            MainActivity.this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfPDF
-            MainActivity.this.currentFragment = MainActivity.this.listFragment; //first currentFragment open is listOfPDF
-            MainActivity.this.commitFragmentTransaction(false);
-            //lorsque un pdf a finis de telecharger
+            updateListFragment();
         }
     };
+
+    public void updateListFragment(){
+        MainActivity.this.updatePdfsList();// Do Something
+        //create container and commit de currentFragment
+        MainActivity.this.listFragment =  new ListPDFFragment(); //first currentFragment open is listOfPDF
+        MainActivity.this.currentFragment = MainActivity.this.listFragment; //first currentFragment open is listOfPDF
+        MainActivity.this.commitFragmentTransaction(false);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

@@ -29,12 +29,11 @@ public class MessagingService extends FirebaseMessagingService {
 
             // Save to last device
             Map<String, String> data = remoteMessage.getData();
-            PrefUtils.setLastDevice(data.get("device"), this);
-            DeviceWithGroup newDevice = PrefUtils.getLastDevice(this);
 
             // Re-open app or restart with "UPDATE" message intent
             Intent startIntent = new Intent(this, MainActivity.class);
             startIntent.putExtra("UPDATE", true);
+            startIntent.putExtra("device", data.get("device"));
             startIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(startIntent);
         }

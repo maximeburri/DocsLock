@@ -14,11 +14,21 @@ module.exports = {
         .findOne({id: id})
         .populateAll()
         .then(function (device) {
-
             var documents = [];
             if(device.group){
-                documents = Document.find({"group":device.group.id}).then(
+                documents = Document.find().populate("groups").then(
                     function (documents){
+                        documents = 
+                            documents.filter(d => 
+                                d.groups && 
+                                d.groups.map(g => g.id)
+                                    .includes(device.group.id)
+                            ).map(d => {
+                                // Remove groups
+                                // !? donst work ?
+                                delete d.groups;
+                                return d;
+                            });
                         return documents;
                     }
                 )
@@ -27,8 +37,7 @@ module.exports = {
             return [device, documents]; 
         }).spread(function(device, documents){
             device = device.toObject();
-
-            if(device.group){
+            if(device.group){        
                 device.group.documents = documents;
             }
             

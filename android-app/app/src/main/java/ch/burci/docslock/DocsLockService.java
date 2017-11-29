@@ -179,4 +179,7 @@ public class DocsLockService {
         return client;
     }
 
+    public static String getDownloadLinkDocument(Document document){
+        return DocsLockService.API_BASE_URL + "/document/download/" + document.getId();
+    }
 }

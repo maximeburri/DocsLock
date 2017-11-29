@@ -64,14 +64,13 @@ public class PrefUtils {
     }
 
     public static DeviceWithGroup getLastDevice(final Context context){
-        Gson gson = new GsonBuilder().create();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        String jsonDevices = sp.getString(PREF_LAST_DEVICE, null);
-        DeviceWithGroup device = gson.fromJson(jsonDevices, DeviceWithGroup.class);
-        return device;
+        String jsonDevice = sp.getString(PREF_LAST_DEVICE, null);
+        return DeviceWithGroup.fromJSON(jsonDevice);
     }
 
-    public static void setLastDevice(String deviceJson, final Context context){
+    public static void setLastDevice(DeviceWithGroup device, final Context context){
+        String deviceJson = device.toJSON();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(PREF_LAST_DEVICE, deviceJson).commit();
     }
