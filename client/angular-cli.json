@@ -22,8 +22,7 @@
         "./styles.css"
       ],
       "scripts": [
-          "../node_modules/sails.io.js/dist/sails.io.js",
-          "./scripts/disable.js"
+          "../node_modules/sails.io.js/dist/sails.io.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

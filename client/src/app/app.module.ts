@@ -15,7 +15,6 @@ import { FilesComponent } from './files/files.component';
 import { SailsModule } from 'angular2-sails';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 
 import {
@@ -100,7 +99,6 @@ import { HttpClientModule } from '@angular/common/http';
     DocumentsDialogComponent
   ],
   providers: [
-    {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
     ServerService
   ],
   bootstrap: [AppComponent]
