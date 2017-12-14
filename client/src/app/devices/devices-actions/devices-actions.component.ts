@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DevicesSelectedPipe } from '../devices-selected/devices-selected.pipe';
 import { ServerService } from '../../common/server.service';
+import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'devices-actions',
@@ -12,7 +14,7 @@ export class DevicesActionsComponent implements OnInit {
   @Input() groups: any[] = [];
   @Input() currentGroup: any;
 
-  constructor(private server : ServerService) {
+  constructor(private server : ServerService, public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -35,6 +37,18 @@ export class DevicesActionsComponent implements OnInit {
   public selectNone() {
     this.devices.forEach(device => {
       device.isSelected = false;
+    });
+  }
+
+  public openNewGroupDialog() {
+    const dialogRef = this.dialog.open(NewGroupDialogComponent);
+    dialogRef.afterClosed().subscribe(group => {
+      if (group) {
+        const devicesToGroup = this.devices.filter(d => d.isSelected);
+        devicesToGroup.forEach( device => {
+          this.server.setDeviceGroup(device, group);
+        })
+      }
     });
   }
 }

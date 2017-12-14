@@ -7,7 +7,7 @@
     Group to
 </button>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item>New...</button>
+    <button mat-menu-item (click)="openNewGroupDialog()">New...</button>
     <mat-divider></mat-divider>
     <button *ngFor="let group of groups" (click)="groupTo(group)" mat-menu-item [disabled]="currentGroup && group.id == currentGroup.id">
         {{group.name}}

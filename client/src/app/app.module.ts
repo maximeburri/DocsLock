@@ -36,6 +36,7 @@ import { ServerService } from './common/server.service';
 import { FileUploadComponent } from './files/file-upload/file-upload.component';
 
 import { HttpClientModule } from '@angular/common/http';
+import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { HttpClientModule } from '@angular/common/http';
     DevicesActionsComponent,
     DevicesSelectedPipe,
     DocumentsDialogComponent,
-    FileUploadComponent
+    FileUploadComponent,
+    NewGroupDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -96,7 +98,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatIconModule, MatMenuModule
   ],
   entryComponents: [
-    DocumentsDialogComponent
+    DocumentsDialogComponent,
+    NewGroupDialogComponent
   ],
   providers: [
     ServerService

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>New group </h1>
+<div mat-dialog-content>
+    <mat-form-field >
+        <input matInput placeholder="Name" value="" required [(ngModel)]="name">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="newGroup(name)" tabindex="2">Ok</button>
+    <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>
+      

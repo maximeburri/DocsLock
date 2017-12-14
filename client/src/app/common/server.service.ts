@@ -195,4 +195,9 @@ export class ServerService {
     })
     .catch(error => console.error(error));
   }
+
+  public newGroup(name: string) {
+    return this.http.post(`${API_URL}/group/`, {name: name}).toPromise()
+    .catch(error => console.error(error));
+  }
 }
