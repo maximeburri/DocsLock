@@ -164,7 +164,10 @@ export class ServerService {
     const observable = this.sailsService.get(`/${modelName}?limit=0`);
     observable.subscribe(
       result => {
-        Object.assign(modelVariable, result.data);
+        // 1. reset the array while keeping its reference
+        modelVariable.length = 0;
+        // 2. fill the first array with items from the second
+        [].push.apply(modelVariable, result.data);
         console.log(modelName + " updated", result.data);
       },
       error => console.error(error)
