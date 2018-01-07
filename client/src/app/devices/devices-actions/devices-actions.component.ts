@@ -40,11 +40,12 @@ export class DevicesActionsComponent implements OnInit {
     });
   }
 
-  public openNewGroupDialog() {
+  public openNewGroupDialog() {
+    const devicesToGroup = this.devices.filter(d => d.isSelected);
     const dialogRef = this.dialog.open(NewGroupDialogComponent);
-    dialogRef.afterClosed().subscribe(group => {
+    dialogRef.afterClosed().subscribe(result => {
+      const group = result.data;
       if (group) {
-        const devicesToGroup = this.devices.filter(d => d.isSelected);
         devicesToGroup.forEach( device => {
           this.server.setDeviceGroup(device, group);
         })

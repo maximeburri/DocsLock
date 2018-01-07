@@ -15,7 +15,6 @@ export class ServerService {
   private promiseGroups: Promise<any>;
   private promiseDocuments: Promise<any>;
 
-  
   constructor(private sailsService: SailsService, public http: HttpClient) {
     this.sailsService
       .connect(API_URL)
@@ -101,49 +100,87 @@ export class ServerService {
     };
     // Add to the goud group
     if (group)
-      return this.sailsService.post(`/group/${group.id}/devices/${device.id}`).toPromise()
+      return this.post(`/group/${group.id}/devices/${device.id}`).toPromise()
         .then(reponseFunction)
         .catch(error => console.log(error));
     // No group, remove
     else if (device.group.id)
-      return this.sailsService.delete(`/group/${device.group.id}/devices/${device.id}`).toPromise()
+      return this.delete(`/group/${device.group.id}/devices/${device.id}`).toPromise()
         .then(reponseFunction)
         .catch(error => console.log(error));
   }
 
-  public post(url: any, data?: any): Observable<any> {
-    return this.sailsService.post(url, data);
+  public post(url: any, data?: any, updateAllData?: boolean, useHttpClient?: boolean): Observable<any> {
+    if(useHttpClient)
+      return this.http.post(API_URL + url, data);
+    else {
+      const observable = this.sailsService.post(url, data);
+      if(updateAllData === undefined || updateAllData)
+        observable.subscribe(result => { this.updateAllData();});
+      return observable;
+    }
   }
 
-  public get(url: any, data?: any): Observable<any> {
-    return this.sailsService.get(url, data);
+  public get(url: any, data?: any, updateAllData?: boolean, useHttpClient?: boolean): Observable<any> {
+    if(useHttpClient)
+      return this.http.get(API_URL + url, data);
+    else {
+      const observable = this.sailsService.get(url, data);
+      if(updateAllData === undefined || updateAllData)
+        observable.subscribe(result => {this.updateAllData()});
+      return observable;
+    }
   }
 
-  public put(url: any, data?: any): Observable<any> {
-    return this.sailsService.put(url, data);
+  public put(url: any, data?: any, updateAllData?: boolean, useHttpClient?: boolean): Observable<any> {
+    if(useHttpClient)
+      return this.http.put(API_URL + url, data);
+    else {
+      const observable = this.sailsService.put(url, data);
+      if(updateAllData === undefined || updateAllData)
+        observable.subscribe(result => {this.updateAllData()});
+      return observable;
+    }
   }
 
-  public delete(url: any, data?: any): Observable<any> {
-    return this.sailsService.delete(url, data);
+  public delete(url: any, data?: any, updateAllData?: boolean, useHttpClient?: boolean): Observable<any> {
+    if(useHttpClient)
+      return this.http.delete(API_URL + url, data);
+    else {
+      const observable = this.sailsService.delete(url, data);
+      if(updateAllData === undefined || updateAllData)
+        observable.subscribe(result => {this.updateAllData()});
+      return observable;
+    }
+  }
+
+  public updateAllData(): any {
+    this.updateModel('device', this.devices);
+    this.updateModel('group', this.groups);
+    this.updateModel('document', this.documents);
+  }
+
+  private updateModel(modelName: String, modelVariable: any): any {
+    const observable = this.sailsService.get(`/${modelName}?limit=0`);
+    observable.subscribe(
+      result => {
+        Object.assign(modelVariable, result.data);
+        console.log(modelName + " updated", result.data);
+      },
+      error => console.error(error)
+    );
   }
 
   public setGroupLocked(group: any, isLocked: boolean) {
     return this.put(`/group/${group.id}/`, { isLocked: isLocked }).toPromise()
       .then((result) => {
-        this.groups.forEach((g) => {
-          if (g.id === group.id) {
-            g.isLocked = result.data.isLocked;
-          }
-        }
-        );
         this.pushDevices(group);
       })
       .catch(error => console.error(error));
   }
 
   public pushDevice(device: any) {
-    return this.post(`/device/${device.id}/push`).toPromise()
-    .then((result) => {})
+    return this.post(`/device/${device.id}/push`, {}, false /*donst update data*/).toPromise()
     .catch(error => console.error(error));
   }
 
@@ -157,26 +194,15 @@ export class ServerService {
 
   public setGroupDocumentsId(group: any, documentsId: any[]) {
     return this.post(`/group/${group.id}/`, {documents: documentsId}).toPromise()
-    .then((result) => {
-      // Copy without change reference (to change everything)
-      Object.assign(group, result.data);
-
-      this.pushDevices(group);
-    })
     .catch(error => console.error(error));
   }
 
   public uploadDocument(document: any) {
     // We need to post over HTTP instead of this.http
-    return this.http.post(`${API_URL}/document/`,
-      document
+    return this.post(`/document/`,
+      document, false, true /* use http client angular */
     ).toPromise()
-    .then((result) => {
-      // Update documents array
-      if(result && result[0]) {
-        this.documents.push(result[0]);
-      }
-    })
+    .then(result => this.updateAllData())
     .catch(error => console.error(error));
   }
 
@@ -185,19 +211,15 @@ export class ServerService {
   }
 
   public removeDocument(document : any){
-    return this.http.delete(`${API_URL}/document/${document.id}`).toPromise()
-    .then((result) => {
-      // Update documents array
-      if(result) {
-        const index = this.documents.findIndex((d) => d.id === document.id);
-        this.documents.splice(index, 1);
-      }
+    return this.delete(`/document/${document.id}`).toPromise()
+    .then(result => {
+      // The actualization remove bad, don't know why...
     })
     .catch(error => console.error(error));
   }
 
   public newGroup(name: string) {
-    return this.http.post(`${API_URL}/group/`, {name: name}).toPromise()
+    return this.post(`/group/`, {name: name}).toPromise()
     .catch(error => console.error(error));
   }
 }

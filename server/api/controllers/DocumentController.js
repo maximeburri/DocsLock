@@ -100,7 +100,7 @@ module.exports = {
             if (err) {
               return res.negotiate(err);
             }
-            if(document.filepath)
+            if(document && document.filepath)
                 fs.unlink(document.filepath, function(err) {
                     if (err) return res.negotiate(err); 
                     //document.destroy();
