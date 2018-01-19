@@ -3,7 +3,7 @@ import { SailsService } from 'angular2-sails';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-const API_URL = 'http://127.0.0.1:1337';
+const API_URL = 'http://' + document.location.hostname + ':1337';
 
 @Injectable()
 export class ServerService {
