@@ -53,7 +53,12 @@ export class DocumentsDialogComponent {
   }
 
   public validDocumentsInGroup(): void {
-    this.server.setGroupDocumentsId(this.data.group, this.documentsIdInGroup);
+    this.server.setGroupDocumentsId(this.data.group, this.documentsIdInGroup).then(
+      () => {
+        // When okay, push devices
+        this.server.pushDevices(this.data.group);
+      }
+    );
     this.dialogRef.close(true);
   }
 
