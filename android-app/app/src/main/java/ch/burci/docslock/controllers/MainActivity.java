@@ -17,7 +17,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,10 +39,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,7 +54,6 @@ import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 import ch.burci.docslock.models.StatusBarExpansionLocker;
-//import ch.burci.docslock.providers.GenericFileProvider;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
@@ -108,19 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
         PrefUtils.setLock(false, this);
         PrefUtils.setLastDevice(null, this);
-
-        ArrayList<String> pdfsToDownload = new ArrayList<String>();
-        pdfsToDownload.add("https://www.w3.org/Amaya/Distribution/manuel.pdf");
-        pdfsToDownload.add("http://cdn-10.nikon-cdn.com/pdf/manuals/dslr/D60_fr.pdf");
-        pdfsToDownload.add("http://www.who.int/hrh/resources/WISN_FR_Software-manual.pdf?ua=1");
-
-        ArrayList<String> pdfsToDelete = new ArrayList<String>();
-        pdfsToDelete.add("manuel.pdf");
-        pdfsToDelete.add("D60_fr.pdf");
-
-        //downloadPDFs(pdfsToDownload);
-        //deletePdfs(null);
-        //deletePdfs(pdfsToDelete);
 
         updatePdfsList();
 
@@ -501,91 +482,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    class DownloadInstallAPK extends AsyncTask<Void,Void,Void>
-    {
-
-        protected Void doInBackground(Void... params) {
-            try {
-                final Context context = MainActivity.this;
-                URL url = new URL(Config.APK_SERVER_URL);
-
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();
-
-                /*c.setRequestMethod("GET");
-                c.setDoOutput(true);
-                c.connect();*/
-
-
-                String PATH = Environment.getExternalStorageDirectory() + "/Download/";
-                File file = new File(PATH);
-                file.mkdirs();
-
-                File outputFile = new File(file, "app-debug.apk");
-
-                if (outputFile.exists()) {
-                    outputFile.delete();
-                }
-
-                // New file
-                File newAPKFile = new File(context.getExternalFilesDir(null), "app-debug.apk");
-                FileOutputStream fos = new FileOutputStream(newAPKFile);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    fos = context.openFileOutput(newAPKFile.getName(), context.MODE_PRIVATE);
-                } else {
-                    fos = context.openFileOutput(newAPKFile.getName(), context.MODE_WORLD_READABLE | context.MODE_WORLD_WRITEABLE);
-                }
-// Download the new APK file
-                InputStream is = c.getInputStream();
-                byte[] buffer = new byte[1024];
-                int len1 = 0;
-                while ((len1 = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len1);
-                }
-                fos.flush();
-                fos.close();
-                is.close();
-// Start the standard installation window
-
-                /*File fileLocation = new File(context.getExternalFilesDir(null), "app-debug.apk");
-                Intent downloadIntent;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Uri apkUri = GenericFileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", fileLocation);
-                    downloadIntent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                    downloadIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    downloadIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                    //downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    //downloadIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                } else {
-                    downloadIntent = new Intent(Intent.ACTION_VIEW);
-                    downloadIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    downloadIntent.setDataAndType(Uri.fromFile(fileLocation), "application/vnd.android.package-archive");
-                }
-                context.startActivity(downloadIntent);*/
-
-                File toInstall = new File(context.getExternalFilesDir(null), "app-debug.apk");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", toInstall);
-                    Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                    intent.setData(apkUri);
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    context.startActivity(intent);
-                } else {
-                    Uri apkUri = Uri.fromFile(toInstall);
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                //Log.e("", e.getMessage());
-
-            }
-            return null;
-        }
     }
 
     public void clickedUpdateApp(){
