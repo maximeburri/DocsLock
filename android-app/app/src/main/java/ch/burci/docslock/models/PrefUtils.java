@@ -70,7 +70,9 @@ public class PrefUtils {
     }
 
     public static void setLastDevice(DeviceWithGroup device, final Context context){
-        String deviceJson = device.toJSON();
+        String deviceJson = "";
+        if(device != null)
+            device.toJSON();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(PREF_LAST_DEVICE, deviceJson).commit();
     }

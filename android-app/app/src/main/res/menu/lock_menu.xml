@@ -10,6 +10,10 @@
         android:title="@string/action_lock"
         app:showAsAction="always"
         >
-
+    </item>
+    <item
+        android:id="@+id/action_update"
+        android:title="@string/action_update"
+        >
     </item>
 </menu>

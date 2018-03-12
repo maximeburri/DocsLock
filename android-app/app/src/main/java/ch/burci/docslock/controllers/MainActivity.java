@@ -17,11 +17,14 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,10 +40,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.burci.docslock.BuildConfig;
+import ch.burci.docslock.Config;
 import ch.burci.docslock.DeviceWithGroup;
 import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.Document;
@@ -50,6 +59,7 @@ import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 import ch.burci.docslock.models.StatusBarExpansionLocker;
+//import ch.burci.docslock.providers.GenericFileProvider;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
@@ -96,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
         //read list pdf in assets and create ArrayList of PDF
         this.mainModel = new MainModel();
 
-
+        PrefUtils.setLock(false, this);
+        PrefUtils.setLastDevice(null, this);
 
         ArrayList<String> pdfsToDownload = new ArrayList<String>();
         pdfsToDownload.add("https://www.w3.org/Amaya/Distribution/manuel.pdf");
@@ -480,96 +491,231 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item == menuItemLockUnlock) {
-
-            LayoutInflater li = this.getLayoutInflater();
-            View promptsView = li.inflate(R.layout.password_prompts, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                    MainActivity.this);
-            alertDialogBuilder.setView(promptsView);
-            final EditText editPassword = (EditText) promptsView
-                    .findViewById(R.id.editPassword);
-            final TextView textBadPassword = (TextView) promptsView
-                    .findViewById(R.id.textBadPassword);
-            textBadPassword.setVisibility(View.INVISIBLE);
-
-            alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton("OK", null /*set after*/)
-                .setNegativeButton("Cancel",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,int id) {
-                            // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
-                            hideKeyboard(editPassword);
-                            dialog.cancel();
-                        }
-                    });
-
-            final AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialogInterface) {
-                    // Need to show keyboard because HomeKeyLocker.lock() hide
-                    InputMethodManager imm = (InputMethodManager)
-                            getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(editPassword, InputMethodManager.SHOW_IMPLICIT);
-                }
-            });
-
-            // Set type alert dialog because HomeKeyLocker.lock() hide keyboard
-            alertDialog.getWindow().setType(TYPE_SYSTEM_ERROR);
-
-            alertDialog.show();
-
-            // Ok Button
-            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String password = editPassword.getText().toString();
-                    boolean closeDialog = false;
-
-                    // Already locked
-                    if(isLocked){
-                        // Check if good password
-                        if(PrefUtils.checkPassword(password, getApplicationContext())) {
-                            switchLock();
-                            Toast.makeText(MainActivity.this,
-                                    "Application unlocked", Toast.LENGTH_LONG);
-                            closeDialog = true;
-                        }
-                        // Bad password
-                        else{
-                            editPassword.setText("");
-                            textBadPassword.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    // Not locked
-                    else{
-                        // Save good password
-                        PrefUtils.setPassword(password, getApplicationContext());
-                        switchLock();
-                        Toast.makeText(MainActivity.this,
-                                "Application locked", Toast.LENGTH_LONG);
-                        closeDialog = true;
-                    }
-
-                    if(closeDialog) {
-                        // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
-                        InputMethodManager imm = (InputMethodManager)
-                                getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(editPassword.getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);
-
-                        alertDialog.cancel();
-                    }
-                }
-            });
-
+        switch (item.getItemId()) {
+            case R.id.action_lock_unlock:
+                clickedLockUnlockItem();
+            break;
+            case R.id.action_update:
+                clickedUpdateApp();
+            break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
+
+    class DownloadInstallAPK extends AsyncTask<Void,Void,Void>
+    {
+
+        protected Void doInBackground(Void... params) {
+            try {
+                final Context context = MainActivity.this;
+                URL url = new URL(Config.APK_SERVER_URL);
+
+                HttpURLConnection c = (HttpURLConnection) url.openConnection();
+
+                /*c.setRequestMethod("GET");
+                c.setDoOutput(true);
+                c.connect();*/
+
+
+                String PATH = Environment.getExternalStorageDirectory() + "/Download/";
+                File file = new File(PATH);
+                file.mkdirs();
+
+                File outputFile = new File(file, "app-debug.apk");
+
+                if (outputFile.exists()) {
+                    outputFile.delete();
+                }
+
+                // New file
+                File newAPKFile = new File(context.getExternalFilesDir(null), "app-debug.apk");
+                FileOutputStream fos = new FileOutputStream(newAPKFile);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    fos = context.openFileOutput(newAPKFile.getName(), context.MODE_PRIVATE);
+                } else {
+                    fos = context.openFileOutput(newAPKFile.getName(), context.MODE_WORLD_READABLE | context.MODE_WORLD_WRITEABLE);
+                }
+// Download the new APK file
+                InputStream is = c.getInputStream();
+                byte[] buffer = new byte[1024];
+                int len1 = 0;
+                while ((len1 = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len1);
+                }
+                fos.flush();
+                fos.close();
+                is.close();
+// Start the standard installation window
+
+                /*File fileLocation = new File(context.getExternalFilesDir(null), "app-debug.apk");
+                Intent downloadIntent;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri apkUri = GenericFileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", fileLocation);
+                    downloadIntent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    downloadIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    downloadIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                    //downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    //downloadIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                } else {
+                    downloadIntent = new Intent(Intent.ACTION_VIEW);
+                    downloadIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    downloadIntent.setDataAndType(Uri.fromFile(fileLocation), "application/vnd.android.package-archive");
+                }
+                context.startActivity(downloadIntent);*/
+
+                File toInstall = new File(context.getExternalFilesDir(null), "app-debug.apk");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri apkUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", toInstall);
+                    Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    intent.setData(apkUri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    context.startActivity(intent);
+                } else {
+                    Uri apkUri = Uri.fromFile(toInstall);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Log.e("", e.getMessage());
+
+            }
+            return null;
+        }
+    }
+
+    public void clickedUpdateApp(){
+        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
+        String fileName = "docslock.apk";
+        destination += fileName;
+        final Uri uri = Uri.parse("file://" + destination);
+
+        File file = new File(destination);
+        if (file.exists())
+            file.delete();
+
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(Config.APK_SERVER_URL));
+        request.setDestinationUri(uri);
+        dm.enqueue(request);
+
+        final String finalDestination = destination;
+        final BroadcastReceiver onComplete = new BroadcastReceiver() {
+            public void onReceive(Context ctxt, Intent intent) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri contentUri = FileProvider.getUriForFile(ctxt, BuildConfig.APPLICATION_ID + ".provider", new File(finalDestination));
+                    Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
+                    openFileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    openFileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    openFileIntent.setData(contentUri);
+                    startActivity(openFileIntent);
+                    unregisterReceiver(this);
+                    finish();
+                } else {
+                    Intent install = new Intent(Intent.ACTION_VIEW);
+                    install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    install.setDataAndType(uri,
+                            "application/vnd.android.package-archive");
+                    startActivity(install);
+                    unregisterReceiver(this);
+                    finish();
+                }
+            }
+        };
+        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    public void clickedLockUnlockItem(){
+
+        LayoutInflater li = this.getLayoutInflater();
+        View promptsView = li.inflate(R.layout.password_prompts, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                MainActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        final EditText editPassword = (EditText) promptsView
+                .findViewById(R.id.editPassword);
+        final TextView textBadPassword = (TextView) promptsView
+                .findViewById(R.id.textBadPassword);
+        textBadPassword.setVisibility(View.INVISIBLE);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK", null /*set after*/)
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                                hideKeyboard(editPassword);
+                                dialog.cancel();
+                            }
+                        });
+
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                // Need to show keyboard because HomeKeyLocker.lock() hide
+                InputMethodManager imm = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editPassword, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        // Set type alert dialog because HomeKeyLocker.lock() hide keyboard
+        alertDialog.getWindow().setType(TYPE_SYSTEM_ERROR);
+
+        alertDialog.show();
+
+        // Ok Button
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String password = editPassword.getText().toString();
+                        boolean closeDialog = false;
+
+                        // Already locked
+                        if(isLocked){
+                            // Check if good password
+                            if(PrefUtils.checkPassword(password, getApplicationContext())) {
+                                switchLock();
+                                Toast.makeText(MainActivity.this,
+                                        "Application unlocked", Toast.LENGTH_LONG);
+                                closeDialog = true;
+                            }
+                            // Bad password
+                            else{
+                                editPassword.setText("");
+                                textBadPassword.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        // Not locked
+                        else{
+                            // Save good password
+                            PrefUtils.setPassword(password, getApplicationContext());
+                            switchLock();
+                            Toast.makeText(MainActivity.this,
+                                    "Application locked", Toast.LENGTH_LONG);
+                            closeDialog = true;
+                        }
+
+                        if(closeDialog) {
+                            // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                            InputMethodManager imm = (InputMethodManager)
+                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(editPassword.getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+
+                            alertDialog.cancel();
+                        }
+                    }
+                });
+    }
     /***
      * @desc Method to commit a currentFragment transaction without animation
      */

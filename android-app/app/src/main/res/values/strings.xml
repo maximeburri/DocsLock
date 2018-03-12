@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">DocsLock</string>
+    <string name="app_name">DocsLock v4</string>
     <string name="action_lock">Lock</string>
     <string name="action_unlock">Unlock</string>
+    <string name="action_update">Install last release</string>
+    <string name="notification_description">DocsLock last version is downloading</string>
 </resources>
