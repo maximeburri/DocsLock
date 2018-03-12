@@ -13,7 +13,6 @@ html, body{
 .card-container {
     display: flex;
     flex-flow: row wrap;
-    max-width: 500px;
     float: left;
 }
 
