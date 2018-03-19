@@ -57,6 +57,16 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".receivers.WebSocketServiceRestartReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name=".RestartWebSocket"/>
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".NotificationService"
             android:enabled="true"
@@ -72,6 +82,10 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+        </service>
+        <service
+            android:name=".services.WebSocketService"
+            android:enabled="true" >
         </service>
     </application>
 

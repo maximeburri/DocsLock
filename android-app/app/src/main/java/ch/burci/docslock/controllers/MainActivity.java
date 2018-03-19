@@ -59,6 +59,7 @@ import ch.burci.docslock.models.MainModel;
 import ch.burci.docslock.models.PDFModel;
 import ch.burci.docslock.models.PrefUtils;
 import ch.burci.docslock.models.StatusBarExpansionLocker;
+import ch.burci.docslock.services.WebSocketService;
 
 import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 
@@ -74,12 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private ViewerFragment viewerFragment;
     private MainModel mainModel;
 
-    private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://" + Config.SERVER_IP_PORT);
-        } catch (URISyntaxException e) {}
-    }
 
     Timer timer;
     TaskCheckApplicationInFront myTimerTask;
@@ -92,33 +87,20 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSION_READ = 2;
     private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
 
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            Log.d("WebSocket", "Connected");
-        }
-    };
-
-    private Emitter.Listener onDisconnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            Log.d("WebSocket", "Disconnected");
-        }
-    };
-
-    public void start(){
-        mSocket.on(Socket.EVENT_CONNECT, onConnect);
-        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
-        mSocket.connect();
-    }
+    Intent mServiceIntent;
+    private WebSocketService mWebSocketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        start();
+        mWebSocketService = new WebSocketService();
+        mServiceIntent = new Intent(this, mWebSocketService.getClass());
+        if (!isServiceRunning(mWebSocketService.getClass())) {
+            startService(mServiceIntent);
+        }
 
-        //DocsLockService.init(this);
+        DocsLockService.init(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -156,6 +138,18 @@ public class MainActivity extends AppCompatActivity {
         //updateDeviceStatus(null);
 
         DocsLockService.setStateDevice(true);
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
     }
 
     private void updateDeviceStatus(DeviceWithGroup newDevice) {
