@@ -1,20 +1,33 @@
-var FCM = require('fcm-node');
-var serverKey = process.env.FCM_KEY;
-if (!serverKey)
-    throw new Error("FCM_KEY variable not specified");
-var fcm = new FCM(serverKey);
+global.devicesSockets = {};
 
-var send = function (message, callback) {
-    console.log(message);
-    fcm.send(message, callback);
+// Add a socket associated with deviceId
+var addDeviceSocket = function (deviceId, socket) {
+    if (deviceId in global.devicesSockets)
+        throw "Device already connected";
+    global.devicesSockets[deviceId] = socket;
+    
+    console.log("Connected devices", Object.keys(global.devicesSockets));
 };
 
-var sendTo = function (token, message, callback) {
-    message.to = token;
-    send(message, callback);
+// Remove a socket associated with deviceId
+var removeDeviceSocket = function (deviceId, socket) {
+    delete global.devicesSockets[deviceId];
+
+    console.log("Connected devices", Object.keys(global.devicesSockets));
+};
+
+// Send to a device id a message
+var sendTo = function (deviceId, room, message) {
+    var socket = global.devicesSockets[deviceId];
+    console.log(global.devicesSockets);
+    console.log(deviceId, socket);
+    if(socket === undefined)
+        throw "Device not conencted";
+    socket.emit(room, message);
 };
 
 module.exports = {
-    send: send,
+    addDeviceSocket: addDeviceSocket,
+    removeDeviceSocket: removeDeviceSocket,
     sendTo: sendTo
 }

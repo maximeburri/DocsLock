@@ -47,16 +47,7 @@ module.exports = {
                 }
             };
 
-            Notification.sendTo(device.firebaseToken, message,
-                function (err, response) {
-                    // Error
-                    if (err) {
-                        return res.serverError(err);
-                    }
-                    // Ok
-                    res.json(device);
-                }
-            );
+            Notification.sendTo(device.id, "update", message);
         }).catch(function(err){
           if(err) return res.serverError(err);  
         });

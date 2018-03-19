@@ -119,6 +119,13 @@ public class DocsLockService {
         PrefUtils.setDeviceId(id, context);
     }
 
+    public static String getDeviceId(Context context){
+        if(deviceId == null) {
+            deviceId = PrefUtils.getDeviceId(context);
+        }
+        return deviceId;
+    }
+
     // Get MAC address
     // From https://stackoverflow.com/questions/31329733/how-to-get-the-missing-wifi-mac-address-in-android-marshmallow-and-later/32948723#32948723
     private static String getWifiMacAddress() {
