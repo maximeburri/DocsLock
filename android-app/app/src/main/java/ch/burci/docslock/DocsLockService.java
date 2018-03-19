@@ -63,6 +63,8 @@ public class DocsLockService {
             deviceId = PrefUtils.getDeviceId(context);
             if(deviceId == null){
                 createDevice(context, cb);
+            }else{
+                cb.onInitFinish(OnInitFinish.SUCCESS, null);
             }
         }
     }

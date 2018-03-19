@@ -20,7 +20,6 @@ var removeDeviceSocket = function (deviceId, socket) {
 var sendTo = function (deviceId, room, message) {
     var socket = global.devicesSockets[deviceId];
     console.log(global.devicesSockets);
-    console.log(deviceId, socket);
     if(socket === undefined)
         throw "Device not conencted";
     socket.emit(room, message);

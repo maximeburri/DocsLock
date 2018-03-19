@@ -11,10 +11,14 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 
 import ch.burci.docslock.Config;
 import ch.burci.docslock.DocsLockService;
+import ch.burci.docslock.controllers.MainActivity;
 
 /**
  * Created by maxime on 19.03.18.
@@ -59,10 +63,24 @@ public class WebSocketService extends Service{
         }
     };
 
+    // On update device by the client
     private Emitter.Listener onUpdate = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             Log.d(TAG, "Update");
+            JSONObject obj = (JSONObject)args[0];
+            Intent startIntent = new Intent(WebSocketService.this, MainActivity.class);
+            startIntent.putExtra("UPDATE", true);
+            try {
+                startIntent.putExtra("device",
+                        obj.getJSONObject("data")
+                                .getJSONObject("device")
+                                .toString());
+                startIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(startIntent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     };
 
