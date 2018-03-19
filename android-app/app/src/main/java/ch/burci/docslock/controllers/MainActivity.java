@@ -38,7 +38,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
+import com.github.nkzawa.socketio.client.IO;
+
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +74,13 @@ public class MainActivity extends AppCompatActivity {
     private ViewerFragment viewerFragment;
     private MainModel mainModel;
 
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://" + Config.SERVER_IP_PORT);
+        } catch (URISyntaxException e) {}
+    }
+
     Timer timer;
     TaskCheckApplicationInFront myTimerTask;
 
@@ -80,11 +92,33 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PERMISSION_READ = 2;
     private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
 
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("WebSocket", "Connected");
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("WebSocket", "Disconnected");
+        }
+    };
+
+    public void start(){
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.connect();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        DocsLockService.init(this);
+
+        start();
+
+        //DocsLockService.init(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -119,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.viewerFragment = new ViewerFragment();
 
-        updateDeviceStatus(null);
+        //updateDeviceStatus(null);
 
         DocsLockService.setStateDevice(true);
     }

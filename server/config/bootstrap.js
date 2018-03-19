@@ -10,7 +10,20 @@
  */
 
 module.exports.bootstrap = function(cb) {
+  console.log("Bootstrap");
+  sails.io.on('connection', function (socket) {
+    console.log('Connected');
+    socket.emit("Yo");
+    socket.on('helloFromClient', function (data) {
+        console.log('helloFromClient', data);
+        socket.emit('helloFromServer', {server: 'says hello'});
+    });
 
+    socket.on('disconnect', function (data) {
+      console.log("Disconnect")
+    });
+
+  });
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();
