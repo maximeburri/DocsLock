@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.net.NetworkInterface;
+import java.security.cert.CertificateExpiredException;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,20 +48,27 @@ public class DocsLockService {
         client = retrofit.create(DocsLockClient.class);
     }
 
+    // When init is finished. Create Id if not created
+    public interface OnInitFinish{
+        static public int ERROR_CREATION = 1;
+        static public int SUCCESS = 0;
+        void onInitFinish(int error, Exception e);
+    }
+
     // Init retrofit (if necessary) and create device on server (if not created)
-    public static void init(Context context){
+    public static void init(Context context, OnInitFinish cb){
         if(client == null){
             initClient();
 
             deviceId = PrefUtils.getDeviceId(context);
             if(deviceId == null){
-                createDevice(context);
+                createDevice(context, cb);
             }
         }
     }
 
     // Create device on server
-    private static void createDevice(final Context context){
+    private static void createDevice(final Context context, final OnInitFinish cb){
         client.createDevice(getWifiMacAddress(), true, NotificationService.getFirebaseToken())
                 .enqueue(new Callback<Device>() {
             @Override
@@ -69,10 +77,18 @@ public class DocsLockService {
                 if(device != null) {
                     setDeviceId(context, device.getId());
                     Log.d("DocsLockService", "Device registered");
+
+                    // Callback
+                    if(cb != null)
+                        cb.onInitFinish(OnInitFinish.SUCCESS, null);
                 }
                 else {
                     Log.e("DocsLockService", "Cannot get device");
                     Log.e("DocsLockService", response.toString());
+
+                    // Callback
+                    if(cb != null)
+                        cb.onInitFinish(OnInitFinish.ERROR_CREATION, new Exception(response.toString()));
                 }
             }
 

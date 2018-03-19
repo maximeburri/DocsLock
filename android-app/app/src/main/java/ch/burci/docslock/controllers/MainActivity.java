@@ -94,13 +94,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mWebSocketService = new WebSocketService();
-        mServiceIntent = new Intent(this, mWebSocketService.getClass());
-        if (!isServiceRunning(mWebSocketService.getClass())) {
-            startService(mServiceIntent);
-        }
+        DocsLockService.init(this, new DocsLockService.OnInitFinish() {
+            @Override
+            public void onInitFinish(int error, Exception e) {
+                DocsLockService.setStateDevice(true);
 
-        DocsLockService.init(this);
+                startWebSocketService();
+            }
+        });
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -134,10 +135,14 @@ public class MainActivity extends AppCompatActivity {
         checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
+    }
 
-        //updateDeviceStatus(null);
-
-        DocsLockService.setStateDevice(true);
+    private void startWebSocketService(){
+        mWebSocketService = new WebSocketService();
+        mServiceIntent = new Intent(this, mWebSocketService.getClass());
+        if (!isServiceRunning(mWebSocketService.getClass())) {
+            startService(mServiceIntent);
+        }
     }
 
     private boolean isServiceRunning(Class<?> serviceClass) {
