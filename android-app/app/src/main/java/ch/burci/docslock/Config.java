@@ -11,4 +11,5 @@ public class Config {
     public final static String SERVER_URL = SERVER_PROTCOL + "://" + SERVER_IP_PORT;
 
     public final static String APK_SERVER_URL = SERVER_URL + "/docslock-latest.apk";
+    public static final long WEB_SOCKET_RECONNECTION_DELAY = 1000;
 }

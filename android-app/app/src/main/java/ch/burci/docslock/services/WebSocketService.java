@@ -95,6 +95,7 @@ public class WebSocketService extends Service{
         }
 
         opts.query = "deviceId=" + deviceId;
+        opts.reconnectionDelay = Config.WEB_SOCKET_RECONNECTION_DELAY;
         try {
             mSocket = IO.socket("http://" + Config.SERVER_IP_PORT, opts);
         } catch (Exception e) {
