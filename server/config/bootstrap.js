@@ -9,6 +9,7 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.bootstrap.html
  */
 var Notification = require('../api/services/NotificationService');
+var Push = require('../api/services/PushDeviceService');
 
 module.exports.bootstrap = function(cb) {
   console.log("Bootstrap");
@@ -29,6 +30,13 @@ module.exports.bootstrap = function(cb) {
           console.log('Device already connected, disconnection');
           socket.disconnect();
         }
+        Push.pushDevice(deviceId)
+          .then(function(){
+            console.debug("Device push message sended");
+          })
+          .catch(function(err){
+              if(err) console.error("Can not send push device of ", deviceId);  
+          });
       }else
         console.log('Connect user');
     }
