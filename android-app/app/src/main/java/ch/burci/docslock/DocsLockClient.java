@@ -22,18 +22,12 @@ public interface DocsLockClient {
     @FormUrlEncoded
     @POST("/device")
     Call<Device> createDevice(@Field("mac") String mac,
-                              @Field("isActive") Boolean isActive,
-                              @Field("firebaseToken")  String firebaseToken);
+                              @Field("isActive") Boolean isActive);
 
     @FormUrlEncoded
     @PUT("/device/{id}")
     Call<Device> setStateDevice(@Path("id") String deviceId,
                                 @Field("isActive") Boolean isActive);
-
-    @FormUrlEncoded
-    @PUT("/device/{id}")
-    Call<Device> setFirebaseToken(@Path("id") String deviceId,
-                                        @Field("firebaseToken") String firebaseToken);
 
     @FormUrlEncoded
     @PUT("/device/{id}")

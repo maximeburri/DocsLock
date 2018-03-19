@@ -5,8 +5,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
 import java.net.NetworkInterface;
 import java.security.cert.CertificateExpiredException;
 import java.util.Collections;
@@ -71,7 +69,7 @@ public class DocsLockService {
 
     // Create device on server
     private static void createDevice(final Context context, final OnInitFinish cb){
-        client.createDevice(getWifiMacAddress(), true, NotificationService.getFirebaseToken())
+        client.createDevice(getWifiMacAddress(), true)
                 .enqueue(new Callback<Device>() {
             @Override
             public void onResponse(Call<Device> call, Response<Device> response) {
@@ -171,21 +169,6 @@ public class DocsLockService {
             }
         } catch (Exception ex) { } // for now eat exceptions
         return "";
-    }
-
-    public static void setFirebaseToken(String firebaseToken) {
-        if(client != null && DocsLockService.deviceId != null)
-            client.setFirebaseToken(DocsLockService.deviceId, firebaseToken).enqueue(new Callback<Device>(){
-                @Override
-                public void onResponse(Call<Device> call, Response<Device> response) {
-                    Log.d("DocsLockService", "firebaseToken changed");
-                }
-
-                @Override
-                public void onFailure(Call<Device> call, Throwable t) {
-                    Log.e("DocsLockService", "firebaseToken not changed");
-                }
-            });
     }
 
     /* Example :

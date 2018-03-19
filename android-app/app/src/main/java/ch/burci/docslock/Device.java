@@ -7,7 +7,6 @@ package ch.burci.docslock;
 public class Device {
     private String id;
     private String mac;
-    private String firebaseToken;
 
     public Device() {
     }
@@ -18,9 +17,5 @@ public class Device {
 
     public String getMAC() {
         return mac;
-    }
-
-    public String getFirebaseToken() {
-        return firebaseToken;
     }
 }

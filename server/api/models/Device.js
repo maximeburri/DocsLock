@@ -14,10 +14,6 @@ module.exports = {
       required : true, 
       defaultsTo : false
     },
-    firebaseToken : {
-      type : 'string',
-      defaultsTo : null
-    },
     group: {
       model : 'group'
     }

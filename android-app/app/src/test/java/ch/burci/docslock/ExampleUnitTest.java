@@ -29,7 +29,6 @@ public class ExampleUnitTest {
                 },
                 "mac": "Maxime Natel",
                 "isActive": false,
-                "firebaseToken": "fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr",
                 "createdAt": "2017-10-17T08:47:59.795Z",
                 "updatedAt": "2017-10-20T11:03:23.460Z",
                 "id": 36,
@@ -46,7 +45,6 @@ public class ExampleUnitTest {
                 "    }," +
                 "    \"mac\": \"Maxime Natel\"," +
                 "    \"isActive\": false," +
-                "    \"firebaseToken\": \"fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr\"," +
                 "    \"createdAt\": \"2017-10-17T08:47:59.795Z\"," +
                 "    \"updatedAt\": \"2017-10-20T11:03:23.460Z\"," +
                 "    \"id\": 36," +
@@ -65,7 +63,6 @@ public class ExampleUnitTest {
                 "    \"group\": null," +
                 "    \"mac\": \"Maxime Natel\"," +
                 "    \"isActive\": false," +
-                "    \"firebaseToken\": \"fHOQZM6N0R4:APA91bH_mEf9KHnSpmTWM-6NhyXjR3ClahIrDuEcH0zolwRutYTutFnvkndcLCrwlDwDuz9Y0dgtOzDWVbkqlJUoJQItuQvs577E4op_siwreAf08B8-VjIlA5AA_Ju8e9PNj1Loj_dr\"," +
                 "    \"createdAt\": \"2017-10-17T08:47:59.795Z\"," +
                 "    \"updatedAt\": \"2017-10-20T11:03:23.460Z\"," +
                 "    \"id\": 36," +
