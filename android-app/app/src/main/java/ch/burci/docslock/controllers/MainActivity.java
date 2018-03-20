@@ -117,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
         //read list pdf in assets and create ArrayList of PDF
         this.mainModel = new MainModel();
 
-        PrefUtils.setLock(false, this);
-        PrefUtils.setLastDevice(null, this);
-
         updatePdfsList();
 
         //create container and commit de currentFragment
@@ -135,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
         checkReadWriteFilesPermission();
 
         this.viewerFragment = new ViewerFragment();
+
+        if(!checkProcessIntentUdpate(getIntent()))
+            updateDeviceStatus(null);
     }
 
     private void startWebSocketService(){
@@ -373,14 +373,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         Log.d("MainActivity-Intent", intent.toString());
 
+        checkProcessIntentUdpate(intent);
+
+        super.onNewIntent(intent);
+    }
+
+    // Check and process if it's an update intent
+    protected boolean checkProcessIntentUdpate(Intent intent){
         // If it's a "update" intent
         if(intent.getBooleanExtra("UPDATE", false)) {
             String json = intent.getStringExtra("device");
             DeviceWithGroup newDevice = DeviceWithGroup.fromJSON(json);
             updateDeviceStatus(newDevice);
+            return true;
         }
-
-        super.onNewIntent(intent);
+        return false;
     }
 
     /***
