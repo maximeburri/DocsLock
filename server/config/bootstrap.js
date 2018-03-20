@@ -11,8 +11,28 @@
 var Notification = require('../api/services/NotificationService');
 var Push = require('../api/services/PushDeviceService');
 
+// Reset device isConnected websocket status
+var initIsConnectedStatuses = function(){
+  Device.update({/*all*/},{isConnected:false}).exec(
+    function(err, updated){
+        if (err) console.error("Error reset isConnected websocket status", isConnected);
+  });
+}
+
+// Reset device isConnected websocket status
+var setIsConnectedStatus = function(id, isConnected){
+  Device.update({id:id},{isConnected:isConnected}).exec(
+    function(err, updated){
+        if (err) console.error("Set isConnected websocket status", "id", id, "error", err);
+        else
+          Device.publishUpdate(id, {isConnected:isConnected});
+  });
+}
+
 module.exports.bootstrap = function(cb) {
   console.log("Bootstrap");
+
+  initIsConnectedStatuses();
 
   sails.io.on('connection', function (socket, opts) {
     
@@ -26,8 +46,10 @@ module.exports.bootstrap = function(cb) {
         console.log('Connect device ', deviceId);
         try{
           Notification.addDeviceSocket(deviceId, socket);
+          setIsConnectedStatus(deviceId, true);
         } catch (err){
           console.log('Device already connected, disconnection');
+          setIsConnectedStatus(deviceId, false);
           socket.disconnect();
         }
         Push.pushDevice(deviceId)
@@ -41,14 +63,10 @@ module.exports.bootstrap = function(cb) {
         console.log('Connect user');
     }
 
-    /*socket.on('helloFromClient', function (data) {
-        console.log('helloFromClient', data);
-        socket.emit('helloFromServer', {server: 'says hello'});
-    });*/
-
     socket.on('disconnect', function (data) {
       if(deviceId !== undefined){
         console.log("Disconnect device ", deviceId)
+        setIsConnectedStatus(deviceId, false);
         try{
           Notification.removeDeviceSocket(deviceId, socket);
         } catch (err){

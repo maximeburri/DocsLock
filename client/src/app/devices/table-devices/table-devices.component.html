@@ -19,13 +19,19 @@
       <td>{{ device.id }}</td>
       <td>{{ device.mac }}</td>
       <td>
-        <span id="status-play">
-          <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
-          <i class="material-icons" *ngIf="!device.isActive">pause</i>
+        <span id="status-connected">
+            <i class="material-icons primary" *ngIf="device.isConnected">phonelink_ring</i>
+            <i class="material-icons" *ngIf="!device.isConnected">phonelink_erase</i>
         </span>
-        <span id="status-lock">
-          <i class="material-icons" *ngIf="device.isLocked">lock</i>
-          <i class="material-icons" *ngIf="!device.isLocked">lock_open</i>
+        <span id="statuses-inactive-if-not-connected" [ngClass]="{'mat-inactive':!device.isConnected}">
+            <span id="status-play" >
+                <i class="material-icons" *ngIf="device.isActive">play_arrow</i>
+                <i class="material-icons" *ngIf="!device.isActive">pause</i>
+              </span>
+              <span id="status-lock" [ngClass]="{'mat-inactive':!device.isConnected}">
+                <i class="material-icons" *ngIf="device.isLocked">lock</i>
+                <i class="material-icons" *ngIf="!device.isLocked">lock_open</i>
+              </span>
         </span>
       </td>
     </tr>
