@@ -5,6 +5,14 @@
     <dimen android:name="design_navigation_icon_size" tools:override="true">200px</dimen>
 
     <item
+        android:id="@+id/action_is_connected"
+        android:enabled="false"
+        android:icon="@mipmap/ic_not_connected"
+        android:title="@string/action_is_connected"
+        app:showAsAction="always"
+        >
+    </item>
+    <item
         android:id="@+id/action_lock_unlock"
         android:icon="@mipmap/ic_docs_unlocked"
         android:title="@string/action_lock"

@@ -10,16 +10,19 @@ import android.app.FragmentTransaction;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -75,20 +78,51 @@ public class MainActivity extends AppCompatActivity {
     private ViewerFragment viewerFragment;
     private MainModel mainModel;
 
-
     Timer timer;
     TaskCheckApplicationInFront myTimerTask;
 
     private boolean isLocked;
     private MenuItem menuItemLockUnlock;
+    private MenuItem menuItemConnected;
+    private boolean lastConnectedStatus = false;
     private Menu menu;
 
     public final static int REQUEST_CODE_PERMISSION_OVERLAY = 1;
     private static final int REQUEST_CODE_PERMISSION_READ = 2;
     private static final int REQUEST_CODE_PERMISSION_WRITE = 3;
 
-    Intent mServiceIntent;
     private WebSocketService mWebSocketService;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            WebSocketService.WebSocketBinder binder = (WebSocketService.WebSocketBinder) service;
+            mWebSocketService = binder.getService();
+            Log.d("ServiceConnection", "Connected");
+            Log.d("ServiceConnection", ""+ mWebSocketService.isConnected());
+            if(mWebSocketService != null)
+                updateConnectedIcon(mWebSocketService.isConnected());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mWebSocketService = null;
+        }
+    };;
+
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == WebSocketService.ACTION_NAME) {
+                boolean connected = intent.getBooleanExtra("connected", false);
+                Log.d("WebSocketStatusReceiver", connected + "");
+                updateConnectedIcon(connected);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInitFinish(int error, Exception e) {
                 DocsLockService.setStateDevice(true);
-
                 startWebSocketService();
             }
         });
@@ -135,13 +168,15 @@ public class MainActivity extends AppCompatActivity {
 
         if(!checkProcessIntentUdpate(getIntent()))
             updateDeviceStatus(null);
+
     }
 
     private void startWebSocketService(){
-        mWebSocketService = new WebSocketService();
-        mServiceIntent = new Intent(this, mWebSocketService.getClass());
-        if (!isServiceRunning(mWebSocketService.getClass())) {
-            startService(mServiceIntent);
+        WebSocketService webSocketService = new WebSocketService();
+        Intent serviceIntent = new Intent(this, webSocketService.getClass());
+
+        if (!isServiceRunning(webSocketService.getClass())) {
+            startService(serviceIntent);
         }
     }
 
@@ -276,6 +311,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void updateConnectedIcon(boolean connected){
+        // Set icon
+        Log.d("updateConnectedIcon", connected+"");
+
+        lastConnectedStatus = connected;
+        if(this.menuItemConnected != null){
+            Drawable icon;
+            if(connected)
+                icon = ContextCompat.getDrawable(this, R.mipmap.ic_connected);
+            else
+                icon = ContextCompat.getDrawable(this, R.mipmap.ic_not_connected);
+
+            this.menuItemConnected.setIcon(icon);
+        }
+
+    }
+
     public void goToPdf(String pdfPath){
         this.viewerFragment.setPDFPath(pdfPath);
         this.currentFragment = this.viewerFragment;
@@ -349,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getActionBar();
         if(actionBar != null)
             actionBar.hide();
+
     }
 
 
@@ -359,6 +412,16 @@ public class MainActivity extends AppCompatActivity {
         if(!isLocked){
             DocsLockService.setStateDevice(true);
         }
+
+        // Bind service
+        Intent intent = new Intent(MainActivity.this, WebSocketService.class);
+
+        bindService(intent, mConnection, Context.MODE_PRIVATE);
+
+        // Register websocket status provider
+        IntentFilter i = new IntentFilter();
+        i.addAction(WebSocketService.ACTION_NAME);
+        registerReceiver(mReceiver, i);
     }
 
     @Override
@@ -367,6 +430,8 @@ public class MainActivity extends AppCompatActivity {
         if(!isLocked){
             DocsLockService.setStateDevice(false);
         }
+        unbindService(mConnection);
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -493,10 +558,13 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.lock_menu, menu);
         this.menu = menu;
-        this.menuItemLockUnlock = menu.getItem(0);
+        this.menuItemConnected = menu.findItem(R.id.action_is_connected);
+        this.menuItemLockUnlock = menu.findItem(R.id.action_lock_unlock);
 
         // Update item lock icon
         updateLockIcon();
+        updateConnectedIcon(lastConnectedStatus);
+
         return true;
     }
 

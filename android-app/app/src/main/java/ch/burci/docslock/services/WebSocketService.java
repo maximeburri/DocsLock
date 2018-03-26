@@ -3,7 +3,11 @@ package ch.burci.docslock.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
+import android.os.IInterface;
+import android.os.Parcel;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -14,6 +18,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
 import java.net.URISyntaxException;
 
 import ch.burci.docslock.Config;
@@ -29,9 +34,29 @@ public class WebSocketService extends Service{
 
     private Socket mSocket;
 
+    static public String ACTION_NAME = "WebSocketStatusChange";
+
+    private final IBinder mBinder = new WebSocketBinder();
+
+    boolean connected = false;
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    public class WebSocketBinder extends Binder {
+        public WebSocketService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return WebSocketService.this;
+        }
+    }
+
     public WebSocketService() {
         super();
+        Log.d(TAG, "WebSocketCreated");
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -53,6 +78,12 @@ public class WebSocketService extends Service{
         @Override
         public void call(Object... args) {
             Log.d(TAG, "Connected");
+            connected = true;
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(ACTION_NAME);
+            broadcastIntent.putExtra("connected", true);
+            sendBroadcast(broadcastIntent);
+            connected = true;
         }
     };
 
@@ -60,6 +91,12 @@ public class WebSocketService extends Service{
         @Override
         public void call(Object... args) {
             Log.d(TAG, "Disconnected");
+            connected = false;
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(ACTION_NAME);
+            broadcastIntent.putExtra("connected", false);
+            sendBroadcast(broadcastIntent);
+
         }
     };
 
@@ -83,6 +120,10 @@ public class WebSocketService extends Service{
             }
         }
     };
+
+    public boolean isConnected(){
+        return connected;
+    }
 
     public void start(){
         IO.Options opts = new IO.Options();
@@ -108,9 +149,4 @@ public class WebSocketService extends Service{
         mSocket.connect();
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 }

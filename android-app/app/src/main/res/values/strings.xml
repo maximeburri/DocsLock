@@ -4,4 +4,5 @@
     <string name="action_unlock">Unlock</string>
     <string name="action_update">Install last release</string>
     <string name="notification_description">DocsLock last version is downloading</string>
+    <string name="action_is_connected">Is connected ?</string>
 </resources>
