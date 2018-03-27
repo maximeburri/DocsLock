@@ -11,8 +11,8 @@
  */
 
 module.exports.sockets = {
-  pingInterval : 5000,
-  pingTimeout : 1000
+  pingInterval : 3000,
+  pingTimeout : 2000
 
   /***************************************************************************
   *                                                                          *
