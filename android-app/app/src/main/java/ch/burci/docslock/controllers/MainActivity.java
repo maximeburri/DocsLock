@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
+            if (serviceClass.getName().equals(service.service.getClassName()) && service.started) {
                 Log.i ("isMyServiceRunning?", true+"");
                 return true;
             }
@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
         // Bind service
         Intent intent = new Intent(MainActivity.this, WebSocketService.class);
 
-        bindService(intent, mConnection, Context.MODE_PRIVATE);
+        bindService(intent, mConnection, 0);
 
         // Register websocket status provider
         IntentFilter i = new IntentFilter();
