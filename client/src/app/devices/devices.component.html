@@ -38,10 +38,10 @@
                 <span>
                     <span>
                         <button mat-raised-button (click)="openDocumentsDialog(group)"><mat-icon>insert_drive_files</mat-icon>
-                            <span [ngPlural]="group.document ? group.documents.length : 0">
-                                <ng-template ngPluralCase="0">Documents</ng-template>
-                                <ng-template ngPluralCase="one">{{group.documents.length}} document</ng-template>
-                                <ng-template ngPluralCase="other">{{group.documents.length}} documents</ng-template>
+                            <span [ngPlural]="group.documents.length">
+                                <ng-template ngPluralCase="0">Manage documents</ng-template>
+                                <ng-template ngPluralCase="1">Manage document ({{group.documents.length}})</ng-template>
+                                <ng-template ngPluralCase="few">Manage documents ({{group.documents.length}})</ng-template>
                             </span>
                         </button>
                     </span>
