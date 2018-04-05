@@ -11,8 +11,7 @@ html, body{
 
 
 .card-container {
-    display: flex;
-    flex-flow: row wrap;
+    min-width: 100px;
     float: left;
 }
 

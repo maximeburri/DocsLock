@@ -10,6 +10,7 @@ import { ServerService } from '../common/server.service';
 
 import { MatDialog } from '@angular/material';
 import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.component';
+import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.component';
 
 @Component({
     selector: 'devices-cmp',
@@ -60,4 +61,12 @@ export class DevicesComponent implements OnInit {
             data: { group: group }
         });
     }
+
+    public openNewGroupDialog() {
+        const devicesToGroup = this.devices.filter(d => d.isSelected);
+        const dialogRef = this.dialog.open(NewGroupDialogComponent);
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("Group created");
+        });
+      }
 }
