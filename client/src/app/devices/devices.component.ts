@@ -11,6 +11,12 @@ import { ServerService } from '../common/server.service';
 import { MatDialog } from '@angular/material';
 import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.component';
 import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.component';
+import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
+
+@Component({selector: 'remove-group-confirmation-message', template: 'Hello {{name}}!'})
+export class RemoveGroupConfirmationMessage {
+  public name: string = '';
+}
 
 @Component({
     selector: 'devices-cmp',
@@ -69,4 +75,21 @@ export class DevicesComponent implements OnInit {
             console.log("Group created");
         });
       }
+
+    public removeGroup(group) {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            data: {
+                title : 'Confirmation',
+                type : 'remove',
+                name : group.name,
+                irrevocable : true,
+                entityName : 'the group'
+            }
+          });
+        dialogRef.afterClosed().subscribe(confirmed => {
+            console.log(confirmed);
+            if(confirmed)
+                this._server.removeGroup(group);
+        });
+    }
 }

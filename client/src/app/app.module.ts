@@ -10,7 +10,7 @@ import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { DevicesComponent } from './devices/devices.component';
+import { DevicesComponent, RemoveGroupConfirmationMessage } from './devices/devices.component';
 import { FilesComponent } from './files/files.component';
 import { SailsModule } from 'angular2-sails';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,10 +38,13 @@ import { FileUploadComponent } from './files/file-upload/file-upload.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-dialog.component';
 
+import { ConfirmationDialogComponent } from './common/confirmation-dialog/confirmation-dialog.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     DevicesComponent,
+    RemoveGroupConfirmationMessage,
     FilesComponent,
     UserProfileComponent,
     TableDevicesComponent,
@@ -50,7 +53,8 @@ import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-di
     DevicesSelectedPipe,
     DocumentsDialogComponent,
     FileUploadComponent,
-    NewGroupDialogComponent
+    NewGroupDialogComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -99,7 +103,8 @@ import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-di
   ],
   entryComponents: [
     DocumentsDialogComponent,
-    NewGroupDialogComponent
+    NewGroupDialogComponent,
+    ConfirmationDialogComponent
   ],
   providers: [
     ServerService

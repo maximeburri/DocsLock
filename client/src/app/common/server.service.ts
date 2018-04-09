@@ -225,4 +225,9 @@ export class ServerService {
     return this.post(`/group/`, {name: name}).toPromise()
     .catch(error => console.error(error));
   }
+
+  public removeGroup(group: any) {
+    return this.delete(`/group/${group.id}`).toPromise()
+    .catch(error => console.error(error));
+  }
 }

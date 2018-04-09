@@ -29,6 +29,11 @@
             <mat-card-title>
                 <h3>{{ group.name }}</h3>
             </mat-card-title>
+            <span class="card-button">
+                <button mat-icon-button>
+                    <mat-icon matTooltip="Remove the group" (click)="removeGroup(group)">delete_forever</mat-icon>
+                </button>
+            </span>
         </mat-card-header>
         <mat-card-actions>
             <div class="group-actions">

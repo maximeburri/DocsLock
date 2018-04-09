@@ -1,0 +1,7 @@
+.card-button{
+    width: 100%;
+}
+
+.card-button > .mat-button, .card-button > .mat-icon-button{
+    float: right
+}
