@@ -1,5 +1,6 @@
 .card-button{
     width: 100%;
+    margin-top: -10px;
 }
 
 .card-button > .mat-button, .card-button > .mat-icon-button{
