@@ -7,11 +7,10 @@
     Group to
 </button>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="openNewGroupDialog()">New...</button>
-    <mat-divider></mat-divider>
     <button *ngFor="let group of groups" (click)="groupTo(group)" mat-menu-item [disabled]="currentGroup && group.id == currentGroup.id">
         {{group.name}}
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item [disabled]="!currentGroup" (click)="groupTo(undefined)">None</button>
+    <button mat-menu-item [disabled]="!currentGroup" (click)="groupTo(undefined)"><mat-icon>remove_circle</mat-icon> Ungroup</button>
+    <button mat-menu-item (click)="openNewGroupDialog()"><mat-icon>create_new_folder</mat-icon> New group</button>
 </mat-menu>
