@@ -18,7 +18,7 @@
       </td>
       <td>
         {{ device.label }}
-        <i *ngIf="!device.label">No label</i>
+        <i *ngIf="!device.label" style="opacity: 0.5">No label</i>
         <button mat-icon-button class="button-edit-label">
           <mat-icon matTooltip="Edit label" (click)="editDeviceLabel(device)">mode_edit</mat-icon>
         </button>
