@@ -21,6 +21,9 @@ module.exports = {
     },
     group: {
       model : 'group'
+    },
+    label : {
+      type : 'string'
     }
   }
 };

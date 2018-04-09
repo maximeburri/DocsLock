@@ -3,20 +3,26 @@
     <tr>
       <th></th>
       <th>Type</th>
-      <th>ID</th>
+      <th>Label</th>
       <th>Mac</th>
       <th>Status</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let device of devices" [@rowState]="device.rowState">
+    <tr *ngFor="let device of devices" [@rowState]="device.rowState" class="tr-row-device">
       <td>
         <mat-checkbox [(ngModel)]="device.isSelected"></mat-checkbox>
       </td>
       <td>
         <i class="material-icons">tablet_android</i>
       </td>
-      <td>{{ device.id }}</td>
+      <td>
+        {{ device.label }}
+        <i *ngIf="!device.label">No label</i>
+        <button mat-icon-button class="button-edit-label">
+          <mat-icon matTooltip="Edit label" (click)="editDeviceLabel(device)">mode_edit</mat-icon>
+        </button>
+      </td>
       <td>{{ device.mac }}</td>
       <td>
         <span id="status-connected">

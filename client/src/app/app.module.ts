@@ -39,6 +39,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-dialog.component';
 
 import { ConfirmationDialogComponent } from './common/confirmation-dialog/confirmation-dialog.component';
+import { EditLabelDialogComponent } from './devices/table-devices/edit-label-dialog/edit-label-dialog.component';
+
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { ConfirmationDialogComponent } from './common/confirmation-dialog/confir
     DocumentsDialogComponent,
     FileUploadComponent,
     NewGroupDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    EditLabelDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -102,9 +105,11 @@ import { ConfirmationDialogComponent } from './common/confirmation-dialog/confir
     MatIconModule, MatMenuModule
   ],
   entryComponents: [
+    /* Dialogs */
     DocumentsDialogComponent,
     NewGroupDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    EditLabelDialogComponent
   ],
   providers: [
     ServerService

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Edit label of device </h1>
+<div mat-dialog-content>
+    <mat-form-field >
+        <input matInput placeholder="Label" value="" required [(ngModel)]="label">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onOk(label)" type="submit"  tabindex="0">Ok</button>
+    <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>
+      

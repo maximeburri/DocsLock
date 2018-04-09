@@ -6,6 +6,8 @@ import {
   animate,
   transition
 } from '@angular/animations';
+import { EditLabelDialogComponent } from './edit-label-dialog/edit-label-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'table-devices',
@@ -40,9 +42,20 @@ export class TableDevicesComponent implements OnInit {
   @Input() devices: any;
   @Input() group?: number;
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
+  }
+
+  public editDeviceLabel(device, label) {
+    const dialogRef = this.dialog.open(EditLabelDialogComponent, {
+        data: {
+          device
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
 }

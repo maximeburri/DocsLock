@@ -230,4 +230,9 @@ export class ServerService {
     return this.delete(`/group/${group.id}`).toPromise()
     .catch(error => console.error(error));
   }
+
+  public setDeviceLabel(device: any, label: string) {
+    return this.post(`/device/${device.id}`, {label: label}).toPromise()
+    .catch(error => console.error(error));
+  }
 }
