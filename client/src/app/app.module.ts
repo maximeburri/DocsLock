@@ -10,7 +10,7 @@ import { ComponentsModule } from './components/components.module';
 import { AppComponent } from './app.component';
 
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { DevicesComponent, RemoveGroupConfirmationMessage } from './devices/devices.component';
+import { DevicesComponent } from './devices/devices.component';
 import { FilesComponent } from './files/files.component';
 import { SailsModule } from 'angular2-sails';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -46,7 +46,6 @@ import { EditLabelDialogComponent } from './devices/table-devices/edit-label-dia
   declarations: [
     AppComponent,
     DevicesComponent,
-    RemoveGroupConfirmationMessage,
     FilesComponent,
     UserProfileComponent,
     TableDevicesComponent,
