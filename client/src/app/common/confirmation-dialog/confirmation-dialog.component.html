@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
     <mat-icon>warning</mat-icon>
-    <span *ngIf="data.type == 'remove'">Are you sure to remove {{data.entityName}}<i>"{{data.name}}"</i> ?</span>
+    <span *ngIf="data.type == 'remove'">Are you sure to remove {{data.entityName}} <i *ngIf="data.name">"{{data.name}}"</i> ?</span>
     <span *ngIf="data.irrevocable" ><br/>This action is irrevocable. </span>
 </div>
 <div mat-dialog-actions>

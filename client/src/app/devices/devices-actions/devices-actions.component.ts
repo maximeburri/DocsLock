@@ -3,6 +3,7 @@ import { DevicesSelectedPipe } from '../devices-selected/devices-selected.pipe';
 import { ServerService } from '../../common/server.service';
 import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
 import { MatDialog } from '@angular/material';
+import { ConfirmationDialogComponent } from '../../common/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'devices-actions',
@@ -50,6 +51,29 @@ export class DevicesActionsComponent implements OnInit {
           this.server.setDeviceGroup(device, group);
         })
       }
+    });
+  }
+
+  public removeDevices() {
+    let devicesToRemove = [];
+    this.devices.forEach(device => {
+      if(device.isSelected)
+        devicesToRemove.push(device)
+    });
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: {
+            title : 'Confirmation',
+            type : 'remove',
+            irrevocable : true,
+            entityName : devicesToRemove.length + " device" 
+              + (devicesToRemove.length > 0 ? 's' : '')
+        }
+      });
+    dialogRef.afterClosed().subscribe(confirmed => {
+        console.log(confirmed);
+        if(confirmed)
+          devicesToRemove.forEach(d => this.server.removeDevice(d));
     });
   }
 }

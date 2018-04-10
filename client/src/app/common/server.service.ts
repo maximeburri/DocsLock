@@ -235,4 +235,9 @@ export class ServerService {
     return this.post(`/device/${device.id}`, {label: label}).toPromise()
     .catch(error => console.error(error));
   }
+
+  public removeDevice(device: any) {
+    return this.delete(`/device/${device.id}`).toPromise()
+    .catch(error => console.error(error));
+  }
 }
