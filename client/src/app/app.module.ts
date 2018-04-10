@@ -36,7 +36,7 @@ import { ServerService } from './common/server.service';
 import { FileUploadComponent } from './files/file-upload/file-upload.component';
 
 import { HttpClientModule } from '@angular/common/http';
-import { NewGroupDialogComponent } from './devices/new-group-dialog/new-group-dialog.component';
+import { EditGroupDialogComponent } from './devices/edit-group-dialog/edit-group-dialog.component';
 
 import { ConfirmationDialogComponent } from './common/confirmation-dialog/confirmation-dialog.component';
 import { EditLabelDialogComponent } from './devices/table-devices/edit-label-dialog/edit-label-dialog.component';
@@ -54,7 +54,7 @@ import { EditLabelDialogComponent } from './devices/table-devices/edit-label-dia
     DevicesSelectedPipe,
     DocumentsDialogComponent,
     FileUploadComponent,
-    NewGroupDialogComponent,
+    EditGroupDialogComponent,
     ConfirmationDialogComponent,
     EditLabelDialogComponent
   ],
@@ -106,7 +106,7 @@ import { EditLabelDialogComponent } from './devices/table-devices/edit-label-dia
   entryComponents: [
     /* Dialogs */
     DocumentsDialogComponent,
-    NewGroupDialogComponent,
+    EditGroupDialogComponent,
     ConfirmationDialogComponent,
     EditLabelDialogComponent
   ],

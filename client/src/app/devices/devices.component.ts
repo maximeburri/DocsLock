@@ -10,7 +10,7 @@ import { ServerService } from '../common/server.service';
 
 import { MatDialog } from '@angular/material';
 import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.component';
-import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.component';
+import { EditGroupDialogComponent } from './edit-group-dialog/edit-group-dialog.component';
 import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -65,7 +65,11 @@ export class DevicesComponent implements OnInit {
 
     public openNewGroupDialog() {
         const devicesToGroup = this.devices.filter(d => d.isSelected);
-        const dialogRef = this.dialog.open(NewGroupDialogComponent);
+        const dialogRef = this.dialog.open(EditGroupDialogComponent, {
+            data : {
+                mode: 'new'
+            }
+        });
         dialogRef.afterClosed().subscribe(result => {
             console.log("Group created");
         });
@@ -85,6 +89,20 @@ export class DevicesComponent implements OnInit {
             console.log(confirmed);
             if(confirmed)
                 this._server.removeGroup(group);
+        });
+    }
+
+    public editGroup(group) {
+        const devicesToGroup = this.devices.filter(d => d.isSelected);
+        const dialogRef = this.dialog.open(EditGroupDialogComponent,{
+            data : {
+                mode: 'edit',
+                group : group
+            }
+        });
+        dialogRef.componentInstance.name = group.name;
+        dialogRef.afterClosed().subscribe(result => {
+            console.log("Group created");
         });
     }
 }

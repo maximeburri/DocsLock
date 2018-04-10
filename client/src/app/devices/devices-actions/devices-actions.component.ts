@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DevicesSelectedPipe } from '../devices-selected/devices-selected.pipe';
 import { ServerService } from '../../common/server.service';
-import { NewGroupDialogComponent } from '../new-group-dialog/new-group-dialog.component';
+import { EditGroupDialogComponent } from '../edit-group-dialog/edit-group-dialog.component';
 import { MatDialog } from '@angular/material';
 import { ConfirmationDialogComponent } from '../../common/confirmation-dialog/confirmation-dialog.component';
 
@@ -43,7 +43,11 @@ export class DevicesActionsComponent implements OnInit {
 
   public openNewGroupDialog() {
     const devicesToGroup = this.devices.filter(d => d.isSelected);
-    const dialogRef = this.dialog.open(NewGroupDialogComponent);
+    const dialogRef = this.dialog.open(EditGroupDialogComponent, {
+      data : {
+        mode : 'new'
+      }
+    });
     dialogRef.afterClosed().subscribe(result => {
       const group = result.data;
       if (group) {

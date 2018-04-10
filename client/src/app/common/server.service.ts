@@ -240,4 +240,9 @@ export class ServerService {
     return this.delete(`/device/${device.id}`).toPromise()
     .catch(error => console.error(error));
   }
+
+  public setGroup(group: any) {
+    return this.post(`/group/${group.id}`, group).toPromise()
+    .catch(error => console.error(error));
+  }
 }

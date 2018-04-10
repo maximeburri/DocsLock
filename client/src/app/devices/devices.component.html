@@ -30,8 +30,11 @@
                 <h3>{{ group.name }}</h3>
             </mat-card-title>
             <span class="card-button">
-                <button mat-icon-button>
-                    <mat-icon matTooltip="Remove the group" (click)="removeGroup(group)">clear</mat-icon>
+                <button mat-icon-button (click)="removeGroup(group)">
+                    <mat-icon matTooltip="Remove the group" >clear</mat-icon>
+                </button>
+                <button mat-icon-button (click)="editGroup(group)">
+                    <mat-icon matTooltip="Edit the group">edit</mat-icon>
                 </button>
             </span>
         </mat-card-header>
