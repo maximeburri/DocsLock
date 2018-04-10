@@ -13,11 +13,6 @@ import { DocumentsDialogComponent } from './documents-dialog/documents-dialog.co
 import { NewGroupDialogComponent } from './new-group-dialog/new-group-dialog.component';
 import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
 
-@Component({selector: 'remove-group-confirmation-message', template: 'Hello {{name}}!'})
-export class RemoveGroupConfirmationMessage {
-  public name: string = '';
-}
-
 @Component({
     selector: 'devices-cmp',
     templateUrl: './devices.component.html',
