@@ -54,7 +54,7 @@
                             <span [ngPlural]="group.documents.length">
                                 <ng-template ngPluralCase="0">Manage documents</ng-template>
                                 <ng-template ngPluralCase="1">Manage document ({{group.documents.length}})</ng-template>
-                                <ng-template ngPluralCase="few">Manage documents ({{group.documents.length}})</ng-template>
+                                <ng-template ngPluralCase="other">Manage documents ({{group.documents.length}})</ng-template>
                             </span>
                         </button>
                     </span>
