@@ -53,7 +53,7 @@ export class TableDevicesComponent implements OnInit {
           device
         }
       });
-
+    dialogRef.componentInstance.label = device.label;
     dialogRef.afterClosed().subscribe(result => {
     });
   }

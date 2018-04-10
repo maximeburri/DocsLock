@@ -9,8 +9,7 @@ import { ServerService } from '../../../common/server.service';
   styleUrls: ['./edit-label-dialog.component.scss']
 })
 export class EditLabelDialogComponent implements OnInit {
-  public name: string;
-
+  public label : string;
   constructor(
     public dialogRef: MatDialogRef<EditLabelDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
