@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.xml.transform.dom.DOMSource;
-
 import ch.burci.docslock.BuildConfig;
 import ch.burci.docslock.Config;
 import ch.burci.docslock.DeviceWithGroup;
@@ -81,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isLocked;
     private MenuItem menuItemLockUnlock;
     private MenuItem menuItemConnected;
+    private MenuItem menuItemInstall;
+    private MenuItem menuItemSetServer;
     private boolean lastConnectedStatus = false;
     private Menu menu;
 
@@ -291,8 +291,18 @@ public class MainActivity extends AppCompatActivity {
         else
             Toast.makeText(this, "Unlocked", Toast.LENGTH_SHORT).show();
 
+        updateEnablementItems();
+
         // Send the isLocked status to server
         DocsLockService.setIsLockedDevice(locked);
+    }
+
+    public void updateEnablementItems() {
+        // Disable/enable list items
+        if(menuItemSetServer != null)
+            menuItemSetServer.setEnabled(!isLocked);
+        if(menuItemInstall != null)
+            menuItemInstall.setEnabled(!isLocked);
     }
 
     public void updateLockIcon(){
@@ -557,6 +567,10 @@ public class MainActivity extends AppCompatActivity {
         this.menu = menu;
         this.menuItemConnected = menu.findItem(R.id.action_is_connected);
         this.menuItemLockUnlock = menu.findItem(R.id.action_lock_unlock);
+        this.menuItemInstall = menu.findItem(R.id.action_install);
+        this.menuItemSetServer = menu.findItem(R.id.action_set_server);
+
+        updateEnablementItems();
 
         // Update item lock icon
         updateLockIcon();
@@ -581,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_lock_unlock:
                 clickedLockUnlockItem();
             break;
-            case R.id.action_update:
+            case R.id.action_install:
                 clickedUpdateApp();
             break;
             case R.id.action_set_server:

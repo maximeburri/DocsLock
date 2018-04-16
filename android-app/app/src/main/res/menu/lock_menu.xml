@@ -20,7 +20,7 @@
         >
     </item>
     <item
-        android:id="@+id/action_update"
+        android:id="@+id/action_install"
         android:title="@string/action_update"
         >
     </item>
