@@ -1,18 +1,14 @@
 package ch.burci.docslock;
 
 import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import java.net.NetworkInterface;
-import java.security.cert.CertificateExpiredException;
 import java.util.Collections;
 import java.util.List;
 
 import ch.burci.docslock.models.PrefUtils;
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,17 +20,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class DocsLockService {
-    private static String API_BASE_URL = Config.SERVER_URL;
     private static DocsLockClient client;
     private static String deviceId;
+    private static String url;
 
     // Init retrofit client
-    private static void initClient() {
+    private static void initClient(String url) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         Retrofit retrofit =
             new Retrofit.Builder()
-                .baseUrl(API_BASE_URL)
+                .baseUrl(url)
                 .addConverterFactory(
                     GsonConverterFactory.create()
                 )
@@ -44,6 +40,7 @@ public class DocsLockService {
             .build();
 
         client = retrofit.create(DocsLockClient.class);
+        DocsLockService.url = url;
     }
 
     // When init is finished. Create Id if not created
@@ -56,7 +53,7 @@ public class DocsLockService {
     // Init retrofit (if necessary) and create device on server (if not created)
     public static void init(Context context, OnInitFinish cb){
         if(client == null){
-            initClient();
+            initClient(PrefUtils.getServerURL(context));
 
             deviceId = PrefUtils.getDeviceId(context);
             if(deviceId == null){
@@ -183,11 +180,12 @@ public class DocsLockService {
         }
     });
     */
-    public DocsLockClient getClient() {
-        return client;
+
+    public static void resetClient() {
+        client = null;
     }
 
     public static String getDownloadLinkDocument(Document document){
-        return DocsLockService.API_BASE_URL + "/document/download/" + document.getId();
+        return url + "/document/download/" + document.getId();
     }
 }

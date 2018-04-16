@@ -1,13 +1,9 @@
 package ch.burci.docslock.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.IInterface;
-import android.os.Parcel;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -18,12 +14,10 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileDescriptor;
-import java.net.URISyntaxException;
-
 import ch.burci.docslock.Config;
 import ch.burci.docslock.DocsLockService;
 import ch.burci.docslock.controllers.MainActivity;
+import ch.burci.docslock.models.PrefUtils;
 
 /**
  * Created by maxime on 19.03.18.
@@ -126,8 +120,14 @@ public class WebSocketService extends Service{
     }
 
     public void start(){
-        IO.Options opts = new IO.Options();
+        if(mSocket != null) {
+            mSocket.disconnect();
+            mSocket.close();
+            mSocket = null;
+        }
         String deviceId = DocsLockService.getDeviceId(this.getApplicationContext());
+
+        IO.Options opts = new IO.Options();
 
         // Todo : try in x seconds...
         if(deviceId == null){
@@ -138,8 +138,9 @@ public class WebSocketService extends Service{
         opts.query = "deviceId=" + deviceId;
         opts.reconnectionDelay = Config.WEB_SOCKET_RECONNECTION_DELAY;
         opts.reconnectionDelayMax = Config.WEB_SOCKET_RECONNECTION_DELAY_MAX;
+        opts.forceNew = true;
         try {
-            mSocket = IO.socket("http://" + Config.SERVER_IP_PORT, opts);
+            mSocket = IO.socket(PrefUtils.getServerURL(this), opts);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,4 +151,11 @@ public class WebSocketService extends Service{
         mSocket.connect();
     }
 
+    public void stop() {
+        if(mSocket != null) {
+            mSocket.disconnect();
+            mSocket.close();
+            mSocket = null;
+        }
+    }
 }

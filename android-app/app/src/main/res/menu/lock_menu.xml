@@ -24,4 +24,9 @@
         android:title="@string/action_update"
         >
     </item>
+    <item
+        android:id="@+id/action_set_server"
+        android:title="@string/action_set_server"
+        >
+    </item>
 </menu>

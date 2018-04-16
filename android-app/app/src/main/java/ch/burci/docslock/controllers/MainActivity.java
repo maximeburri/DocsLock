@@ -41,15 +41,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Socket;
-import com.github.nkzawa.socketio.client.IO;
-
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.xml.transform.dom.DOMSource;
 
 import ch.burci.docslock.BuildConfig;
 import ch.burci.docslock.Config;
@@ -587,9 +584,95 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_update:
                 clickedUpdateApp();
             break;
+            case R.id.action_set_server:
+                openDialogSetServerIp();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openDialogSetServerIp() {
+        LayoutInflater li = this.getLayoutInflater();
+        View promptsView = li.inflate(R.layout.server_prompts, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                MainActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        final EditText editServer = (EditText) promptsView
+                .findViewById(R.id.editServer);
+        editServer.setText(PrefUtils.getServerURL(MainActivity.this));
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK", null /*set after*/)
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                                hideKeyboard(editServer);
+                                dialog.cancel();
+                            }
+                        });
+
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                // Need to show keyboard because HomeKeyLocker.lock() hide
+                InputMethodManager imm = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editServer, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        // Set type alert dialog because HomeKeyLocker.lock() hide keyboard
+        alertDialog.getWindow().setType(TYPE_SYSTEM_ERROR);
+
+        alertDialog.show();
+
+        // Ok Button
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            .setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String newServerUrl = editServer.getText().toString();
+
+                    // Reset prefutil
+                    PrefUtils.setDeviceId(null, MainActivity.this);
+                    PrefUtils.setServerURL(newServerUrl, MainActivity.this);
+
+                    // Set icon
+                    updateConnectedIcon(false);
+
+                    // Stop websocket
+                    if(mWebSocketService != null)
+                        mWebSocketService.stop();
+
+                    // Reset service
+                    DocsLockService.resetClient();
+                    DocsLockService.init(MainActivity.this, new DocsLockService.OnInitFinish() {
+                        @Override
+                        public void onInitFinish(int error, Exception e) {
+                            if(error == DocsLockService.OnInitFinish.SUCCESS) {
+                                DocsLockService.setStateDevice(true);
+                                if(mWebSocketService != null)
+                                    mWebSocketService.start();
+                            }else
+                                Log.d("MainAcitivity", "Cannot finish init");
+                        }
+                    });
+
+                    // Close dialog
+                    // Need to hide keyboard because HomeKeyLocker.lock() doesn't do that
+                    InputMethodManager imm = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editServer.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+
+                    alertDialog.cancel();
+
+                }
+            });
     }
 
     public void clickedUpdateApp(){
@@ -604,7 +687,7 @@ public class MainActivity extends AppCompatActivity {
             file.delete();
 
         DownloadManager.Request request = new DownloadManager.Request(
-                Uri.parse(Config.APK_SERVER_URL));
+                Uri.parse(Config.getApkServerUrl(this)));
         request.setDestinationUri(uri);
         dm.enqueue(request);
 

@@ -3,11 +3,8 @@ package ch.burci.docslock.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import ch.burci.docslock.Config;
 import ch.burci.docslock.DeviceWithGroup;
 
 public class PrefUtils {
@@ -15,6 +12,7 @@ public class PrefUtils {
     private static final String PREF_PASSWORD = "pref_password";
     private static final String PREF_DEVICE_ID = "device_id";
     private static final String PREF_LAST_DEVICE = "last_device";
+    private static final String PREF_SERVER_URL = "server_ip_port";
 
     public static void resetSettings(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -75,5 +73,18 @@ public class PrefUtils {
             deviceJson = device.toJSON();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(PREF_LAST_DEVICE, deviceJson).commit();
+    }
+
+    public static void setServerURL(String ipPort, final Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(PREF_SERVER_URL, ipPort).commit();
+    }
+
+    public static String getServerURL(final Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String serverIpPort = sp.getString(PREF_SERVER_URL, null);
+        if(serverIpPort == null)
+            return Config.DEFAULT_SERVER_IP_PORT;
+        return serverIpPort;
     }
 }
