@@ -19,7 +19,8 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "./styles.css"
+        "./styles.css",
+        "../node_modules/material-design-icons/iconfont/material-icons.css"
       ],
       "scripts": [
           "../node_modules/sails.io.js/dist/sails.io.js",
