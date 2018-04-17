@@ -9,7 +9,7 @@ import ch.burci.docslock.models.PrefUtils;
  */
 
 public class Config {
-    public final static String DEFAULT_SERVER_IP_PORT = "http://192.168.1.4:1337";
+    public final static String DEFAULT_SERVER_IP_PORT = "http://192.168.1.6:1337";
     public final static String APK_SERVER_FILE = "docslock-latest.apk";
 
     public static String getApkServerUrl(Context context){
