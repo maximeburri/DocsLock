@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -253,6 +254,9 @@ public class MainActivity extends AppCompatActivity {
     private void updatePdfsList() {
         this.listPDFs = readPDFs();
         this.mainModel.setPdfs(this.listPDFs);
+        if(this.listFragment != null)
+            this.listFragment.update();
+        Log.d(this.getClass().toString(), "List pdfs udpated : " + Arrays.toString(this.listPDFs.toArray()));
     }
 
     protected void setLock(boolean locked){
@@ -409,6 +413,8 @@ public class MainActivity extends AppCompatActivity {
         if(actionBar != null)
             actionBar.hide();
 
+        // Update list pdf
+        updatePdfsList();
     }
 
 
@@ -429,6 +435,8 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter i = new IntentFilter();
         i.addAction(WebSocketService.ACTION_NAME);
         registerReceiver(mReceiver, i);
+
+        registerReceiver(receiverDowloadsCompleted, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     @Override
@@ -439,6 +447,8 @@ public class MainActivity extends AppCompatActivity {
         }
         unbindService(mConnection);
         unregisterReceiver(mReceiver);
+
+        unregisterReceiver(receiverDowloadsCompleted);
     }
 
     @Override
@@ -506,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
         // Folder to external storage /Android/data/ch.burci.docslock/files/pdf
         File pdfsFolder = getExternalFilesDir("pdf");
         int i = 0;
-
+        Log.d(this.getClass().toString(), "Download pdfs list");
         for(String pdfUrl:pdfsUrl){
             boolean download = true;
             String name = filesNames.get(i);
@@ -534,7 +544,7 @@ public class MainActivity extends AppCompatActivity {
                     DownloadManager manager = (DownloadManager) getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
                     //start the download and return the id of the download. this id can be use to get info of download
                     final long downloadId = manager.enqueue(request);
-                    registerReceiver(receiverDowloadsCompleted, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -903,7 +913,6 @@ public class MainActivity extends AppCompatActivity {
             timer.schedule(myTimerTask, 10, 10);
         }
 
-        super.onPause();
         Log.d("MainActivity", "onPause");
 
         // On pause (recent apps button) : move task to front
@@ -912,6 +921,8 @@ public class MainActivity extends AppCompatActivity {
                     .getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.moveTaskToFront(getTaskId(), 0);
         }
+
+        super.onPause();
     }
 
     // ---------------------------------------------------------------

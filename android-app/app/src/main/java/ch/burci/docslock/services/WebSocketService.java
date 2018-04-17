@@ -2,6 +2,7 @@ package ch.burci.docslock.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -51,6 +52,29 @@ public class WebSocketService extends Service{
         Log.d(TAG, "WebSocketCreated");
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind");
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        Log.d(TAG, "onRebind");
+        super.onRebind(intent);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.d(TAG, "onConfigurationChanged");
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Log.d(TAG, "onTaskRemoved");
+        super.onTaskRemoved(rootIntent);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -149,6 +173,7 @@ public class WebSocketService extends Service{
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on("update", onUpdate);
         mSocket.connect();
+        Log.d(TAG, "socket.connect()");
     }
 
     public void stop() {
