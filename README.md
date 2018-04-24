@@ -6,27 +6,27 @@ Android documents reader for courses or exams. PDFs can be synced by the adminis
 ## Getting started
 ### Architecture
 DocsLock is divised into three components : 
-- an android application which can be installed on desired devices
-- a client application to administrate the devices and sends the documents
-- a server to make the communication between devices and application, serves client application and REST API 
+- an **android application** which can be installed on desired devices
+- a **client application** to administrate the devices and sends the documents
+- a **server** to make the communication between devices and application, serves client application and REST API 
 ![Architecture](docs/images/architecture.png)
-The client application is served by the server. The android application need to be installed on devices. The LAN can be disconnect from internet.
+The android application need to be installed on devices. The LAN can be disconnect from internet.
 
 ### Prerequisites
 - android application are tested and works on android 7.0
 - a local WiFi LAN needs to be configured and needs to contains the server and devices (no other devices for security reasons, c.f. Limitations) 
 
 ### Dependencies used
-- Client : [Angular4](https://angular.io/), [Angular Material](https://material.angular.io/) and [socket.io](https://socket.io/)
-- Server : [MongoDB](https://www.mongodb.com/), [Sails.js 0.12](https://sailsjs.com/) and [socket.io](https://socket.io/)
-- Android : [retrofit2](http://square.github.io/retrofit/) and [barteksc/AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer)
+- *Client* : [Angular4](https://angular.io/), [Angular Material](https://material.angular.io/) and [socket.io](https://socket.io/)
+- *Server* : [MongoDB](https://www.mongodb.com/), [Sails.js 0.12](https://sailsjs.com/) and [socket.io](https://socket.io/)
+- *Android* : [retrofit2](http://square.github.io/retrofit/) and [barteksc/AndroidPdfViewer](https://github.com/barteksc/AndroidPdfViewer)
 
 ### Limitations
-For reasons of time, there are multiple security issues. Communications are not in HTTPS, devices are not authenticated and client administration application are not secured by a password. For theses reasons you need to configure a private Wifi LAN only used for this application. If not, others computer could change devices states. Packets could be snooping and attacked by a MITM.
+For reasons of time, there are multiple *security issues*. Communications are not in HTTPS, devices are not authenticated and client administration application are not secured by a password. For these reasons you need to configure a **private Wifi LAN only used for this application**. If not, others computer could change devices states. Packets could be snooping and attacked by a MITM.
 
-Other warning : don't give unlocked devices. They could go to the administration application and change unlock/lock the other devices. 
+Other warning : **don't give unlocked devices**. They could go to the administration application and change unlock/lock the other devices. 
 
-We want to fix this security issue in next release. The current release is think as a Proof of Concept.
+We want to fix theses security issues in next release. The current release is conceived as a *Proof of Concept*.
 
 ## Installation
 - clone the project `git clone https://github.com/maximeburri/DocsLock`
