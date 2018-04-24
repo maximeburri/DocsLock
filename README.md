@@ -1,5 +1,6 @@
 # DocsLock
 Android documents reader for courses or exams. PDFs can be synced by the administration application and devices can be locked and then unlocked. 
+
 ![Logo](docs/images/logo.png)
 
 ## Getting started
@@ -26,14 +27,12 @@ Other warning : don't give unlocked devices. They could go to the administration
 
 We want to fix this security issue in next release. The current release is think as a Proof of Concept.
 
-
 ## Installation
 ...
 ## Deployement
 ...
 ## Developpment
 ...
-
 
 ## Next steps
 The project is in pause mode and just some bugs will be fixed. If the project will be restarted, the priority will be give to :
