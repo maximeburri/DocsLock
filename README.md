@@ -41,14 +41,14 @@ We want to fix theses security issues in next release. The current release is co
     ```
   - install npm dependencies : `npm install` in `docslock/client`, then in `docslock/server`
 
-## Deployement
+## Deployment
 - in a terminal, start MongoDB (`sudo service mongod start` for ubuntu)
 - in a terminal to `docslock/server` make `sails lift --prod`. The API is disponible on port `1337`
 - in a terminal to `docslock/client` make `ng serve --host 0.0.0.0 --prod`. The API is disponible on port `4200`. A better alternative is to make `ng build` and host the `build` folder with nginx for example
 - install .apk on devices. Set the server ip to `http://<ip api>:1337`
 
 
-## Developpment
+## Development
 Equivalent to deployment with `sails lift` and `ng serve` commands.
 
 ## Next steps
