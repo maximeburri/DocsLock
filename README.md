@@ -6,14 +6,15 @@ Android documents reader for courses or exams. PDFs can be synced by the adminis
 ## Getting started
 ### Architecture
 DocsLock is divised into three components : 
-- Android application which can be installed on desired devices
-- Client application to administrate the devices and sends the documents
-- A server to make the communication between devices and application, serves client application and REST API 
+- an android application which can be installed on desired devices
+- a client application to administrate the devices and sends the documents
+- a server to make the communication between devices and application, serves client application and REST API 
 ![Architecture](docs/images/architecture.png)
+The client application is served by the server. The android application need to be installed on devices. The LAN can be disconnect from internet.
 
 ### Prerequisites
-- Android application are tested and works on android 7.0
-- A local WiFi LAN needs to be configured and needs to contains server and devices (no other devices for security reasons, c.f. Limitations), can be disconnect from Internet
+- android application are tested and works on android 7.0
+- a local WiFi LAN needs to be configured and needs to contains the server and devices (no other devices for security reasons, c.f. Limitations) 
 
 ### Dependencies used
 - Client : [Angular4](https://angular.io/), [Angular Material](https://material.angular.io/) and [socket.io](https://socket.io/)
@@ -28,17 +29,33 @@ Other warning : don't give unlocked devices. They could go to the administration
 We want to fix this security issue in next release. The current release is think as a Proof of Concept.
 
 ## Installation
-...
+- clone the project `git clone https://github.com/maximeburri/DocsLock`
+- for the **android application**, install android studio and open with existing source on `android-app`
+- for the **server** : 
+  - install MongoDB ([installation MongoDB](https://docs.mongodb.com/manual/installation/))
+  - install npm ([Installation NPM](https://www.npmjs.com/get-npm)) 
+  - install npm global dependencies 
+    ```
+    npm install -g sails
+    npm install -g @angular/cli
+    ```
+  - install npm dependencies : `npm install` in `docslock/client`, then in `docslock/server`
+
 ## Deployement
-...
+- in a terminal, start MongoDB (`sudo service mongod start` for ubuntu)
+- in a terminal to `docslock/server` make `sails lift --prod`. The API is disponible on port `1337`
+- in a terminal to `docslock/client` make `ng serve --host 0.0.0.0 --prod`. The API is disponible on port `4200`. A better alternative is to make `ng build` and host the `build` folder with nginx for example
+- install .apk on devices. Set the server ip to `http://<ip api>:1337`
+
+
 ## Developpment
-...
+Equivalent to deployment with `sails lift` and `ng serve` commands.
 
 ## Next steps
 The project is in pause mode and just some bugs will be fixed. If the project will be restarted, the priority will be give to :
-- Make communication over HTTPS (easy)
-- Authenticates with OAuth devices (long)
-- Add users managment for administration application (long) or protect by a single password (easy)
+- make communication over HTTPS (easy)
+- authenticates with OAuth devices (long)
+- add users managment for administration application (long) or protect by a single password (easy)
 
 ## Authors
 This project is made for [HEPIA](http://hepia.hesge.ch/) initied by [Florent GLUCK](https://github.com/florentgluck) and developped by (c.f. [Contributors](https://github.com/maximeburri/DocsLock/graphs/contributors)): 
